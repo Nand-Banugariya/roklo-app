@@ -1,0 +1,949 @@
+src/features/onboarding/components/steps/source-step.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-40
+src/features/auth/screens/login-screen.tsx
+  s_f024c20e026e24::t_80381695beb038 12
+  s_19d8e970452d1a::t_fa9a6a9e9f0857 44-50
+  s_f024c20e026e24::t_39d88e2e2c9dc5 74-75,78-79
+  s_f024c20e026e24::t_3abc0765d94c79 76-77
+  s_f024c20e026e24::t_d1364a374c8e4d 2,23-27,34-35,51-73,80-111
+  s_f024c20e026e24::t_1bac53f50bb11b 36-42
+  s_f024c20e026e24::t_859cd11523a0c5 31
+  s_f024c20e026e24::t_6609e243465c53 1
+  s_f024c20e026e24::t_51cb1a1ebd9157 3-5,9-11
+  s_f024c20e026e24::t_be246ca63d7e7c 13-15,20-22
+  s_f024c20e026e24::t_b8cc269e696604 28-30
+  s_f024c20e026e24::t_a004aa755767b3 32-33
+  s_f024c20e026e24::t_d64c7ff4246c07 112-114
+  h_3675ac6c8fa87c 6-8,16-19,43
+src/features/onboarding/components/setup-layout.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-147
+src/features/messaging/screens/chat-screen.tsx
+  s_7fd8dab0a63ab2::t_3349c68d853b8a 6-20,26,31-32,42,291
+  s_7fd8dab0a63ab2::t_a2af7c5c9c5807 33-34
+  s_573e2710227e7f::t_6d4b7612129133 327
+  s_7fd8dab0a63ab2::t_ca8d2d716a6ae7 3-5
+  s_7fd8dab0a63ab2::t_cd22827d3f8e85 21-25
+  s_7fd8dab0a63ab2::t_74adab75492ff9 27-30
+  s_7fd8dab0a63ab2::t_178739dd81765a 35-37,39-41
+  s_7fd8dab0a63ab2::t_da6068a60eb8a0 43-45,288-290
+  s_573e2710227e7f::t_fed96fb33bc7f6 328-330
+  h_3675ac6c8fa87c 1-2,38,46-287,292-326,331-339
+src/features/messaging/components/active-number-bar.tsx
+  s_7fd8dab0a63ab2::t_533f698b8d7f18 4,7,11,19,25
+  s_b956da14bbd332::t_dfc1254e8f5d7e 2,14,42
+  s_b956da14bbd332::t_e4bc100b9b744a 15,26,29-30,34,36-41
+  s_7fd8dab0a63ab2::t_7cc2ac3c4a9c6e 43
+  s_7fd8dab0a63ab2::t_643efeb51de52f 20
+  s_7fd8dab0a63ab2::t_91b6c95bd010fc 10
+  s_b956da14bbd332::t_7794e8caacdcdf 13,16,18,21-24,27-28,31-33,35
+  s_7fd8dab0a63ab2::t_aff8ddbb4d7ca8 1,3,5-6,8-9,12,17,44
+src/features/navigation/components/number-switcher.tsx
+  s_7fd8dab0a63ab2::t_2f106e6f1b709b 7-27
+  s_7fd8dab0a63ab2::t_46a43b823936f0 4-6
+  s_7fd8dab0a63ab2::t_debd258556cb4e 28-30
+  h_3675ac6c8fa87c 1-3,31-32
+scripts/verify-mobile-navigation.cjs
+  s_7fd8dab0a63ab2::t_ff71b9171932b2 187
+  s_7fd8dab0a63ab2::t_4426008d63018b 175
+  s_7fd8dab0a63ab2::t_5397e095d8e0d7 176
+  s_7fd8dab0a63ab2::t_86c961679815c6 181-182
+  s_7fd8dab0a63ab2::t_ec8af256035774 179
+  s_8800f0e4f8eaa5::t_60aadb3f75c6cd 123,133
+  s_7fd8dab0a63ab2::t_b5ff761d89694d 127
+  s_7fd8dab0a63ab2::t_022c93ec6e02be 119,158,165,169,174,185-186,188-189
+  s_581504a5d8e87c::t_dcad48106078ba 128,180
+  s_8800f0e4f8eaa5::t_5d91a7299ca5e9 136
+  s_7fd8dab0a63ab2::t_27dd65437fbb86 116-118
+  s_8800f0e4f8eaa5::t_3afc13a9a44e05 134-135
+  s_7fd8dab0a63ab2::t_fe4984900b1182 159-164
+  s_7fd8dab0a63ab2::t_d74c9f4d0f81ae 166-168
+  s_7fd8dab0a63ab2::t_3f6805a8476bfa 170-173
+  s_7fd8dab0a63ab2::t_2fd789b304fa2f 177-178
+  s_7fd8dab0a63ab2::t_17ceeb24c6b14a 183-184
+  s_7fd8dab0a63ab2::t_da69380fe54107 190-192
+  h_3675ac6c8fa87c 1-115,120-122,124-126,129-132,137-157,193-332
+src/features/messaging/hooks/use-conversations.ts
+  s_7fd8dab0a63ab2::t_7571c213a04278 9-10
+  s_7fd8dab0a63ab2::t_6bfefe3165e84d 6-8
+  s_7fd8dab0a63ab2::t_832cb16b6de746 11-13
+  h_3675ac6c8fa87c 1-5,14-104
+src/features/navigation/components/page-layout.tsx
+  s_8800f0e4f8eaa5::t_445574c10b95f9 1-66
+  s_8800f0e4f8eaa5::t_ac533f68eda5ef 67-69
+src/features/auth/hooks/use-keyboard-scroll.ts
+  s_f024c20e026e24::t_c649443c48311b 1-10,12-37,39,44,60-65,73,75-102,104-131,147,157-168,170-175,177-187,193-202,204-207,209-220
+  s_19d8e970452d1a::t_a72a4888c89244 11,38,40-43,45-59,66-72,74,103
+  s_19d8e970452d1a::t_7d8c5f634dd186 132-146,148-156,169,176,188-192,203,208
+src/app/_layout.tsx
+  s_9fc965ebaf5208::t_c8fadd18d1ce9f 29,31
+  s_9fc965ebaf5208::t_48da2baacd6dba 30,32-33
+  s_9fc965ebaf5208::t_5048c94c72ead7 26-28,36-38
+  s_9fc965ebaf5208::t_fe70feb8b331dd 23-25
+  s_9fc965ebaf5208::t_933c0ede24ca5a 34-35
+  s_9fc965ebaf5208::t_7dd309c329544b 39-41
+  h_3675ac6c8fa87c 1,3-19,42-63,65-81
+src/features/onboarding/components/steps/usage-step.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-69
+src/features/onboarding/screens/setup-screen.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-201
+src/features/messaging/components/visibility-form.tsx
+  s_b956da14bbd332::t_9173065bc0c5ef 4,11,44
+  s_b956da14bbd332::t_2819a9a7690417 104,109
+  s_b956da14bbd332::t_63e6934ac3e946 1-3,5-10,12-43,45-103,105-108,110-159
+src/features/onboarding/services/onboarding-api.ts
+  h_3675ac6c8fa87c 1-131
+src/features/onboarding/components/step-header.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-31
+eas.json
+  h_3675ac6c8fa87c 1-19
+src/features/messaging/utils/chat-dates.ts
+  s_581504a5d8e87c::t_32a3b5672dc1e6 20-25
+  s_7fd8dab0a63ab2::t_5ca3afad7b0cec 1-19,26-58
+src/app/index.tsx
+  s_9fc965ebaf5208::t_ea1107fcb25528 3,25,27-30
+  s_9fc965ebaf5208::t_ddd3502700a8f9 2,5-7,9-13,15-20,22-23,26
+  s_9fc965ebaf5208::t_cb87f1970b1d34 1
+docs/onboarding.md
+  s_c937ddc23233cb::t_0cbfd85140fd17 96
+  s_c937ddc23233cb::t_599b3c7caf700c 1-95,97-125
+src/features/messaging/components/connection-pulse.tsx
+  s_7fd8dab0a63ab2::t_f5f9e38de5d59d 1-3,5-30
+  s_7fd8dab0a63ab2::t_75d373d2a0826a 31
+  s_7fd8dab0a63ab2::t_18736412b1cba7 4
+src/features/messaging/components/message-bubble.tsx
+  s_7fd8dab0a63ab2::t_5fbdd93cf27a69 2-74
+  s_7fd8dab0a63ab2::t_105725579723bd 1
+  s_7fd8dab0a63ab2::t_a2162badab55b7 75-77
+  h_3675ac6c8fa87c 78-253
+src/app/(auth)/email.tsx
+  h_3675ac6c8fa87c 1
+docs/navigation.md
+  s_8800f0e4f8eaa5::t_74553fa91eab0f 10-19
+  s_8800f0e4f8eaa5::t_488ad7885ea2c3 7-9
+  s_8800f0e4f8eaa5::t_502a678be4aab5 20-22
+  s_ec1afa830162d6::t_6b849c2f944e71 1-6,23-86
+src/features/messaging/components/conversation-row.tsx
+  s_7fd8dab0a63ab2::t_7e00dfe79c43cc 1-9,13-15,17,19-22,25-41,45
+  s_b956da14bbd332::t_00be5ef1bcf6e4 11,16,18
+  s_b956da14bbd332::t_1a62623455b7e9 23,46
+  s_7fd8dab0a63ab2::t_b44454d2f534b6 42-44
+  s_b956da14bbd332::t_04a1dc00653e69 47-49
+  h_3675ac6c8fa87c 10,12,24,50-53
+src/features/onboarding/components/setup-finale.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-139
+src/features/messaging/components/inbox-state.tsx
+  s_7fd8dab0a63ab2::t_cf8ad5fcff67af 17-18
+  s_7fd8dab0a63ab2::t_6d378857b9dfc7 8-9
+  s_7fd8dab0a63ab2::t_76e8ad19c29171 2,12-14,27
+  s_b956da14bbd332::t_d52fd4111fb9de 22-26
+  s_7fd8dab0a63ab2::t_4a90c586d8e04d 1
+  s_7fd8dab0a63ab2::t_c5030dde5379db 3-7
+  s_7fd8dab0a63ab2::t_b0451e56acd523 10-11
+  s_7fd8dab0a63ab2::t_2cd2a1c5a3b130 15-16
+  s_7fd8dab0a63ab2::t_bbcca33f443e83 28-30
+  h_3675ac6c8fa87c 19-21,31-86
+src/features/messaging/components/number-actions.tsx
+  s_b956da14bbd332::t_18ffaf4e51619f 3,5-10,12,37,45,51-104
+  s_b956da14bbd332::t_702389461b7142 13,17-18,47-50
+  s_b956da14bbd332::t_9173065bc0c5ef 4,11,27-35
+  s_b956da14bbd332::t_ac16f8e61f253e 1-2,14-16,19-26,36,38-44,46
+src/features/messaging/hooks/use-ai-rephrase.ts
+  s_573e2710227e7f::t_9b25b2f7321f62 1-50,56-69,74-75,82
+  s_573e2710227e7f::t_df2f1ab0791636 51-55
+  s_573e2710227e7f::t_d9524133bb3aa1 70-73
+  s_573e2710227e7f::t_d29308113de309 76-81
+src/features/navigation/components/bottom-navigation.tsx
+  s_8800f0e4f8eaa5::t_c403a53bba5b7d 1-38
+  s_8800f0e4f8eaa5::t_2004124ba481c3 39
+src/features/onboarding/components/steps/workspace-step.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-129
+src/features/auth/components/auth-carousel.tsx
+  s_19d8e970452d1a::t_cfb11df90d67d3 68-74,124
+  s_f024c20e026e24::t_4fcf9739a2f552 128
+  s_f024c20e026e24::t_f1ae795b0e4a04 46-51,53
+  s_f024c20e026e24::t_55f81d3f51e128 16-19
+  s_f024c20e026e24::t_660342631d33e9 52,144-146
+  s_f024c20e026e24::t_4951c55de6e7ff 126
+  s_f024c20e026e24::t_0ce93a1276f8a4 173
+  s_f024c20e026e24::t_69feac6e1f43c3 188
+  s_19d8e970452d1a::t_ca4700556bdcbe 163-169
+  s_f024c20e026e24::t_577d1d68beef0c 208
+  s_19d8e970452d1a::t_df2dfba5551f6f 59,61-67,84,131-132
+  s_f024c20e026e24::t_e78ae9d030d7ec 162,170,175-184
+  s_f024c20e026e24::t_c2e081f79d223d 172,189-207
+  s_f024c20e026e24::t_208f10c03c9603 125
+  s_f024c20e026e24::t_7787460a27771d 76
+  s_f024c20e026e24::t_8a5e53f1a19600 83
+  s_f024c20e026e24::t_cb5594d50ee7bb 130
+  s_f024c20e026e24::t_7bd10ddee9ef9a 54-58,60
+  s_19d8e970452d1a::t_1351e8104c73f2 1-15,20-45,75,77-82,85-123,127,129,133-143,147-161,171,174,185-187,209-211
+src/features/auth/components/auth-layout.tsx
+  s_9fc965ebaf5208::t_5bcbec934ea5f7 60-61
+  s_f024c20e026e24::t_b6e261113325e2 3,5-12,72-76,78-82,90,96,125-134
+  s_19d8e970452d1a::t_784ba091d26357 91-95
+  s_c937ddc23233cb::t_1565b3d78f2d92 167-168
+  s_c937ddc23233cb::t_cf290ea571ea89 182,184
+  s_9fc965ebaf5208::t_6eb99ddde668ca 39
+  s_f024c20e026e24::t_2316ea693bb365 185-186
+  s_f024c20e026e24::t_5458f57c84ea7a 138-140
+  s_9fc965ebaf5208::t_42c2262dc4c74d 163
+  s_9fc965ebaf5208::t_d3801ac5d0b1aa 222
+  h_3675ac6c8fa87c 21-22,42
+  s_f024c20e026e24::t_5900bb66344cba 232-234
+  s_f024c20e026e24::t_e4f69dab29805f 64-71,83-89
+  s_19d8e970452d1a::t_4db12faf5ff3a8 188,190-221,223,228,230-231,235-236,261-262
+  s_f024c20e026e24::t_6dc5b5ce1986c2 271
+  s_f024c20e026e24::t_fadc1b914cb521 43
+  s_19d8e970452d1a::t_3e77ec2b127e6b 110
+  s_19d8e970452d1a::t_8c64416917301d 77
+  s_f024c20e026e24::t_b519d1eb4cd202 45-50,53,56
+  s_19d8e970452d1a::t_87bd1511e899b5 183,187
+  s_19d8e970452d1a::t_85bd614238aef2 101-109,111-112
+  s_f024c20e026e24::t_13a34050c3164c 98-100
+  s_c937ddc23233cb::t_67ef4244942959 164-166,175-176
+  s_c937ddc23233cb::t_23cc04305c4b00 169-174
+  s_19d8e970452d1a::t_ae94b5be38083c 4
+  s_19d8e970452d1a::t_5d0fd4f26960fc 24-31
+  s_19d8e970452d1a::t_c7b79d6dca6a7f 156,178-179,239-248,268
+  s_f024c20e026e24::t_5e347ef75db932 41
+  s_19d8e970452d1a::t_4bf65789102088 157-159
+  s_f024c20e026e24::t_f15c9d7f774e79 1-2
+  s_f024c20e026e24::t_3d76e5824793d1 44
+  s_f024c20e026e24::t_3c5b989fb11ba0 51-52
+  s_f024c20e026e24::t_eac2f48f6707b6 54-55
+  s_f024c20e026e24::t_0229ffa213ebd4 97
+  s_f024c20e026e24::t_4d514081d88007 135-137
+  s_19d8e970452d1a::t_d443a09e02d8d2 189
+  s_19d8e970452d1a::t_4a14e1f2283440 224-227
+  s_19d8e970452d1a::t_34697987593814 229
+  s_19d8e970452d1a::t_8ff7b0994f9234 237-238
+  s_19d8e970452d1a::t_58bbd454427b2a 249-251,258-260
+  s_19d8e970452d1a::t_25ff9fd89778b7 263-267
+  s_f024c20e026e24::t_8a797af9e9e86c 272
+  h_3675ac6c8fa87c 13-20,23,32-38,40,57-59,62-63,113-124,141-155,160-162,177,180-181,252-257,269-270
+src/features/messaging/screens/inbox-screen.tsx
+  s_b956da14bbd332::t_1a62623455b7e9 4,64
+  s_7fd8dab0a63ab2::t_5ec1d1bad4ef37 2
+  s_7fd8dab0a63ab2::t_5f420e3c63b34d 68-69
+  s_7fd8dab0a63ab2::t_ba40b1c270d627 61,67,70-77
+  s_7fd8dab0a63ab2::t_9a6a9bd43d6afa 36-37
+  s_7fd8dab0a63ab2::t_2e38544e64e8a2 47
+  s_b956da14bbd332::t_00be5ef1bcf6e4 63
+  s_7fd8dab0a63ab2::t_677d4a94ae6585 50
+  s_7fd8dab0a63ab2::t_fd39af6050b114 49
+  s_7fd8dab0a63ab2::t_7e0d25fcd9fdc0 17
+  s_7fd8dab0a63ab2::t_39abd03f1e01c6 44
+  s_7fd8dab0a63ab2::t_385245c853fc4e 57,66
+  s_7fd8dab0a63ab2::t_05840965cdd21c 41-43,45-46,48
+  s_7fd8dab0a63ab2::t_611be3504a63b5 20
+  s_b956da14bbd332::t_bac41d7ea42141 78-79
+  s_7fd8dab0a63ab2::t_6c1b541f7c2017 1
+  s_7fd8dab0a63ab2::t_78e7d6a7a34a83 18-19
+  s_7fd8dab0a63ab2::t_3a64b5b15e7c64 21-23,33-35
+  s_7fd8dab0a63ab2::t_b031013237d77e 38-40
+  s_7fd8dab0a63ab2::t_c8133fe524d820 51-56
+  s_7fd8dab0a63ab2::t_a4430c0be290ca 58-60
+  s_b956da14bbd332::t_5f5a93cac02109 80-82
+  h_3675ac6c8fa87c 3,5-16,24-32,62,65,83-97
+docs/mobile-inbox.md
+  s_581504a5d8e87c::t_e97fdeb0ede4c6 1-10,12-32
+  s_581504a5d8e87c::t_ff4246f4154f0d 11
+  s_581504a5d8e87c::t_b2ebe0fe402bd9 33-35
+  h_3675ac6c8fa87c 36-44
+src/features/auth/screens/signed-in-screen.tsx
+  h_3675ac6c8fa87c 1-54
+src/features/workspaces/types/workspace.types.ts
+  s_581504a5d8e87c::t_be4863f82a8218 1-26
+src/features/messaging/components/reconnect-dock.tsx
+  s_7fd8dab0a63ab2::t_cc9f65de2a7f9c 2,20,27-28,44-55
+  s_7fd8dab0a63ab2::t_cf8ae7e25b2686 29
+  s_7fd8dab0a63ab2::t_e3d06dbdae3393 1,3-19,21-26,30-31,33-43,65-66
+  s_7fd8dab0a63ab2::t_8eed78d6a1ddd1 32
+  s_7fd8dab0a63ab2::t_9f82bff2c7db85 56-64
+src/features/navigation/components/app-shell.tsx
+  s_8800f0e4f8eaa5::t_445574c10b95f9 1-58
+src/features/auth/components/auth-art.tsx
+  s_f024c20e026e24::t_edf53045d0d45b 1-612
+src/features/onboarding/components/steps/about-you-step.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-187
+src/features/messaging/types.ts
+  s_581504a5d8e87c::t_be4863f82a8218 1-44,48-66,82-140,142-150
+  s_573e2710227e7f::t_a91abfafa290f2 45-47,67-81,141
+src/features/messaging/components/number-card.tsx
+  s_b956da14bbd332::t_4f9eb62e6a67a2 29-30,63,75,114,127-128
+  s_b956da14bbd332::t_739c1dd0845312 2,32-34,46,54-62,64,66-74,80,83-96,104-109,113,118-126
+  s_b956da14bbd332::t_9173065bc0c5ef 4,10,47-51,97-103
+  s_b956da14bbd332::t_ac16f8e61f253e 3,38,78-79,81-82
+  s_b956da14bbd332::t_7aa9ccabc77bde 21-28,44-45
+  s_b956da14bbd332::t_fc2be9b5f067f4 1,5-9,11-20,31,35,39-43,52-53,65,76-77,110-112,115-117,129
+  s_b956da14bbd332::t_702389461b7142 36-37
+src/features/messaging/hooks/use-smooth-motion.ts
+  s_b956da14bbd332::t_622d72ca81c5f6 1-15
+src/components/brand/roklo-wordmark.tsx
+  s_19d8e970452d1a::t_68d525989761e4 1-81
+src/features/auth/services/auth-service.ts
+  h_3675ac6c8fa87c 1-6
+src/features/auth/components/session-boundary.tsx
+  s_9fc965ebaf5208::t_62a82dcca36795 3-9,11-15,25-40,44
+  s_9fc965ebaf5208::t_93d002eb55fbf5 1-2,10,16-23,43
+  s_9fc965ebaf5208::t_329430037ae679 24
+  s_9fc965ebaf5208::t_5d155db1cfc322 41-42
+src/components/shadcn-custom/customotpinput.tsx
+  s_9b2affe29d01ee::t_1808b1661be93d 91-93
+  s_9b2affe29d01ee::t_7cb55cf48e498a 88-90
+  s_9b2affe29d01ee::t_683c7e89100b45 94-96
+  h_3675ac6c8fa87c 1-87,97-102
+tests/workspaces.test.mjs
+  s_8800f0e4f8eaa5::t_d3d8b5c1be45d0 49,61,79,92,109,132,144,152-157
+  s_8800f0e4f8eaa5::t_43355af3e13b0f 46-48
+  s_8800f0e4f8eaa5::t_4a33167b4639e5 50-52,58-60
+  s_8800f0e4f8eaa5::t_83354e166baf34 62-64,76-78
+  s_8800f0e4f8eaa5::t_447c5ee6536845 80-82,89-91
+  s_8800f0e4f8eaa5::t_2a9291a6648e1e 93-95,106-108
+  s_8800f0e4f8eaa5::t_468ddd4459c283 110-112,129-131
+  s_8800f0e4f8eaa5::t_1fd170be169c99 133-135,141-143
+  s_8800f0e4f8eaa5::t_0caa9bf529d703 145-147,149-151
+  h_3675ac6c8fa87c 1-45,53-57,65-75,83-88,96-105,113-128,136-140,148
+src/components/shadcn-custom/customavatar.tsx
+  s_7fd8dab0a63ab2::t_3cf4de3e167086 85
+  s_7fd8dab0a63ab2::t_19c8c0df22cb10 7-58,93
+  s_7fd8dab0a63ab2::t_9e5fce15056f3d 71
+  s_7fd8dab0a63ab2::t_2ae63687907715 4
+  s_7fd8dab0a63ab2::t_d46a5a3ad9e64f 1-3
+  s_7fd8dab0a63ab2::t_62df400011498a 5-6
+  s_7fd8dab0a63ab2::t_7e4b348bce4e8e 59-61,68-70
+  s_7fd8dab0a63ab2::t_3a9bd79d68a25e 72-74,82-84
+  s_7fd8dab0a63ab2::t_c8064cc25226d7 86-88,90-92
+  h_3675ac6c8fa87c 62-67,75-81,89
+src/features/onboarding/components/steps/business-step.tsx
+  s_c937ddc23233cb::t_0cbfd85140fd17 1-56
+src/features/messaging/components/chat-composer.tsx
+  s_573e2710227e7f::t_6d4b7612129133 2-85
+  s_573e2710227e7f::t_405f6c923fa95f 203,207,225,238
+  s_573e2710227e7f::t_e3936f4953dded 1
+  s_573e2710227e7f::t_d97ecdf98db81b 86-88,200-202
+  s_573e2710227e7f::t_3e4f28af75807d 204-206
+  s_573e2710227e7f::t_c9eeb7fdca8b83 208-210,222-224
+  s_573e2710227e7f::t_f104ae8d73e98c 226-228,235-237
+  s_573e2710227e7f::t_f9f6fd7446fe09 239-241
+  h_3675ac6c8fa87c 89-199,211-221,229-234,242-326
+src/features/messaging/hooks/use-chat-thread.ts
+  s_7fd8dab0a63ab2::t_e91f68c216cb5c 35,53-60,65
+  s_7fd8dab0a63ab2::t_d6faa58dcc2e5e 32-34
+  s_7fd8dab0a63ab2::t_ed04306c348bab 36-38,50-52
+  s_7fd8dab0a63ab2::t_53d8eab507c435 61-64
+  s_7fd8dab0a63ab2::t_d3f5d4b5a0fdce 66-68
+  h_3675ac6c8fa87c 1-31,39-49,69-191
+src/features/messaging/components/ai-rephrase-controls.tsx
+  h_3675ac6c8fa87c 1-225
+src/features/auth/screens/verify-otp-screen.tsx
+  s_c937ddc23233cb::t_b4bcc4b7d45872 30,39-43
+  s_9fc965ebaf5208::t_bcb11183a385c2 45
+  s_c937ddc23233cb::t_d91c96aff9020d 27-29
+  s_c937ddc23233cb::t_43c4de3ee80901 31-33,36-38
+  s_9fc965ebaf5208::t_0d925729488ce1 46-48
+  h_3675ac6c8fa87c 1-26,34-35,44,49-131
+src/features/auth/components/auth-intro.tsx
+  s_9fc965ebaf5208::t_a38563143e73c6 326-336
+  s_9fc965ebaf5208::t_28c6a25adb4adf 254-255,257-265,272-273
+  s_9fc965ebaf5208::t_6585f55e6ade31 471
+  s_9fc965ebaf5208::t_2af5f346d7bc57 364,366
+  s_9fc965ebaf5208::t_0ae52da07cefa6 256
+  s_9fc965ebaf5208::t_672d6e151b36d8 450-469
+  s_9fc965ebaf5208::t_a7f0ff64cf1d98 275
+  s_9fc965ebaf5208::t_909918413e9c1d 1-22,24-46,56-253,266-271,274,276-298,314,319-325,337-341,343-355,361-363,365,367-449,470,472-474
+  s_9fc965ebaf5208::t_0ceb4010be2f1e 52-55
+  s_9fc965ebaf5208::t_3c8dddf930a12c 23
+  s_9fc965ebaf5208::t_1c8aabd6ec877a 47-51
+  s_9fc965ebaf5208::t_df38e9435a70b0 342
+  s_9fc965ebaf5208::t_b9b6bbe584723e 310-313,315-318
+  s_9fc965ebaf5208::t_d99f8b6fab133c 356-360
+  s_9fc965ebaf5208::t_95279065306fae 299-309
+docs/authentication.md
+  s_f024c20e026e24::t_73108e29435753 20-21
+  s_f024c20e026e24::t_442c6eaceb1c71 13-19
+  s_f024c20e026e24::t_f3f9c53a6ed681 10-12
+  s_f024c20e026e24::t_2a5b7bf6e9e1fb 22-24
+  h_3675ac6c8fa87c 1-9,25-128
+tests/messaging.test.mjs
+  s_7fd8dab0a63ab2::t_6922762272b7cb 6
+  s_7fd8dab0a63ab2::t_7e2e81b2ee8c68 12,22-28,34,51,59,69,81,92,102
+  s_7fd8dab0a63ab2::t_74917ceb0babfc 15-21
+  s_7fd8dab0a63ab2::t_3ba5cfcab89210 3-5
+  s_7fd8dab0a63ab2::t_853491268866ff 7-11
+  s_7fd8dab0a63ab2::t_28643a3eaa1733 13-14
+  s_7fd8dab0a63ab2::t_38bd4568ff608b 29-33
+  s_7fd8dab0a63ab2::t_e2d3ae3ddd11df 35-37,48-50
+  s_7fd8dab0a63ab2::t_bd050f9dac0c3a 52-54,56-58
+  s_7fd8dab0a63ab2::t_76645adfe6c7bc 60-62,66-68
+  s_7fd8dab0a63ab2::t_2de0e0798f57da 70-72,78-80
+  s_7fd8dab0a63ab2::t_460442a23b169b 82-84,89-91
+  s_7fd8dab0a63ab2::t_3e62384b0b148e 93-95,99-101
+  s_7fd8dab0a63ab2::t_f444a00c3d9dc3 103-105
+  h_3675ac6c8fa87c 1-2,38-47,55,63-65,73-77,85-88,96-98,106-258
+src/features/messaging/screens/numbers-screen.tsx
+  s_b956da14bbd332::t_739c1dd0845312 51-52,64
+  s_b956da14bbd332::t_6ff116c9697e40 2,65-71
+  s_b956da14bbd332::t_df4889b35e929b 1,6-14,18,20,24-29,38-41,43-48,61,72,84-86
+  s_b956da14bbd332::t_702389461b7142 30,55,80
+  s_b956da14bbd332::t_9173065bc0c5ef 5,17,37,53,60,62-63,73
+  s_b956da14bbd332::t_b62dac76046422 16,19,42
+  s_b956da14bbd332::t_7c7f09dda31973 3
+  s_b956da14bbd332::t_bb6ec8b1b5d912 4,15,21-23,31-36,49-50,54,56-59,74-79,81-83
+  s_b956da14bbd332::t_c860ab69aeadde 87
+src/features/navigation/config/navigation.ts
+  s_8800f0e4f8eaa5::t_7e8e2160ece25a 88-89,93-94,97-108
+  s_8800f0e4f8eaa5::t_fd1d41e5415097 85-87
+  s_8800f0e4f8eaa5::t_86f95e14957847 90-92
+  s_8800f0e4f8eaa5::t_5dea047fd0d0ac 95-96
+  h_3675ac6c8fa87c 1-84
+src/features/messaging/services/messaging-api.ts
+  s_581504a5d8e87c::t_be4863f82a8218 1,4-51,54-56,59,65,72,84-95
+  s_573e2710227e7f::t_6d4b7612129133 2
+  s_581504a5d8e87c::t_b2b2ebe963d733 52-53
+  s_581504a5d8e87c::t_429898f373cac4 57-58
+  s_581504a5d8e87c::t_3af187ec4517ef 60-64
+  s_581504a5d8e87c::t_a5a204786857ff 66-71
+  s_581504a5d8e87c::t_a0828fa2624d9f 73-75,81-83
+  h_3675ac6c8fa87c 3,76-80
+src/features/navigation/screens/menu-screen.tsx
+  s_8800f0e4f8eaa5::t_a3a9a08aab8321 1-58
+  s_8800f0e4f8eaa5::t_4e3d3b3a9c78d9 59-60
+.gitignore
+  s_ec1afa830162d6::t_322d0606a340e2 1,4,9-12,14-16,18-19,21-24,28,30,32-33,38-39,43-47,49,51-55,57-62,64-66,68
+app.json
+  s_ec1afa830162d6::t_fc7037083c59f3 11,14,16,20-26,41-55,60-65
+src/features/navigation/components/keyboard-screen.tsx
+  s_ec1afa830162d6::t_9f3c9711925764 1-65
+tests/chat-keyboard.test.mjs
+  s_ec1afa830162d6::t_ff3531ccf32972 1-202
+.agents/skills/12-principles-of-animation/SKILL.md
+  h_3675ac6c8fa87c 1-248
+.agents/skills/frontend-ui-engineering/SKILL.md
+  h_3675ac6c8fa87c 1-340
+.agents/skills/improve/SKILL.md
+  h_3675ac6c8fa87c 1-122
+.agents/skills/improve/references/audit-playbook.md
+  h_3675ac6c8fa87c 1-130
+.agents/skills/improve/references/closing-the-loop.md
+  h_3675ac6c8fa87c 1-96
+.agents/skills/improve/references/plan-template.md
+  h_3675ac6c8fa87c 1-197
+.agents/skills/interaction-design/SKILL.md
+  h_3675ac6c8fa87c 1-320
+.agents/skills/interaction-design/references/animation-libraries.md
+  h_3675ac6c8fa87c 1-498
+.agents/skills/interaction-design/references/microinteraction-patterns.md
+  h_3675ac6c8fa87c 1-536
+.agents/skills/interaction-design/references/scroll-animations.md
+  h_3675ac6c8fa87c 1-416
+AGENTS.md
+  h_3675ac6c8fa87c 39-42
+babel.config.js
+  h_3675ac6c8fa87c 1-9
+components.json
+  h_3675ac6c8fa87c 1-21
+docs/design-system.md
+  h_3675ac6c8fa87c 1-78
+docs/licenses/react-native-reusables.txt
+  h_3675ac6c8fa87c 1-21
+docs/settings.md
+  h_3675ac6c8fa87c 1-32
+eslint.config.js
+  h_3675ac6c8fa87c 1-10
+metro.config.js
+  h_3675ac6c8fa87c 1-7
+nativewind-env.d.ts
+  h_3675ac6c8fa87c 1
+package.json
+  h_3675ac6c8fa87c 6-51,53-58,61-66,75-78
+public/auth/turnstile.html
+  h_3675ac6c8fa87c 1-33
+scripts/design-tokens.cjs
+  h_3675ac6c8fa87c 1-30
+skills-lock.json
+  h_3675ac6c8fa87c 1-29
+src/app/(app)/_layout.tsx
+  h_3675ac6c8fa87c 1-20
+src/app/(app)/account.tsx
+  h_3675ac6c8fa87c 1-2
+src/app/(app)/activity.tsx
+  h_3675ac6c8fa87c 1-4
+src/app/(app)/ai-connections.tsx
+  h_3675ac6c8fa87c 1-2
+src/app/(app)/alerts.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/broadcasts.tsx
+  h_3675ac6c8fa87c 1-4
+src/app/(app)/chat-info.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/chat/[id].tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/connect-number.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/connections.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/contacts.tsx
+  h_3675ac6c8fa87c 1-4
+src/app/(app)/dashboard.tsx
+  h_3675ac6c8fa87c 1-5
+src/app/(app)/forward.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/groups.tsx
+  h_3675ac6c8fa87c 1-4
+src/app/(app)/inbox.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/logout.tsx
+  h_3675ac6c8fa87c 1-2
+src/app/(app)/manage-numbers.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/media.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/menu.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/new-chat.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/settings.tsx
+  h_3675ac6c8fa87c 1
+src/app/(app)/tags.tsx
+  h_3675ac6c8fa87c 1-2
+src/app/(app)/templates.tsx
+  h_3675ac6c8fa87c 1-4
+src/app/(app)/workspaces.tsx
+  h_3675ac6c8fa87c 1-2
+src/app/(auth)/_layout.tsx
+  h_3675ac6c8fa87c 1-21
+src/app/(auth)/login.tsx
+  h_3675ac6c8fa87c 1
+src/app/(auth)/verify-otp.tsx
+  h_3675ac6c8fa87c 1
+src/app/(onboarding)/_layout.tsx
+  h_3675ac6c8fa87c 1-5
+src/app/(onboarding)/setup.tsx
+  h_3675ac6c8fa87c 1
+src/app/components.tsx
+  h_3675ac6c8fa87c 1
+src/components/app-tabs.tsx
+  h_3675ac6c8fa87c 1,4,16
+src/components/app-tabs.web.tsx
+  h_3675ac6c8fa87c 10,13,26,59
+src/components/design-system/design-system-preview.tsx
+  h_3675ac6c8fa87c 1-144
+src/components/shadcn-custom/country-flag.tsx
+  h_3675ac6c8fa87c 1-21
+src/components/shadcn-custom/country-flag.web.tsx
+  h_3675ac6c8fa87c 1-21
+src/components/shadcn-custom/customalert.tsx
+  h_3675ac6c8fa87c 1-39
+src/components/shadcn-custom/custombackbutton.tsx
+  h_3675ac6c8fa87c 1-14
+src/components/shadcn-custom/custombutton.tsx
+  h_3675ac6c8fa87c 1-41
+src/components/shadcn-custom/customcaptcha.tsx
+  h_3675ac6c8fa87c 1-65
+src/components/shadcn-custom/customcaptcha.web.tsx
+  h_3675ac6c8fa87c 1-54
+src/components/shadcn-custom/customcountrypicker.tsx
+  h_3675ac6c8fa87c 1-159
+src/components/shadcn-custom/customformfield.tsx
+  h_3675ac6c8fa87c 1-46
+src/components/shadcn-custom/customicon.tsx
+  h_3675ac6c8fa87c 1
+src/components/shadcn-custom/custominput.tsx
+  h_3675ac6c8fa87c 1-16
+src/components/shadcn-custom/customnavitem.tsx
+  h_3675ac6c8fa87c 1-78
+src/components/shadcn-custom/customoptioncard.tsx
+  h_3675ac6c8fa87c 1-79
+src/components/shadcn-custom/customphoneinput.tsx
+  h_3675ac6c8fa87c 1-34
+src/components/shadcn-custom/customselect.tsx
+  h_3675ac6c8fa87c 1-163
+src/components/shadcn-custom/customsheet.tsx
+  h_3675ac6c8fa87c 1-117
+src/components/shadcn-custom/customspinner.tsx
+  h_3675ac6c8fa87c 1-8
+src/components/shadcn-custom/customswitch.tsx
+  h_3675ac6c8fa87c 1-38
+src/components/shadcn-custom/customtext.tsx
+  h_3675ac6c8fa87c 1
+src/components/themed-text.tsx
+  h_3675ac6c8fa87c 14
+src/components/ui/alert.tsx
+  h_3675ac6c8fa87c 1-75
+src/components/ui/badge.tsx
+  h_3675ac6c8fa87c 1-66
+src/components/ui/button.tsx
+  h_3675ac6c8fa87c 1-55
+src/components/ui/card.tsx
+  h_3675ac6c8fa87c 1-55
+src/components/ui/checkbox.tsx
+  h_3675ac6c8fa87c 1-47
+src/components/ui/dialog.tsx
+  h_3675ac6c8fa87c 1-153
+src/components/ui/icon.tsx
+  h_3675ac6c8fa87c 1-57
+src/components/ui/input.tsx
+  h_3675ac6c8fa87c 1-29
+src/components/ui/label.tsx
+  h_3675ac6c8fa87c 1-40
+src/components/ui/native-only-animated-view.tsx
+  h_3675ac6c8fa87c 1-29
+src/components/ui/popover.tsx
+  h_3675ac6c8fa87c 1-64
+src/components/ui/pressable.tsx
+  h_3675ac6c8fa87c 1-51
+src/components/ui/separator.tsx
+  h_3675ac6c8fa87c 1-24
+src/components/ui/text.tsx
+  h_3675ac6c8fa87c 1-89
+src/components/ui/textarea.tsx
+  h_3675ac6c8fa87c 1-30
+src/config/env.ts
+  h_3675ac6c8fa87c 1-45
+src/constants/theme.ts
+  h_3675ac6c8fa87c 8-9,12-16,19-23,29-32
+src/features/auth/components/auth-backdrop.tsx
+  h_3675ac6c8fa87c 1-54
+src/features/auth/components/auth-header.tsx
+  h_3675ac6c8fa87c 1-67
+src/features/auth/hooks/use-countdown.ts
+  h_3675ac6c8fa87c 1-23
+src/features/auth/providers/session-provider.tsx
+  h_3675ac6c8fa87c 1-119
+src/features/auth/providers/sign-in-provider.tsx
+  h_3675ac6c8fa87c 1-321
+src/features/auth/screens/email-screen.tsx
+  h_3675ac6c8fa87c 1-81
+src/features/auth/services/auth-api.ts
+  h_3675ac6c8fa87c 1-129
+src/features/auth/store/auth-slice.ts
+  h_3675ac6c8fa87c 1-70
+src/features/auth/types/auth.types.ts
+  h_3675ac6c8fa87c 1-41
+src/features/auth/utils/keyboard-scroll.ts
+  h_3675ac6c8fa87c 1-44
+src/features/messaging/components/chat-avatar.tsx
+  h_3675ac6c8fa87c 1-8
+src/features/messaging/components/chat-wallpaper.tsx
+  h_3675ac6c8fa87c 1-28
+src/features/messaging/components/emoji-panel.tsx
+  h_3675ac6c8fa87c 1-97
+src/features/messaging/components/message-media.tsx
+  h_3675ac6c8fa87c 1-236
+src/features/messaging/components/typing-bubble.tsx
+  h_3675ac6c8fa87c 1-30
+src/features/messaging/components/whatsapp-mark.tsx
+  h_3675ac6c8fa87c 1-13
+src/features/messaging/hooks/use-conversation-picture.ts
+  h_3675ac6c8fa87c 1-16
+src/features/messaging/hooks/use-message-store-sync.ts
+  h_3675ac6c8fa87c 1-32
+src/features/messaging/hooks/use-realtime-event.ts
+  h_3675ac6c8fa87c 1-18
+src/features/messaging/hooks/use-typing-heartbeat.ts
+  h_3675ac6c8fa87c 1-48
+src/features/messaging/providers/messaging-context.ts
+  h_3675ac6c8fa87c 1-29
+src/features/messaging/providers/messaging-provider.tsx
+  h_3675ac6c8fa87c 1-104
+src/features/messaging/providers/typing-provider.tsx
+  h_3675ac6c8fa87c 1-137
+src/features/messaging/screens/chat-info-screen.tsx
+  h_3675ac6c8fa87c 1-38
+src/features/messaging/screens/connect-number-screen.tsx
+  h_3675ac6c8fa87c 1-110
+src/features/messaging/screens/forward-screen.tsx
+  h_3675ac6c8fa87c 1-117
+src/features/messaging/screens/manage-numbers-screen.tsx
+  h_3675ac6c8fa87c 1-47
+src/features/messaging/screens/media-viewer-screen.tsx
+  h_3675ac6c8fa87c 1-78
+src/features/messaging/screens/new-chat-screen.tsx
+  h_3675ac6c8fa87c 1-73
+src/features/messaging/services/inbox-cache.ts
+  h_3675ac6c8fa87c 1-51
+src/features/messaging/services/message-store.ts
+  h_3675ac6c8fa87c 1-328
+src/features/messaging/services/message-store.web.ts
+  h_3675ac6c8fa87c 1-21
+src/features/messaging/services/open-conversation.ts
+  h_3675ac6c8fa87c 1-4
+src/features/messaging/services/picture-cache.ts
+  h_3675ac6c8fa87c 1-57
+src/features/messaging/services/realtime.ts
+  h_3675ac6c8fa87c 1-26
+src/features/messaging/utils/ai-rephrase.ts
+  h_3675ac6c8fa87c 1-28
+src/features/messaging/utils/attachments.ts
+  h_3675ac6c8fa87c 1-46
+src/features/messaging/utils/emojis.ts
+  h_3675ac6c8fa87c 1-460
+src/features/messaging/utils/message-actions.ts
+  h_3675ac6c8fa87c 1-55
+src/features/messaging/utils/message-order.ts
+  h_3675ac6c8fa87c 1-26
+src/features/messaging/utils/playback.ts
+  h_3675ac6c8fa87c 1-18
+src/features/messaging/utils/whatsapp-text.tsx
+  h_3675ac6c8fa87c 1-41
+src/features/navigation/components/appearance-controls.tsx
+  h_3675ac6c8fa87c 1-37
+src/features/navigation/components/desktop-sidebar.tsx
+  h_3675ac6c8fa87c 1-76
+src/features/navigation/components/menu-row.tsx
+  h_3675ac6c8fa87c 1-20
+src/features/navigation/components/motion-pressable.tsx
+  h_3675ac6c8fa87c 1-15
+src/features/navigation/components/navigation-list.tsx
+  h_3675ac6c8fa87c 1-32
+src/features/navigation/components/screen-header.tsx
+  h_3675ac6c8fa87c 1-20
+src/features/navigation/components/shell-panels.tsx
+  h_3675ac6c8fa87c 1-262
+src/features/navigation/components/tab-screen.tsx
+  h_3675ac6c8fa87c 1-61
+src/features/navigation/components/workspace-trigger.tsx
+  h_3675ac6c8fa87c 1-40
+src/features/navigation/config/navigation-icons.ts
+  h_3675ac6c8fa87c 1-29
+src/features/navigation/hooks/use-keyboard-visible.ts
+  h_3675ac6c8fa87c 1-22
+src/features/navigation/providers/app-shell-context.ts
+  h_3675ac6c8fa87c 1-11
+src/features/navigation/screens/account-screen.tsx
+  h_3675ac6c8fa87c 1-11
+src/features/navigation/screens/alerts-screen.tsx
+  h_3675ac6c8fa87c 1-26
+src/features/navigation/screens/module-screen.tsx
+  h_3675ac6c8fa87c 1-196
+src/features/onboarding/constants.ts
+  h_3675ac6c8fa87c 1-148
+src/features/onboarding/hooks/use-onboarding.ts
+  h_3675ac6c8fa87c 1-44
+src/features/onboarding/hooks/use-workspace-logo.ts
+  h_3675ac6c8fa87c 1-73
+src/features/onboarding/services/draft-persistence.ts
+  h_3675ac6c8fa87c 1-39
+src/features/onboarding/services/onboarding-service.ts
+  h_3675ac6c8fa87c 1-16
+src/features/onboarding/store/draft-listener.ts
+  h_3675ac6c8fa87c 1-50
+src/features/onboarding/store/onboarding-selectors.ts
+  h_3675ac6c8fa87c 1-24
+src/features/onboarding/store/onboarding-slice.ts
+  h_3675ac6c8fa87c 1-306
+src/features/onboarding/store/onboarding-thunks.ts
+  h_3675ac6c8fa87c 1-297
+src/features/onboarding/types/onboarding.types.ts
+  h_3675ac6c8fa87c 1-66
+src/features/onboarding/utils/validation.ts
+  h_3675ac6c8fa87c 1-153
+src/features/onboarding/utils/workspace-logo.ts
+  h_3675ac6c8fa87c 1-31
+src/features/settings/components/account-sections.tsx
+  h_3675ac6c8fa87c 1-401
+src/features/settings/components/settings-image-picker.tsx
+  h_3675ac6c8fa87c 1-133
+src/features/settings/components/settings-inline-form.tsx
+  h_3675ac6c8fa87c 1-17
+src/features/settings/components/settings-navigation.tsx
+  h_3675ac6c8fa87c 1-132
+src/features/settings/components/settings-section.tsx
+  h_3675ac6c8fa87c 1-98
+src/features/settings/components/settings-select.tsx
+  h_3675ac6c8fa87c 1-27
+src/features/settings/components/team-section.tsx
+  h_3675ac6c8fa87c 1-234
+src/features/settings/components/workspace-sections.tsx
+  h_3675ac6c8fa87c 1-287
+src/features/settings/config/settings-navigation.ts
+  h_3675ac6c8fa87c 1-48
+src/features/settings/screens/settings-screen.tsx
+  h_3675ac6c8fa87c 1-109
+src/features/workspaces/services/workspace-api.ts
+  h_3675ac6c8fa87c 1-56
+src/features/workspaces/services/workspace-service.ts
+  h_3675ac6c8fa87c 1-8
+src/features/workspaces/store/create-workspace-thunks.ts
+  h_3675ac6c8fa87c 1-117
+src/features/workspaces/store/workspace-selectors.ts
+  h_3675ac6c8fa87c 1-5
+src/features/workspaces/store/workspace-slice.ts
+  h_3675ac6c8fa87c 1-131
+src/global.css
+  h_3675ac6c8fa87c 1-261
+src/hooks/use-color-scheme.ts
+  h_3675ac6c8fa87c 1-5
+src/hooks/use-color-scheme.web.ts
+  h_3675ac6c8fa87c 1-6,12,14
+src/hooks/use-keyboard-viewport.ts
+  h_3675ac6c8fa87c 1-90
+src/hooks/use-roklo-theme.ts
+  h_3675ac6c8fa87c 1-9
+src/lib/auth/countries.ts
+  h_3675ac6c8fa87c 1-64
+src/lib/auth/country-flags.ts
+  h_3675ac6c8fa87c 1-7
+src/lib/auth/phone.ts
+  h_3675ac6c8fa87c 1-72
+src/lib/color-aliases.json
+  h_3675ac6c8fa87c 1-113
+src/lib/fonts.ts
+  h_3675ac6c8fa87c 1-13
+src/lib/keyboard-viewport.ts
+  h_3675ac6c8fa87c 1-32
+src/lib/pressed-style.ts
+  h_3675ac6c8fa87c 1-43
+src/lib/theme-tokens.ts
+  h_3675ac6c8fa87c 1-229
+src/lib/theme.ts
+  h_3675ac6c8fa87c 1-26
+src/lib/utils.ts
+  h_3675ac6c8fa87c 1-6
+src/services/api/client.ts
+  h_3675ac6c8fa87c 1-10
+src/services/api/create-client.ts
+  h_3675ac6c8fa87c 1-113
+src/services/captcha/bridge.ts
+  h_3675ac6c8fa87c 1-39
+src/services/storage/create-session.ts
+  h_3675ac6c8fa87c 1-51
+src/services/storage/onboarding-storage.ts
+  h_3675ac6c8fa87c 1-10
+src/services/storage/onboarding-storage.web.ts
+  h_3675ac6c8fa87c 1-14
+src/services/storage/session-storage.ts
+  h_3675ac6c8fa87c 1-11
+src/services/storage/session-storage.web.ts
+  h_3675ac6c8fa87c 1-25
+src/services/storage/session.ts
+  h_3675ac6c8fa87c 1-4
+src/store/hooks.ts
+  h_3675ac6c8fa87c 1-6
+src/store/index.ts
+  h_3675ac6c8fa87c 1-24
+src/store/store-provider.tsx
+  h_3675ac6c8fa87c 1-9
+tailwind.config.js
+  h_3675ac6c8fa87c 1-25
+tests/ai-rephrase.test.mjs
+  h_3675ac6c8fa87c 1-54
+tests/auth.test.mjs
+  h_3675ac6c8fa87c 1-311
+tests/keyboard-viewport.test.mjs
+  h_3675ac6c8fa87c 1-80
+tests/native-navigation-styles.test.mjs
+  h_3675ac6c8fa87c 1-44
+tests/onboarding.test.mjs
+  h_3675ac6c8fa87c 1-615
+tests/phone.test.mjs
+  h_3675ac6c8fa87c 1-64
+tests/register-typescript.mjs
+  h_3675ac6c8fa87c 1-19
+tsconfig.json
+  h_3675ac6c8fa87c 18-19,21
+yarn.lock
+  h_3675ac6c8fa87c 5-8,24,45,120,207,560,573,581-687,693-721,723-725,735-737,743,752,763-766,768,770-773,775-779,784,789-792,794-797,799-802,807,810,818-821,825-828,830,839-856,858,868,870-873,875,881,883-886,888,890,898-901,903-904,906-912,914-917,919,923-926,931-935,949,952-955,963-966,968,974-994,1001,1013-1016,1022-1032,1034,1036,1038-1041,1047-1050,1054-1057,1059,1076-1079,1082,1084,1089,1098-1155,1180,1214,1222-1227,1229-1235,1237-1240,1242-1248,1250-1253,1260-1279,1301-1321,1327-1351,1359-1411,1443-1449,1504-1522,1528-1531,1533-1536,1539,1541-1544,1548,1554-1557,1559,1562-1564,1567-1570,1572-1575,1581-1584,1587-1590,1595,1599-1602,1604-1607,1609-1612,1619-1622,1627-1715,1721-1752,1772-1781,1796,1803-1814,1827-1922,1928-2041,2052-2058,2075-2079,2095-2104,2146-2158,2169-2271,2277-2293,2325,2330-2337,2351-2354,2392,2394,2399-2403,2424-2433,2455-2462,2470,2505-2540,2568-2608,2614-2620,2652-2656,2707-2711,2717-2724,2746-2750,2778-2782,2806-2834,2840-2867,2874,2881,2888-2897,2910-2926,2938-2942,2948-2963,2968-3013,3039-3059,3067-3141,3147-3204,3220-3437,3443-3451,3453-3464,3466-3469,3471,3473-3476,3480-3483,3485-3488,3490-3500,3502-3505,3509-3512,3514-3517,3519,3522-3525,3527,3532-3535,3537-3538,3541-3544,3546-3554,3559-3566,3568,3572,3575,3577-3582,3584-3587,3589-3592,3594-3595,3598-3608,3610-3613,3618-3621,3623,3626-3629,3631-3639,3642-3651,3653-3660,3663,3670-3702,3743-3749,3757-3761,3775-3795,3801-3804,3806-3809,3811,3818-3822,3828-3852,3863-3907,3913-3926,3936-3958,3964-3968,3979-3982,3984,3986-3991,3993-4034,4037-4050,4058-4071,4103,4108-4130,4143-4152,4159-4167,4173-4218,4225-4242,4247-4265,4271-4306,4312-4378,4385-4389,4395-4406,4451-4455,4461,4478-4499,4505-4521,4537-4557,4563-4567,4573-4577,4583-4587,4593-4597,4603-4607,4613-4617,4623-4627,4633-4637,4643-4647,4653-4657,4682-4716,4722-4726,4739,4763-4767,4775-4789,4805-4813,4817-4818,4821-4824,4826,4828-4830,4832-4849,4854,4856-4883,4888-4892,4894-4897,4901,4903-4915,4925,4927-4953,4958-4968,4972-4975,4980-4991,4997,4999,5003-5006,5008-5009,5012,5014,5018-5045,5054-5088,5095-5140,5142-5146,5148-5151,5161,5167,5172-5183,5192,5241-5252,5258-5262,5278-5286,5292-5310,5328-5337,5345,5360-5363,5375-5381,5387-5390,5394-5401,5406-5471,5498-5501,5503-5516,5530-5560,5573-5577,5601,5611-5615,5630-5674,5679,5688-5692,5734-5762,5768-5772,5781-5784,5786,5798-5802,5813-5824,5833-5836,5838,5840,5848-5851,5856-5859,5861,5869-5885,5900-5911,5925-5938,5941,5943,5945,5948-5949,5956,5964-5971,5977-6043,6062-6073,6103-6112,6118-6122,6128,6138-6149,6158-6180,6186-6202,6213-6216,6223,6267-6297,6313-6317,6335-6374,6406-6423,6442,6447-6456,6484-6491,6497-6501,6511-6570,6585-6594,6605-6617,6652-6689,6708-6721,6727,6762-6793,6804-6847,6863-6872,6906-6935,6944-6957,6963-6980,6996-7002,7008,7015,7032,7037-7040,7050-7102,7110-7114,7134-7138,7164-7168,7179-7183,7202-7216,7221-7225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4c3c891d1fd0c5dc390c338dc435e244fd97d270",
+  "prompts": {},
+  "humans": {
+    "h_3675ac6c8fa87c": {
+      "author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    }
+  },
+  "sessions": {
+    "s_19d8e970452d1a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e8dcf7092ffeidpu2Gtfxv0lid",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_573e2710227e7f": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e8c1754b1ffeAAHshuGyXBhafP",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_581504a5d8e87c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e220b46b-062a-4093-bd62-312547b1c45d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_7fd8dab0a63ab2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "147dffeb-d3a4-4140-84b7-474e8f4f4498",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_8800f0e4f8eaa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dd4476a0-e77c-481c-997e-1f60cf27f1fa",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_9b2affe29d01ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe268a3f-05e9-4e57-9bc7-2be0dbcf687d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_9fc965ebaf5208": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e8db247e6ffeA0qRhUjom96G5E",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_b956da14bbd332": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "869120f1-df93-4315-88f6-45da5f940338",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_c937ddc23233cb": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e8d8e3586ffeSjLO72q6fVFHW2",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_ec1afa830162d6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17687-e02f-7c50-a5f1-5abb15d2477e",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    },
+    "s_f024c20e026e24": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e8dff5c6effe1pM42zUQJ37yhJ",
+        "model": "unknown"
+      },
+      "human_author": "Nand Banugariya <nand.banugariya@linearloop.io>"
+    }
+  }
+}
