@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roklo verification</title>
+  <style>html,body{margin:0;padding:0;background:transparent}#challenge{width:100%}</style>
+</head>
+<body>
+  <div id="challenge"></div>
+  <script>
+    function notify(status, token) {
+      var message = JSON.stringify({type:'roklo-turnstile',status:status,token:token});
+      if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(message);
+      else if (window.parent !== window) window.parent.postMessage(message, '*');
+    }
+    window.onTurnstileReady = function () {
+      var params = new URLSearchParams(location.search);
+      var sitekey = params.get('sitekey');
+      if (!sitekey || !/^[a-zA-Z0-9_-]+$/.test(sitekey)) { notify('error'); return; }
+      turnstile.render('#challenge', {
+        sitekey: sitekey,
+        theme: params.get('theme') === 'dark' ? 'dark' : 'light',
+        size: 'flexible',
+        callback: function (token) { notify('success', token); },
+        'expired-callback': function () { notify('expired'); },
+        'error-callback': function () { notify('error'); }
+      });
+    };
+  </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady&amp;render=explicit" async defer></script>
+</body>
+</html>
