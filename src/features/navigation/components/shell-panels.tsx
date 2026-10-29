@@ -1,10 +1,6 @@
-import {
-  ArrowLeft,
-  Check,
-  LogOut,
-  RefreshCw,
-  Settings,
-} from "lucide-react-native";
+import { router } from "expo-router";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { ArrowLeft, Bell, Check, LogOut, RefreshCw, Settings } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { CustomAlert } from "@/components/shadcn-custom/customalert";
@@ -17,10 +13,7 @@ import { ScreenHeader } from "./screen-header";
 import { CustomSpinner } from "@/components/shadcn-custom/customspinner";
 import { CustomText } from "@/components/shadcn-custom/customtext";
 import { useAuthSession } from "@/features/auth/providers/session-provider";
-import {
-  loadWorkspaces,
-  switchWorkspace,
-} from "@/features/workspaces/services/workspace-service";
+import { loadWorkspaces, switchWorkspace } from "@/features/workspaces/services/workspace-service";
 import { selectActiveWorkspace } from "@/features/workspaces/store/workspace-selectors";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -28,6 +21,13 @@ import type { DestinationId } from "../config/navigation";
 import type { ShellPanel } from "../providers/app-shell-context";
 import { AppearanceControls } from "./appearance-controls";
 import { NavigationList } from "./navigation-list";
+
+/** "+919876543210" → "+91 98765 43210"; as stored when it can't be read. */
+function formatMobile(mobileNumber: string) {
+  const e164 = `+${mobileNumber.replace(/^\+/, "")}`;
+  const parsed = parsePhoneNumberFromString(e164);
+  return parsed?.isValid() ? parsed.formatInternational() : e164;
+}
 
 export function ShellPanels({
   panel,
@@ -54,7 +54,7 @@ export function ShellPanels({
         ? "Your workspaces"
         : panel === "logout"
           ? "Sign out"
-          : "Your account";
+          : "Profile";
   async function logout() {
     if (loggingOut) return;
     setLoggingOut(true);
@@ -65,86 +65,88 @@ export function ShellPanels({
     <View className="flex-1 bg-card">
       <ScreenHeader title={title} />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="gap-5 p-5">
-      {panel === "menu" && (
-        <NavigationList
-          activeId={activeId}
-          disabled={disabled}
-          onNavigate={onNavigate}
-          descriptions
-        />
-      )}
-      {panel === "workspaces" && <WorkspacesPanel onClose={onClose} />}
-      {panel === "account" && (
-        <View className="gap-6">
-          <View className="flex-row items-center gap-3">
-            <CustomAvatar name={user?.name} src={user?.image} size={52} />
-            <View className="min-w-0 flex-1 gap-1">
-              <CustomText className="font-sans-semibold text-base">
-                {user?.name || "Your account"}
-              </CustomText>
-              <CustomText className="text-[13px] text-ink-600">
-                {user?.mobileNumber
-                  ? `+${user.mobileNumber.replace(/^\+/, "")}`
-                  : user?.email}
-              </CustomText>
+        {panel === "menu" && (
+          <NavigationList
+            activeId={activeId}
+            disabled={disabled}
+            onNavigate={onNavigate}
+            descriptions
+          />
+        )}
+        {panel === "workspaces" && <WorkspacesPanel onClose={onClose} />}
+        {panel === "account" && (
+          <View className="gap-6">
+            <View className="flex-row items-center gap-3">
+              <CustomAvatar name={user?.name} src={user?.image} size={52} />
+              <View className="min-w-0 flex-1 gap-1">
+                <CustomText className="font-sans-semibold text-base">
+                  {user?.name || "Your account"}
+                </CustomText>
+                <CustomText selectable className="text-[13px] text-ink-600">
+                  {user?.mobileNumber ? formatMobile(user.mobileNumber) : user?.email}
+                </CustomText>
+              </View>
+            </View>
+            <View className="gap-3">
+              <CustomText className="font-sans-semibold text-[13px]">Appearance</CustomText>
+              <AppearanceControls />
+            </View>
+            <View className="gap-1 border-t border-ink-200 pt-3">
+              <CustomNavItem
+                label="Settings"
+                description="Profile and preferences"
+                icon={Settings}
+                chevron
+                onPress={() => onNavigate("settings")}
+              />
+              {/* Alerts used to open from the bell in each tab's header; the profile photo took its place. */}
+              <CustomNavItem
+                label="Alerts"
+                description="What needs your attention"
+                icon={Bell}
+                chevron
+                onPress={() => router.push("/alerts")}
+              />
+              <CustomNavItem
+                label="Sign out"
+                icon={LogOut}
+                destructive
+                onPress={() => onPanel("logout")}
+              />
             </View>
           </View>
-          <View className="gap-3">
-            <CustomText className="font-sans-semibold text-[13px]">
-              Appearance
+        )}
+        {panel === "logout" && (
+          <View className="gap-5">
+            <View className="h-12 w-12 items-center justify-center rounded-xl bg-ink-100">
+              <CustomIcon as={LogOut} size={23} className="text-ink-700" />
+            </View>
+            <CustomText className="text-[15px] leading-6 text-ink-700">
+              Sign out of your Roklo account on this device? Your workspace and conversations will
+              be here when you return.
             </CustomText>
-            <AppearanceControls />
+            <CustomButton
+              variant="destructive-solid"
+              fullWidth
+              size="xl"
+              loading={loggingOut}
+              loadingText="Signing out…"
+              onPress={() => void logout()}
+            >
+              Sign out
+            </CustomButton>
+            <CustomButton
+              variant="secondary"
+              fullWidth
+              size="xl"
+              disabled={loggingOut}
+              onPress={() => onPanel("account")}
+              leadingIcon={<CustomIcon as={ArrowLeft} size={16} className="text-ink-700" />}
+            >
+              Stay signed in
+            </CustomButton>
           </View>
-          <View className="gap-1 border-t border-ink-200 pt-3">
-            <CustomNavItem
-              label="Settings"
-              description="Profile and preferences"
-              icon={Settings}
-              chevron
-              onPress={() => onNavigate("settings")}
-            />
-            <CustomNavItem
-              label="Sign out"
-              icon={LogOut}
-              destructive
-              onPress={() => onPanel("logout")}
-            />
-          </View>
-        </View>
-      )}
-      {panel === "logout" && (
-        <View className="gap-5">
-          <View className="h-12 w-12 items-center justify-center rounded-xl bg-ink-100">
-            <CustomIcon as={LogOut} size={23} className="text-ink-700" />
-          </View>
-          <CustomText className="text-[15px] leading-6 text-ink-700">
-            Sign out of your Roklo account on this device? Your workspace and
-            conversations will be here when you return.
-          </CustomText>
-          <CustomButton
-            variant="destructive-solid"
-            fullWidth
-            size="xl"
-            loading={loggingOut}
-            loadingText="Signing out…"
-            onPress={() => void logout()}
-          >
-            Sign out
-          </CustomButton>
-          <CustomButton
-            variant="secondary"
-            fullWidth
-            size="xl"
-            disabled={loggingOut}
-            onPress={() => onPanel("account")}
-            leadingIcon={
-              <CustomIcon as={ArrowLeft} size={16} className="text-ink-700" />
-            }
-          >
-            Stay signed in
-          </CustomButton>
-        </View>
-      )}
+        )}
       </ScrollView>
     </View>
   );
@@ -175,9 +177,7 @@ function WorkspacesPanel({ onClose }: { onClose: () => void }) {
         />
       )}
       {(state.error || state.switchError) && (
-        <CustomAlert tone="error">
-          {state.switchError || state.error}
-        </CustomAlert>
+        <CustomAlert tone="error">{state.switchError || state.error}</CustomAlert>
       )}
       {state.status === "loading" && (
         <View className="items-center py-5">
@@ -206,43 +206,27 @@ function WorkspacesPanel({ onClose }: { onClose: () => void }) {
               disabled && "opacity-50",
             )}
           >
-            <CustomAvatar
-              name={workspace.name}
-              src={workspace.logo}
-              square
-              size={42}
-            />
+            <CustomAvatar name={workspace.name} src={workspace.logo} square size={42} />
             <View className="min-w-0 flex-1 gap-1">
-              <CustomText
-                numberOfLines={2}
-                className="font-sans-semibold text-sm"
-              >
+              <CustomText numberOfLines={2} className="font-sans-semibold text-sm">
                 {workspace.name}
               </CustomText>
               <CustomText className="text-xs text-ink-600">
-                {disabled
-                  ? "Workspace disabled"
-                  : workspace.role === "OWNER"
-                    ? "Owner"
-                    : "Member"}
+                {disabled ? "Workspace disabled" : workspace.role === "OWNER" ? "Owner" : "Member"}
                 {selected ? " · Current" : ""}
               </CustomText>
             </View>
             {switching ? (
               <CustomSpinner accessibilityLabel="Switching workspace" />
             ) : (
-              selected && (
-                <CustomIcon as={Check} size={19} className="text-brand-700" />
-              )
+              selected && <CustomIcon as={Check} size={19} className="text-brand-700" />
             )}
           </Pressable>
         );
       })}
       {!items.length && state.status === "ready" && (
         <CustomText className="py-6 text-center text-sm text-ink-600">
-          {query
-            ? "No matching workspace."
-            : "No workspaces are available for this account."}
+          {query ? "No matching workspace." : "No workspaces are available for this account."}
         </CustomText>
       )}
       <CustomButton
@@ -250,9 +234,7 @@ function WorkspacesPanel({ onClose }: { onClose: () => void }) {
         fullWidth
         size="lg"
         disabled={!!state.switchingId || state.status === "loading"}
-        leadingIcon={
-          <CustomIcon as={RefreshCw} size={16} className="text-ink-700" />
-        }
+        leadingIcon={<CustomIcon as={RefreshCw} size={16} className="text-ink-700" />}
         onPress={() => void dispatch(loadWorkspaces(true))}
       >
         Refresh workspaces

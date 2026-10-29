@@ -16,10 +16,7 @@ export function keyboardOverlap(
   keyboardTop: number | null,
 ): number {
   if (keyboardTop == null) return 0;
-  return Math.max(
-    0,
-    Math.min(viewportHeight, viewportTop + viewportHeight - keyboardTop),
-  );
+  return Math.max(0, Math.min(viewportHeight, viewportTop + viewportHeight - keyboardTop));
 }
 
 // Screen coordinates are used so both resized Android windows and iOS overlays work.
@@ -33,11 +30,9 @@ export function revealOffset({
   padding = 16,
 }: RevealMeasurements): number {
   const top = viewportTop + padding;
-  const bottom =
-    Math.min(viewportTop + viewportHeight, keyboardTop ?? Infinity) - padding;
+  const bottom = Math.min(viewportTop + viewportHeight, keyboardTop ?? Infinity) - padding;
   if (bottom <= top) return offset;
-  if (targetHeight > bottom - top || targetTop < top)
-    return Math.max(0, offset + targetTop - top);
+  if (targetHeight > bottom - top || targetTop < top) return Math.max(0, offset + targetTop - top);
   if (targetTop + targetHeight > bottom)
     return Math.max(0, offset + targetTop + targetHeight - bottom);
   return offset;

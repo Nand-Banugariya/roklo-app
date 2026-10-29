@@ -37,25 +37,14 @@ export function CustomOptionCard({
       )}
     >
       {icon && (
-        <CustomIcon
-          as={icon}
-          size={21}
-          className={selected ? "text-brand-700" : "text-ink-600"}
-        />
+        <CustomIcon as={icon} size={21} className={selected ? "text-brand-700" : "text-ink-600"} />
       )}
       <View className="flex-1 gap-1">
-        <CustomText
-          className={cn(
-            "font-sans-medium text-sm",
-            selected && "text-brand-800",
-          )}
-        >
+        <CustomText className={cn("font-sans-medium text-sm", selected && "text-brand-800")}>
           {label}
         </CustomText>
         {description && (
-          <CustomText className="text-[13px] leading-5 text-ink-600">
-            {description}
-          </CustomText>
+          <CustomText className="text-[13px] leading-5 text-ink-600">{description}</CustomText>
         )}
       </View>
       <View
@@ -66,12 +55,7 @@ export function CustomOptionCard({
         )}
       >
         {selected && (
-          <CustomIcon
-            as={Check}
-            size={13}
-            strokeWidth={3}
-            className="text-primary-foreground"
-          />
+          <CustomIcon as={Check} size={13} strokeWidth={3} className="text-primary-foreground" />
         )}
       </View>
     </Pressable>

@@ -62,9 +62,7 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <GestureHandlerRootView
-      style={{ flex: 1, backgroundColor: colors.background }}
-    >
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <ThemeProvider value={NAV_THEME[mode]}>
         <StatusBar style={mode === "dark" ? "light" : "dark"} />
         <View className="flex-1 bg-background">

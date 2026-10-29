@@ -12,7 +12,11 @@ export const REPHRASE_TONES = [
 export type RephraseTone = (typeof REPHRASE_TONES)[number]["value"];
 
 /** Replies send literal text, so resolve any variables the AI adds before review. */
-export function fillRephraseVariables(text: string, conversation: Pick<Conversation, "name" | "mobileNumber" | "isGroup">, now = new Date()) {
+export function fillRephraseVariables(
+  text: string,
+  conversation: Pick<Conversation, "name" | "mobileNumber" | "isGroup">,
+  now = new Date(),
+) {
   const name = conversation.isGroup ? "everyone" : conversation.name.trim();
   const values: Record<string, string> = {
     name,
@@ -21,8 +25,11 @@ export function fillRephraseVariables(text: string, conversation: Pick<Conversat
     date: now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }),
     time: `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
   };
-  return text.replace(/\{\{([^}|]+?)(?:\|([^}]*))?\}\}/g, (_match, rawKey: string, fallback?: string) => {
-    const key = rawKey.trim();
-    return values[key] || fallback || `[${key}]`;
-  });
+  return text.replace(
+    /\{\{([^}|]+?)(?:\|([^}]*))?\}\}/g,
+    (_match, rawKey: string, fallback?: string) => {
+      const key = rawKey.trim();
+      return values[key] || fallback || `[${key}]`;
+    },
+  );
 }

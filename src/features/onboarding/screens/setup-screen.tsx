@@ -45,16 +45,13 @@ function SetupFlow() {
   }, [dispatch]);
   useFocusEffect(
     useCallback(() => {
-      const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => {
-          if (busy || flow.status === "completed") return true;
-          if (flow.status !== "ready" || index === 0) return false;
-          Keyboard.dismiss();
-          dispatch(onboardingActions.previousStep());
-          return true;
-        },
-      );
+      const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+        if (busy || flow.status === "completed") return true;
+        if (flow.status !== "ready" || index === 0) return false;
+        Keyboard.dismiss();
+        dispatch(onboardingActions.previousStep());
+        return true;
+      });
       return () => subscription.remove();
     }, [busy, dispatch, flow.status, index]),
   );
@@ -88,11 +85,7 @@ function SetupFlow() {
       />
     );
   }
-  if (
-    flow.status === "idle" ||
-    flow.status === "loading" ||
-    flow.status === "error"
-  ) {
+  if (flow.status === "idle" || flow.status === "loading" || flow.status === "error") {
     return (
       <SetupLayout onSignOut={() => void signOut()}>
         <View className="flex-1 items-center justify-center gap-6 py-12">
@@ -111,13 +104,8 @@ function SetupFlow() {
             </>
           ) : (
             <>
-              <CustomSpinner
-                size="large"
-                accessibilityLabel="Loading your workspace setup"
-              />
-              <CustomText className="text-sm text-ink-600">
-                Getting your setup ready…
-              </CustomText>
+              <CustomSpinner size="large" accessibilityLabel="Loading your workspace setup" />
+              <CustomText className="text-sm text-ink-600">Getting your setup ready…</CustomText>
             </>
           )}
         </View>
@@ -141,11 +129,7 @@ function SetupFlow() {
             disabled={!flow.canContinue || busy}
             onPress={advance}
             trailingIcon={
-              <CustomIcon
-                as={ArrowRight}
-                size={18}
-                className="text-primary-foreground"
-              />
+              <CustomIcon as={ArrowRight} size={18} className="text-primary-foreground" />
             }
           >
             {flow.isLastStep ? "Finish setup" : "Continue"}

@@ -3,7 +3,14 @@ import { useMessaging } from "../providers/messaging-context";
 import type { RephraseTone } from "../utils/ai-rephrase";
 
 /** Keeps edits, sends, mode changes and navigation safe from a late AI response. */
-export function useAiRephrase({ value, onValue, enabled, contextKey, maxLength, transform }: {
+export function useAiRephrase({
+  value,
+  onValue,
+  enabled,
+  contextKey,
+  maxLength,
+  transform,
+}: {
   value: string;
   onValue: (text: string) => void;
   enabled: boolean;
@@ -33,7 +40,7 @@ export function useAiRephrase({ value, onValue, enabled, contextKey, maxLength, 
       latest.current = value;
       cancel();
       setError(null);
-      setLast((previous) => previous?.next === value ? previous : null);
+      setLast((previous) => (previous?.next === value ? previous : null));
     }
   }, [value, cancel]);
   // Leaving this reply context cancels its request and discards its Undo history.
@@ -78,5 +85,15 @@ export function useAiRephrase({ value, onValue, enabled, contextKey, maxLength, 
     setLast(null);
     setError(null);
   }
-  return { busy, error, canRephrase, rephrase, cancel, reset, rephrased: last !== null && value === last.next, undo, keep: () => setLast(null) };
+  return {
+    busy,
+    error,
+    canRephrase,
+    rephrase,
+    cancel,
+    reset,
+    rephrased: last !== null && value === last.next,
+    undo,
+    keep: () => setLast(null),
+  };
 }

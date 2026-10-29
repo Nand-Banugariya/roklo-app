@@ -1,5 +1,5 @@
-import { useSyncExternalStore } from 'react';
-import { useColorScheme as useNativewindColorScheme } from 'nativewind';
+import { useSyncExternalStore } from "react";
+import { useColorScheme as useNativewindColorScheme } from "nativewind";
 
 const subscribe = () => () => {};
 const getClientSnapshot = () => true;
@@ -17,5 +17,5 @@ export function useColorScheme() {
     return colorScheme;
   }
 
-  return 'light';
+  return "light";
 }

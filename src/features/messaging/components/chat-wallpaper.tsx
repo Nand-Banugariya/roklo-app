@@ -19,10 +19,29 @@ export function ChatWallpaper() {
   const [size, setSize] = useState({ width: 0, height: 0 });
   const columns = Math.ceil(size.width / TILE.width);
   const rows = Math.ceil(size.height / TILE.height);
-  return <View pointerEvents="none" aria-hidden style={StyleSheet.absoluteFill} className="overflow-hidden bg-chat-bg"
-    onLayout={({ nativeEvent }) => setSize(nativeEvent.layout)}>
-    {Array.from({ length: rows * columns }, (_, index) => <Image key={index} source={SOURCES[mode]} contentFit="fill"
-      cachePolicy="memory-disk" transition={0}
-      style={{ position: "absolute", left: (index % columns) * TILE.width, top: Math.floor(index / columns) * TILE.height, ...TILE }} />)}
-  </View>;
+  return (
+    <View
+      pointerEvents="none"
+      aria-hidden
+      style={StyleSheet.absoluteFill}
+      className="overflow-hidden bg-chat-bg"
+      onLayout={({ nativeEvent }) => setSize(nativeEvent.layout)}
+    >
+      {Array.from({ length: rows * columns }, (_, index) => (
+        <Image
+          key={index}
+          source={SOURCES[mode]}
+          contentFit="fill"
+          cachePolicy="memory-disk"
+          transition={0}
+          style={{
+            position: "absolute",
+            left: (index % columns) * TILE.width,
+            top: Math.floor(index / columns) * TILE.height,
+            ...TILE,
+          }}
+        />
+      ))}
+    </View>
+  );
 }

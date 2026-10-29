@@ -1,5 +1,10 @@
 import { useState, type ComponentProps } from "react";
-import { Pressable as NativePressable, type PressableStateCallbackType, type StyleProp, type ViewStyle } from "react-native";
+import {
+  Pressable as NativePressable,
+  type PressableStateCallbackType,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import { useRokloTheme } from "@/hooks/use-roklo-theme";
 import { pressedStyle } from "@/lib/pressed-style";
 
@@ -11,7 +16,8 @@ function split(className: string | undefined) {
   const pressed: string[] = [];
   for (const token of (className ?? "").split(/\s+/)) {
     if (!token) continue;
-    if (token.startsWith(ACTIVE)) pressed.push(token.slice(ACTIVE.length)); else base.push(token);
+    if (token.startsWith(ACTIVE)) pressed.push(token.slice(ACTIVE.length));
+    else base.push(token);
   }
   return { base: base.join(" "), pressed };
 }
@@ -36,16 +42,41 @@ const PRESS_DELAY_MS = 100;
  * transition or animation classes off pressables: they make the view animated, and an animated view
  * keeps an inline style after it's removed, so the pressed look would never clear.
  */
-export function Pressable({ className, onPressIn, onPressOut, disabled, style, unstable_pressDelay, ...props }: Props) {
+export function Pressable({
+  className,
+  onPressIn,
+  onPressOut,
+  disabled,
+  style,
+  unstable_pressDelay,
+  ...props
+}: Props) {
   const { colors } = useRokloTheme();
   const [pressed, setPressed] = useState(false);
   const classes = split(className);
-  const active = pressed && !disabled && classes.pressed.length ? pressedStyle(classes.pressed, colors) : null;
-  const merged: Props["style"] = typeof style === "function"
-    ? (state: PressableStateCallbackType) => [style(state), active] as StyleProp<ViewStyle>
-    : [style, active];
-  return <NativePressable {...props} disabled={disabled} className={classes.base} style={merged}
-    unstable_pressDelay={unstable_pressDelay ?? (classes.pressed.length ? PRESS_DELAY_MS : undefined)}
-    onPressIn={(event) => { if (classes.pressed.length) setPressed(true); onPressIn?.(event); }}
-    onPressOut={(event) => { setPressed(false); onPressOut?.(event); }} />;
+  const active =
+    pressed && !disabled && classes.pressed.length ? pressedStyle(classes.pressed, colors) : null;
+  const merged: Props["style"] =
+    typeof style === "function"
+      ? (state: PressableStateCallbackType) => [style(state), active] as StyleProp<ViewStyle>
+      : [style, active];
+  return (
+    <NativePressable
+      {...props}
+      disabled={disabled}
+      className={classes.base}
+      style={merged}
+      unstable_pressDelay={
+        unstable_pressDelay ?? (classes.pressed.length ? PRESS_DELAY_MS : undefined)
+      }
+      onPressIn={(event) => {
+        if (classes.pressed.length) setPressed(true);
+        onPressIn?.(event);
+      }}
+      onPressOut={(event) => {
+        setPressed(false);
+        onPressOut?.(event);
+      }}
+    />
+  );
 }

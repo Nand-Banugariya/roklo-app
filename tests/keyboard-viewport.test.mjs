@@ -25,24 +25,15 @@ test("country popover excludes an overlay keyboard even if the window never resi
 
 test("an already resized Android window has the same usable bounds, without double counting", () => {
   const overlay = keyboardViewport({ ...screen, keyboardTop: 420 });
-  assert.deepEqual(
-    keyboardViewport({ ...screen, windowHeight: 420, keyboardTop: 420 }),
-    overlay,
-  );
+  assert.deepEqual(keyboardViewport({ ...screen, windowHeight: 420, keyboardTop: 420 }), overlay);
   assert.deepEqual(keyboardViewport({ ...screen, windowHeight: 420 }), overlay);
 });
 
 test("a tall keyboard constrains the list as well as moving the dropdown", () => {
   const bounds = keyboardViewport({ ...screen, keyboardTop: 250 });
   const searchHeight = 56;
-  const listHeight = Math.max(
-    0,
-    Math.min(260, bounds.maxHeight - searchHeight - 2),
-  );
-  assert.ok(
-    listHeight >= 44,
-    "at least one selectable country remains visible",
-  );
+  const listHeight = Math.max(0, Math.min(260, bounds.maxHeight - searchHeight - 2));
+  assert.ok(listHeight >= 44, "at least one selectable country remains visible");
   assert.ok(searchHeight + listHeight + 2 <= bounds.maxHeight);
   assert.ok(bounds.top + searchHeight + listHeight + 2 <= 250 - 12);
 });
@@ -63,11 +54,7 @@ test("mobile browser viewport offset and dismissal restore usable bounds", () =>
 
 test("country search keeps the reference data and supports names and calling codes", () => {
   assert.ok(COUNTRIES.length > 200);
-  assert.ok(
-    COUNTRIES.some(
-      (country) => country.code === "in" && country.dial === "+91",
-    ),
-  );
+  assert.ok(COUNTRIES.some((country) => country.code === "in" && country.dial === "+91"));
   assert.deepEqual(
     filterCountries("+971").map((country) => country.code),
     ["ae"],

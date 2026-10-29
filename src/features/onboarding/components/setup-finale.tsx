@@ -10,11 +10,7 @@ import type { SetupAnswers } from "../types/onboarding.types";
 import { SetupLayout } from "./setup-layout";
 import { StepHeader } from "./step-header";
 
-export function SetupSubmitting({
-  includeWorkspace,
-}: {
-  includeWorkspace: boolean;
-}) {
+export function SetupSubmitting({ includeWorkspace }: { includeWorkspace: boolean }) {
   return (
     <SetupLayout>
       <View className="flex-1 justify-center gap-8 py-10">
@@ -23,24 +19,16 @@ export function SetupSubmitting({
         </View>
         <StepHeader
           eyebrow="Almost there"
-          title={
-            includeWorkspace
-              ? "Making room for your team"
-              : "Getting things ready"
-          }
+          title={includeWorkspace ? "Making room for your team" : "Getting things ready"}
           description="We're saving your details and getting your workspace ready. This will only take a moment."
         />
         <View className="gap-3 rounded-xl border border-ink-200 bg-card p-5">
-          {["Phone number verified", "Your preferences are ready"].map(
-            (label) => (
-              <View key={label} className="flex-row items-center gap-2.5">
-                <CustomIcon as={Check} size={17} className="text-brand-700" />
-                <CustomText className="text-sm text-ink-700">
-                  {label}
-                </CustomText>
-              </View>
-            ),
-          )}
+          {["Phone number verified", "Your preferences are ready"].map((label) => (
+            <View key={label} className="flex-row items-center gap-2.5">
+              <CustomIcon as={Check} size={17} className="text-brand-700" />
+              <CustomText className="text-sm text-ink-700">{label}</CustomText>
+            </View>
+          ))}
         </View>
       </View>
     </SetupLayout>
@@ -68,11 +56,7 @@ export function SetupComplete({
             size="xl"
             onPress={onOpenInbox}
             trailingIcon={
-              <CustomIcon
-                as={ArrowRight}
-                size={18}
-                className="text-primary-foreground"
-              />
+              <CustomIcon as={ArrowRight} size={18} className="text-primary-foreground" />
             }
           >
             Go to inbox
@@ -85,12 +69,7 @@ export function SetupComplete({
     >
       <View className="grow justify-center gap-7 py-7">
         <View className="h-20 w-20 items-center justify-center self-center rounded-full border border-brand-200 bg-brand-100">
-          <CustomIcon
-            as={CircleCheck}
-            size={42}
-            strokeWidth={1.5}
-            className="text-brand-700"
-          />
+          <CustomIcon as={CircleCheck} size={42} strokeWidth={1.5} className="text-brand-700" />
         </View>
         <View className="gap-3">
           <CustomText
@@ -121,14 +100,10 @@ export function SetupComplete({
           )}
           <View className="flex-1 gap-1">
             <CustomText className="font-sans-semibold text-sm">
-              {includeWorkspace
-                ? answers.workspaceName.trim()
-                : "Your workspace"}
+              {includeWorkspace ? answers.workspaceName.trim() : "Your workspace"}
             </CustomText>
             <CustomText className="text-xs text-ink-600">
-              {includeWorkspace
-                ? "Workspace created · Owner"
-                : "Profile complete · Member"}
+              {includeWorkspace ? "Workspace created · Owner" : "Profile complete · Member"}
             </CustomText>
           </View>
           <CustomIcon as={Check} size={18} className="text-brand-700" />

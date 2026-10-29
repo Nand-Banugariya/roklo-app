@@ -48,10 +48,7 @@ export function isValidPhone(phone: string, countryCode: string): boolean {
   const country = phoneCountry(countryCode);
   if (!country || !/^\d+$/.test(phone)) return false;
   if (country === "IN" && !/^[6-9][0-9]{9}$/.test(phone)) return false;
-  const parsed = parsePhoneNumberFromString(
-    `+${getCountryCallingCode(country)}${phone}`,
-    country,
-  );
+  const parsed = parsePhoneNumberFromString(`+${getCountryCallingCode(country)}${phone}`, country);
   return !!parsed?.isValid() && parsed.country === country;
 }
 

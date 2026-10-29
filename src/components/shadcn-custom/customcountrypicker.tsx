@@ -5,12 +5,7 @@ import { Pressable } from "@/components/ui/pressable";
 
 import { CustomInput } from "@/components/shadcn-custom/custominput";
 import { CountryFlag } from "@/components/shadcn-custom/country-flag";
-import {
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useKeyboardViewport } from "@/hooks/use-keyboard-viewport";
@@ -47,13 +42,7 @@ export function CustomCountryPicker({
     // Dismissing the phone keyboard can move the trigger; follow its new position.
     const timer = setTimeout(() => triggerRef.current?.open(), 250);
     return () => clearTimeout(timer);
-  }, [
-    open,
-    viewport.windowHeight,
-    viewport.width,
-    viewport.top,
-    viewport.bottom,
-  ]);
+  }, [open, viewport.windowHeight, viewport.width, viewport.top, viewport.bottom]);
   return (
     <Popover onOpenChange={changeOpen} className="h-full">
       <PopoverTrigger
@@ -71,12 +60,7 @@ export function CustomCountryPicker({
           )}
         >
           <CountryFlag code={country.code} />
-          <Text
-            className={cn(
-              "font-sans-medium text-sm",
-              variant === "auth" && "text-[15px]",
-            )}
-          >
+          <Text className={cn("font-sans-medium text-sm", variant === "auth" && "text-[15px]")}>
             {country.dial}
           </Text>
           <Icon as={ChevronDown} size={14} className="text-ink-400" />
@@ -119,16 +103,11 @@ export function CustomCountryPicker({
           data={filterCountries(query)}
           keyExtractor={(item) => item.code}
           style={{
-            maxHeight: Math.max(
-              0,
-              Math.min(260, viewport.maxHeight - searchHeight - 2),
-            ),
+            maxHeight: Math.max(0, Math.min(260, viewport.maxHeight - searchHeight - 2)),
           }}
           contentContainerStyle={{ padding: 4 }}
           keyboardShouldPersistTaps="always"
-          ListEmptyComponent={
-            <Text className="py-4 text-sm text-ink-600">No country found</Text>
-          }
+          ListEmptyComponent={<Text className="py-4 text-sm text-ink-600">No country found</Text>}
           renderItem={({ item }) => (
             <PopoverClose asChild>
               <Pressable
@@ -146,9 +125,7 @@ export function CustomCountryPicker({
                 <CountryFlag code={item.code} />
                 <Text className="flex-1 text-sm">{item.name}</Text>
                 <Text className="text-[13px] text-ink-600">{item.dial}</Text>
-                {item.code === value && (
-                  <Icon as={Check} size={16} className="text-primary" />
-                )}
+                {item.code === value && <Icon as={Check} size={16} className="text-primary" />}
               </Pressable>
             </PopoverClose>
           )}

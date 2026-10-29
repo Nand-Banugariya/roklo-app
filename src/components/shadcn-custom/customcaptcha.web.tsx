@@ -33,9 +33,7 @@ export function CustomCaptcha({ resetKey, onToken }: CustomCaptchaProps) {
   if (!env.turnstileSiteKey) return null;
   if (!url)
     return (
-      <CustomAlert tone="error">
-        We couldn’t load verification. Please try again later.
-      </CustomAlert>
+      <CustomAlert tone="error">We couldn’t load verification. Please try again later.</CustomAlert>
     );
   return (
     <iframe

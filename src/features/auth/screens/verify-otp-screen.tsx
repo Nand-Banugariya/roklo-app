@@ -21,13 +21,10 @@ export default function VerifyOtpScreen() {
   const seconds = useCountdown(form.challenge?.resendAvailableAt ?? 0);
   useFocusEffect(
     useCallback(() => {
-      const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => {
-          form.backFromCode();
-          return true;
-        },
-      );
+      const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+        form.backFromCode();
+        return true;
+      });
       return () => subscription.remove();
     }, [form]),
   );
@@ -49,9 +46,7 @@ export default function VerifyOtpScreen() {
             {isEmail ? "Use a different email" : "Use a different number"}
           </CustomBackButton>
           <AuthHeader title={isEmail ? "Check your email" : "Enter your code"}>
-            {isEmail
-              ? "We emailed a 6-digit code to "
-              : "We sent a 6-digit code by SMS to "}
+            {isEmail ? "We emailed a 6-digit code to " : "We sent a 6-digit code by SMS to "}
             <CustomText className="font-sans-semibold text-[15px] text-ink-900">
               {sentTo}
             </CustomText>
@@ -116,9 +111,7 @@ export default function VerifyOtpScreen() {
               fullWidth
               loading={form.busy === "verify"}
               loadingText="Verifying"
-              disabled={
-                form.code.length !== OTP_LENGTH || form.busy === "resend"
-              }
+              disabled={form.code.length !== OTP_LENGTH || form.busy === "resend"}
               onPress={() => void form.verify(form.code)}
             >
               Verify

@@ -12,18 +12,14 @@ const slice = createSlice({
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<AuthUser>) {
-      const completed =
-        state.user?.id === action.payload.id && state.user.isOnboarded;
+      const completed = state.user?.id === action.payload.id && state.user.isOnboarded;
       state.user = {
         ...action.payload,
         isOnboarded: !!completed || action.payload.isOnboarded,
       };
       state.status = "signedIn";
     },
-    onboardingCompleted(
-      state,
-      action: PayloadAction<{ userId: string; profile?: AuthUser }>,
-    ) {
+    onboardingCompleted(state, action: PayloadAction<{ userId: string; profile?: AuthUser }>) {
       if (state.user?.id !== action.payload.userId) return;
       state.user = {
         ...state.user,
@@ -31,18 +27,12 @@ const slice = createSlice({
         isOnboarded: true,
       };
     },
-    profileEmailVerified(
-      state,
-      action: PayloadAction<{ userId: string; email: string }>,
-    ) {
+    profileEmailVerified(state, action: PayloadAction<{ userId: string; email: string }>) {
       if (state.user?.id !== action.payload.userId) return;
       state.user.email = action.payload.email;
       state.user.isEmailVerified = true;
     },
-    defaultWorkspaceChanged(
-      state,
-      action: PayloadAction<{ userId: string; workspaceId: string }>,
-    ) {
+    defaultWorkspaceChanged(state, action: PayloadAction<{ userId: string; workspaceId: string }>) {
       if (state.user?.id === action.payload.userId)
         state.user.defaultWorkspaceId = action.payload.workspaceId;
     },

@@ -8,7 +8,11 @@ export function claimPlayback(id: string, pause: () => void) {
   if (current && current.id !== id) {
     const previous = current;
     current = null;
-    try { previous.pause(); } catch { /* its player was already released */ }
+    try {
+      previous.pause();
+    } catch {
+      /* its player was already released */
+    }
   }
   current = { id, pause };
 }

@@ -8,13 +8,7 @@ export interface SetupOption<T extends string = string> {
   label: string;
 }
 
-export const SETUP_STEPS = [
-  "workspace",
-  "you",
-  "business",
-  "usage",
-  "source",
-] as const;
+export const SETUP_STEPS = ["workspace", "you", "business", "usage", "source"] as const;
 export type SetupStepId = (typeof SETUP_STEPS)[number];
 
 /** Header stepper labels, one per step (the design's copy). */
@@ -62,27 +56,15 @@ export const STARTER_TEMPLATES: Record<string, string[]> = {
   EDUCATION: ["Class reminder", "Fee due", "Results announced"],
   FINTECH_BANKING: ["Payment due", "KYC pending", "Statement ready"],
   HEALTHCARE: ["Appointment reminder", "Report ready", "Follow-up visit"],
-  HEALTHCARE_WELLNESS: [
-    "Session reminder",
-    "Membership renewal",
-    "Follow-up visit",
-  ],
+  HEALTHCARE_WELLNESS: ["Session reminder", "Membership renewal", "Follow-up visit"],
   MANUFACTURING: ["Order dispatched", "Quote follow-up", "Payment reminder"],
-  PRIVATE_BUSINESS_OWNER: [
-    "Welcome message",
-    "Appointment reminder",
-    "Payment reminder",
-  ],
+  PRIVATE_BUSINESS_OWNER: ["Welcome message", "Appointment reminder", "Payment reminder"],
   REAL_ESTATE: ["Site visit confirmation", "New listing", "Payment reminder"],
   RETAIL: ["New arrivals", "Order ready for pickup", "Festive offer"],
   SAAS: ["Trial ending", "Renewal reminder", "Feature update"],
   TOURS_AND_TRAVEL: ["Booking confirmed", "Trip reminder", "Payment due"],
   TRADER: ["Price update", "Order confirmed", "Payment reminder"],
-  TRAVEL_HOSPITALITY: [
-    "Booking confirmed",
-    "Check-in details",
-    "Feedback request",
-  ],
+  TRAVEL_HOSPITALITY: ["Booking confirmed", "Check-in details", "Feedback request"],
   OTHER: ["Welcome message", "Appointment reminder", "Payment reminder"],
 };
 

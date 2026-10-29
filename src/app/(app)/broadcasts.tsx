@@ -1,4 +1,1 @@
-import { ModuleScreen } from "@/features/navigation/screens/module-screen";
-export default function BroadcastsPage() {
-  return <ModuleScreen module="broadcasts" />;
-}
+export { BroadcastsScreen as default } from "@/features/broadcasts/screens/broadcasts-screen";

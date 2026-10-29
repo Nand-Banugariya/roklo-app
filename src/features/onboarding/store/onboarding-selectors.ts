@@ -1,8 +1,7 @@
 import type { OnboardingRootState } from "./onboarding-thunks";
 import { setupSteps, validationError } from "../utils/validation";
 
-export const selectOnboarding = (state: OnboardingRootState) =>
-  state.onboarding;
+export const selectOnboarding = (state: OnboardingRootState) => state.onboarding;
 /** Keep fresh setup mounted for its success screen after auth becomes onboarded. */
 export const selectShowOnboarding = (state: OnboardingRootState) =>
   !!state.auth.user &&
@@ -18,7 +17,4 @@ export const selectCanContinue = (state: OnboardingRootState) =>
 export const selectIsLastStep = (state: OnboardingRootState) =>
   selectSetupSteps(state).at(-1) === state.onboarding.stepId;
 export const selectResendSeconds = (state: OnboardingRootState, now: number) =>
-  Math.max(
-    0,
-    Math.ceil((state.onboarding.email.retryAvailableAt - now) / 1000),
-  );
+  Math.max(0, Math.ceil((state.onboarding.email.retryAvailableAt - now) / 1000));

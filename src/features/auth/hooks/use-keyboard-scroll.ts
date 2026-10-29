@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type RefObject,
-} from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -67,38 +61,27 @@ export function useKeyboardScroll(target: RefObject<View | null>) {
       const top = closing.current
         ? null
         : (keyboardTop.current ??
-          (Platform.OS === "web"
-            ? null
-            : (Keyboard.metrics()?.screenY ?? null)));
+          (Platform.OS === "web" ? null : (Keyboard.metrics()?.screenY ?? null)));
       keyboardTop.current = top;
       setKeyboardVisible(top != null || opening.current);
       setKeyboardInset(
-        Platform.OS === "web"
-          ? 0
-          : keyboardOverlap(viewportTop, viewportHeight, top),
+        Platform.OS === "web" ? 0 : keyboardOverlap(viewportTop, viewportHeight, top),
       );
       const section = target.current;
       if (!section) return;
-      section.measureInWindow(
-        (_targetX, targetTop, _targetWidth, targetHeight) => {
-          if (
-            target.current !== section ||
-            viewportRef.current !== viewport ||
-            targetHeight <= 0
-          )
-            return;
-          const y = revealOffset({
-            offset: offset.current,
-            viewportTop,
-            viewportHeight,
-            targetTop,
-            targetHeight,
-            keyboardTop: keyboardTop.current,
-          });
-          if (Math.abs(y - offset.current) > 1)
-            scroll.scrollTo({ y, animated: true });
-        },
-      );
+      section.measureInWindow((_targetX, targetTop, _targetWidth, targetHeight) => {
+        if (target.current !== section || viewportRef.current !== viewport || targetHeight <= 0)
+          return;
+        const y = revealOffset({
+          offset: offset.current,
+          viewportTop,
+          viewportHeight,
+          targetTop,
+          targetHeight,
+          keyboardTop: keyboardTop.current,
+        });
+        if (Math.abs(y - offset.current) > 1) scroll.scrollTo({ y, animated: true });
+      });
     });
   }, [setKeyboardVisible, target]);
 
@@ -187,9 +170,7 @@ export function useKeyboardScroll(target: RefObject<View | null>) {
         : null;
     const hide = Keyboard.addListener("keyboardDidHide", onClosing);
     const willHide =
-      Platform.OS === "ios"
-        ? Keyboard.addListener("keyboardWillHide", onClosing)
-        : null;
+      Platform.OS === "ios" ? Keyboard.addListener("keyboardWillHide", onClosing) : null;
     // Autofocus/navigation/Fast Refresh can mount this screen after the show
     // event. Recover the current keyboard instead of waiting for another event.
     const initialFrame = requestAnimationFrame(() => {

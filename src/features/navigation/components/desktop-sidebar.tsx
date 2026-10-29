@@ -22,10 +22,7 @@ export function DesktopSidebar({
 }) {
   const user = useAppSelector((state) => state.auth.user);
   return (
-    <View
-      className="w-[232px] border-r border-ink-200 bg-card"
-      accessibilityLabel="Sidebar"
-    >
+    <View className="w-[232px] border-r border-ink-200 bg-card" accessibilityLabel="Sidebar">
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Roklo home"
@@ -38,11 +35,7 @@ export function DesktopSidebar({
         <CustomText className="mb-3 px-3.5 font-sans-medium text-[10px] tracking-[1.5px] text-ink-500">
           YOUR WORKSPACE
         </CustomText>
-        <NavigationList
-          activeId={activeId}
-          disabled={disabled}
-          onNavigate={onNavigate}
-        />
+        <NavigationList activeId={activeId} disabled={disabled} onNavigate={onNavigate} />
       </ScrollView>
       <View className="gap-3 border-t border-ink-200 p-3">
         <CustomNavItem
@@ -59,15 +52,10 @@ export function DesktopSidebar({
         >
           <CustomAvatar name={user?.name} src={user?.image} size={36} />
           <View className="flex-1 gap-1">
-            <CustomText
-              numberOfLines={1}
-              className="font-sans-semibold text-[13px]"
-            >
+            <CustomText numberOfLines={1} className="font-sans-semibold text-[13px]">
               {user?.name?.split("\n")[0] || "Your account"}
             </CustomText>
-            <CustomText className="text-xs text-ink-600">
-              Account & appearance
-            </CustomText>
+            <CustomText className="text-xs text-ink-600">Account & appearance</CustomText>
           </View>
         </Pressable>
       </View>

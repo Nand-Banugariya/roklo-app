@@ -4,10 +4,7 @@ import { test } from "node:test";
 import { createApiClient } from "../src/services/api/create-client.ts";
 import { createAuthApi } from "../src/features/auth/services/auth-api.ts";
 import { createSession } from "../src/services/storage/create-session.ts";
-import {
-  keyboardOverlap,
-  revealOffset,
-} from "../src/features/auth/utils/keyboard-scroll.ts";
+import { keyboardOverlap, revealOffset } from "../src/features/auth/utils/keyboard-scroll.ts";
 
 const phone = { dial: "+91", phone: "9876543210", countryCode: "in" };
 const user = {
@@ -160,13 +157,12 @@ test("email challenge retains the server delivery address and normalized email r
   assert.equal(calls[0].json.captchaToken, "challenge-token");
 });
 test("verifying email never signs the user in: it produces the next SMS challenge", async () => {
-  const { api, calls } = fixture(
-    success({ mobileVerificationRequired: true, otpRef: "sms-2" }),
-  );
-  assert.deepEqual(
-    await api.verifyOtp({ ...phone, otpRef: "email-1", code: "654321" }),
-    { ok: true, next: "mobile_code", otpRef: "sms-2" },
-  );
+  const { api, calls } = fixture(success({ mobileVerificationRequired: true, otpRef: "sms-2" }));
+  assert.deepEqual(await api.verifyOtp({ ...phone, otpRef: "email-1", code: "654321" }), {
+    ok: true,
+    next: "mobile_code",
+    otpRef: "sms-2",
+  });
   assert.deepEqual(calls[0].json, {
     mobileNumber: "+919876543210",
     otp: "654321",
@@ -175,18 +171,17 @@ test("verifying email never signs the user in: it produces the next SMS challeng
 });
 test("mobile verification returns the issued token and onboarding status from the server user", async () => {
   const { api } = fixture(success({ accessToken: "issued-token", user }));
-  assert.deepEqual(
-    await api.verifyOtp({ ...phone, otpRef: "sms-2", code: "654321" }),
-    { ok: true, next: "signed_in", accessToken: "issued-token", user },
-  );
+  assert.deepEqual(await api.verifyOtp({ ...phone, otpRef: "sms-2", code: "654321" }), {
+    ok: true,
+    next: "signed_in",
+    accessToken: "issued-token",
+    user,
+  });
 });
 test("malformed verify responses cannot create a session", async () => {
   for (const data of [null, {}, { accessToken: "token" }, { user }]) {
     const { api } = fixture(success(data));
-    assert.equal(
-      (await api.verifyOtp({ ...phone, otpRef: "sms-2", code: "654321" })).ok,
-      false,
-    );
+    assert.equal((await api.verifyOtp({ ...phone, otpRef: "sms-2", code: "654321" })).ok, false);
   }
 });
 test("resend sends the current email and replaces the OTP reference", async () => {
@@ -211,17 +206,11 @@ test("invalid and expired codes map to recoverable form states", async () => {
     ["Invalid OTP reference.", "expired"],
   ]) {
     const { api } = fixture({ message }, 400);
-    assert.equal(
-      (await api.verifyOtp({ ...phone, otpRef: "old", code: "654321" })).reason,
-      reason,
-    );
+    assert.equal((await api.verifyOtp({ ...phone, otpRef: "old", code: "654321" })).reason, reason);
   }
 });
 test("both the backend 400 cooldown and HTTP 429 preserve retry deadlines", async () => {
-  const a = fixture(
-    { message: "Please wait 42 seconds before requesting a new OTP." },
-    400,
-  );
+  const a = fixture({ message: "Please wait 42 seconds before requesting a new OTP." }, 400);
   assert.equal((await a.api.sendOtp(phone)).retryAfter, 42);
   const b = fixture({ message: "Too many requests" }, 429, {
     "retry-after": "19",
@@ -230,10 +219,7 @@ test("both the backend 400 cooldown and HTTP 429 preserve retry deadlines", asyn
 });
 test("only user-facing backend messages reach the form", async () => {
   const blocked = "This account has been banned. Please contact support.";
-  assert.equal(
-    (await fixture({ message: blocked }, 403).api.sendOtp(phone)).message,
-    blocked,
-  );
+  assert.equal((await fixture({ message: blocked }, 403).api.sendOtp(phone)).message, blocked);
   assert.equal(
     (
       await fixture(
@@ -264,10 +250,7 @@ test("network failures are returned without throwing", async () => {
       throw new TypeError("offline");
     },
   });
-  assert.equal(
-    (await client("/auth/login", { auth: false })).reason,
-    "network",
-  );
+  assert.equal((await client("/auth/login", { auth: false })).reason, "network");
 });
 test("signing out during a pending secure save cannot resurrect that session", async () => {
   let disk = null;

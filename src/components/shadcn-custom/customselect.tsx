@@ -3,12 +3,7 @@ import { useEffect, useRef, useState, type ComponentRef } from "react";
 import { FlatList, Keyboard, View } from "react-native";
 import { Pressable } from "@/components/ui/pressable";
 
-import {
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useKeyboardViewport } from "@/hooks/use-keyboard-viewport";
 import { cn } from "@/lib/utils";
 import { CustomIcon } from "./customicon";
@@ -49,13 +44,7 @@ export function CustomSelect({
     if (!open) return;
     const timer = setTimeout(() => trigger.current?.open(), 250);
     return () => clearTimeout(timer);
-  }, [
-    open,
-    viewport.windowHeight,
-    viewport.width,
-    viewport.top,
-    viewport.bottom,
-  ]);
+  }, [open, viewport.windowHeight, viewport.width, viewport.top, viewport.bottom]);
   return (
     <Popover
       onOpenChange={(next) => {
@@ -74,12 +63,7 @@ export function CustomSelect({
           onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
           className="min-h-12 flex-row items-center gap-3 rounded-lg border border-input bg-card px-3.5"
         >
-          <CustomText
-            className={cn(
-              "flex-1 text-base",
-              !selected && "text-muted-foreground",
-            )}
-          >
+          <CustomText className={cn("flex-1 text-base", !selected && "text-muted-foreground")}>
             {selected?.label ?? placeholder}
           </CustomText>
           <CustomIcon as={ChevronDown} size={17} className="text-ink-500" />
@@ -122,17 +106,12 @@ export function CustomSelect({
           data={filtered}
           keyExtractor={(item) => item.value}
           style={{
-            maxHeight: Math.max(
-              0,
-              Math.min(280, viewport.maxHeight - searchHeight - 2),
-            ),
+            maxHeight: Math.max(0, Math.min(280, viewport.maxHeight - searchHeight - 2)),
           }}
           contentContainerStyle={{ padding: 4 }}
           keyboardShouldPersistTaps="always"
           ListEmptyComponent={
-            <CustomText className="p-4 text-sm text-ink-600">
-              {emptyMessage}
-            </CustomText>
+            <CustomText className="p-4 text-sm text-ink-600">{emptyMessage}</CustomText>
           }
           renderItem={({ item }) => (
             <PopoverClose asChild>

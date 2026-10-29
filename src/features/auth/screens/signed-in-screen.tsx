@@ -21,20 +21,14 @@ export default function SignedInScreen() {
         <View className="h-12 w-12 items-center justify-center rounded-xl bg-brand-100">
           <CustomIcon as={ShieldCheck} size={24} className="text-brand-700" />
         </View>
-        <AuthHeader
-          title={user?.isOnboarded ? "Welcome back" : "Welcome to Roklo"}
-        >
+        <AuthHeader title={user?.isOnboarded ? "Welcome back" : "Welcome to Roklo"}>
           {user?.isOnboarded
             ? "You’re signed in to your Roklo account."
             : "Your phone number is verified. Your account is ready for workspace setup."}
         </AuthHeader>
         <View className="gap-1.5 rounded-lg border border-border bg-card p-4">
-          {user?.name && (
-            <CustomText className="font-sans-semibold">{user.name}</CustomText>
-          )}
-          <CustomText className="text-sm text-ink-700">
-            {user?.mobileNumber}
-          </CustomText>
+          {user?.name && <CustomText className="font-sans-semibold">{user.name}</CustomText>}
+          <CustomText className="text-sm text-ink-700">{user?.mobileNumber}</CustomText>
         </View>
         <CustomAlert tone="success" title="Signed in successfully">
           Your session is saved on this device.

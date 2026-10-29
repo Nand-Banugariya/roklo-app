@@ -1,8 +1,4 @@
-import type {
-  ApiError,
-  RequestOptions,
-  createApiClient,
-} from "@/services/api/create-client";
+import type { ApiError, RequestOptions, createApiClient } from "@/services/api/create-client";
 
 import type {
   AuthFailure,
@@ -25,9 +21,7 @@ export function createAuthApi(apiRequest: ReturnType<typeof createApiClient>) {
       reason: error.reason,
       retryAfter: error.retryAfter,
       message:
-        error.reason === "network" ||
-        error.status === 0 ||
-        USER_FACING.has(error.message)
+        error.reason === "network" || error.status === 0 || USER_FACING.has(error.message)
           ? error.message || undefined
           : undefined,
     };
@@ -101,18 +95,14 @@ export function createAuthApi(apiRequest: ReturnType<typeof createApiClient>) {
       },
     });
     if (!result.ok) {
-      if (result.message === "Invalid OTP.")
-        return { ok: false, reason: "invalid_code" };
-      if (
-        ["OTP has expired.", "Invalid OTP reference."].includes(result.message)
-      )
+      if (result.message === "Invalid OTP.") return { ok: false, reason: "invalid_code" };
+      if (["OTP has expired.", "Invalid OTP reference."].includes(result.message))
         return { ok: false, reason: "expired" };
       return toFailure(result);
     }
     if (result.data?.mobileVerificationRequired && result.data.otpRef)
       return { ok: true, next: "mobile_code", otpRef: result.data.otpRef };
-    if (!result.data?.accessToken || !result.data.user?.id)
-      return { ok: false, reason: "failed" };
+    if (!result.data?.accessToken || !result.data.user?.id) return { ok: false, reason: "failed" };
     return {
       ok: true,
       next: "signed_in",

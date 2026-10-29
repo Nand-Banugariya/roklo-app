@@ -74,9 +74,9 @@ export function useKeyboardViewport(enabled: boolean) {
 
   // RN Web may report the visual viewport as its window height while fixed
   // portals still occupy the layout viewport. Keep both coordinate spaces.
-  const windowHeight = Platform.OS === "web" && typeof window !== "undefined" ? window.innerHeight : height;
-  const screenHeight =
-    Platform.OS === "web" ? windowHeight : Dimensions.get("screen").height;
+  const windowHeight =
+    Platform.OS === "web" && typeof window !== "undefined" ? window.innerHeight : height;
+  const screenHeight = Platform.OS === "web" ? windowHeight : Dimensions.get("screen").height;
   const bounds = keyboardViewport({
     screenHeight,
     windowHeight,

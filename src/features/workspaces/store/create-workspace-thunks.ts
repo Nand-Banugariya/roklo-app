@@ -9,12 +9,7 @@ export interface WorkspaceRootState {
   auth: { user: AuthUser | null };
   workspace: WorkspaceState;
 }
-type WorkspaceThunk<R> = ThunkAction<
-  R,
-  WorkspaceRootState,
-  unknown,
-  UnknownAction
->;
+type WorkspaceThunk<R> = ThunkAction<R, WorkspaceRootState, unknown, UnknownAction>;
 
 export function createWorkspaceThunks(services: {
   api: ReturnType<typeof createWorkspaceApi>;
@@ -28,10 +23,8 @@ export function createWorkspaceThunks(services: {
       const requestId = nanoid();
       dispatch(actions.detailStarted({ id, requestId }));
       const result = await services.api.detail(id, { token });
-      if (getState().auth.user?.id !== userId || services.getToken() !== token)
-        return;
-      if (result.ok)
-        dispatch(actions.detailReceived({ requestId, workspace: result.data }));
+      if (getState().auth.user?.id !== userId || services.getToken() !== token) return;
+      if (result.ok) dispatch(actions.detailReceived({ requestId, workspace: result.data }));
       else dispatch(actions.detailFailed({ requestId }));
     };
   }
@@ -41,8 +34,7 @@ export function createWorkspaceThunks(services: {
       const token = services.getToken();
       const state = getState().workspace;
       if (!user || !token || state.requests.load || state.switchingId) return;
-      if (!force && state.ownerId === user.id && state.status === "ready")
-        return;
+      if (!force && state.ownerId === user.id && state.status === "ready") return;
       const requestId = nanoid();
       dispatch(actions.loadStarted({ userId: user.id, requestId }));
       const result = await services.api.list({ token });
@@ -56,8 +48,7 @@ export function createWorkspaceThunks(services: {
         dispatch(
           actions.loadFailed({
             requestId,
-            message:
-              "We couldn't load your workspaces. Check your connection and try again.",
+            message: "We couldn't load your workspaces. Check your connection and try again.",
           }),
         );
         return;

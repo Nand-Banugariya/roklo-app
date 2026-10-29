@@ -34,9 +34,7 @@ export function SettingsSection({
           >
             {title}
           </CustomText>
-          {description && (
-            <SettingsDescription>{description}</SettingsDescription>
-          )}
+          {description && <SettingsDescription>{description}</SettingsDescription>}
         </View>
         {action}
       </View>
@@ -78,13 +76,9 @@ export function SettingsRow({
         <CustomText className="font-sans-medium text-sm leading-5 dark:text-white">
           {title}
         </CustomText>
-        {description && (
-          <SettingsDescription>{description}</SettingsDescription>
-        )}
+        {description && <SettingsDescription>{description}</SettingsDescription>}
       </View>
-      <View className={inline ? "shrink-0" : "w-full gap-2 sm:w-auto"}>
-        {children}
-      </View>
+      <View className={inline ? "shrink-0" : "w-full gap-2 sm:w-auto"}>{children}</View>
     </View>
   );
 }

@@ -48,26 +48,20 @@ export function SettingsImagePicker({
       if (result.canceled) return;
       const asset = result.assets[0];
       const release = () => {
-        if (Platform.OS === "web" && asset.uri.startsWith("blob:"))
-          URL.revokeObjectURL(asset.uri);
+        if (Platform.OS === "web" && asset.uri.startsWith("blob:")) URL.revokeObjectURL(asset.uri);
       };
       if (!mounted.current) {
         release();
         return;
       }
-      if (
-        !asset.size ||
-        asset.size > maxMB * 1024 * 1024 ||
-        !/\.(png|jpe?g)$/i.test(asset.name)
-      ) {
+      if (!asset.size || asset.size > maxMB * 1024 * 1024 || !/\.(png|jpe?g)$/i.test(asset.name)) {
         release();
         setError(`Choose a PNG or JPG up to ${maxMB} MB.`);
         return;
       }
       setDraft(asset.uri);
     } catch {
-      if (mounted.current)
-        setError("We couldn't open your files. Please try again.");
+      if (mounted.current) setError("We couldn't open your files. Please try again.");
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -84,9 +78,7 @@ export function SettingsImagePicker({
               size="lg"
               loading={busy}
               onPress={() => void choose()}
-              leadingIcon={
-                <CustomIcon as={Upload} size={15} className="text-ink-700" />
-              }
+              leadingIcon={<CustomIcon as={Upload} size={15} className="text-ink-700" />}
             >
               {square ? "Upload logo" : "Upload photo"}
             </CustomButton>
@@ -121,10 +113,7 @@ export function SettingsImagePicker({
         </View>
       </View>
       {error && (
-        <CustomText
-          accessibilityLiveRegion="polite"
-          className="text-xs text-error-fg"
-        >
+        <CustomText accessibilityLiveRegion="polite" className="text-xs text-error-fg">
           {error}
         </CustomText>
       )}

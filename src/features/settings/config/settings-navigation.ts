@@ -28,20 +28,13 @@ export const SETTINGS_GROUPS = [
   },
 ] as const;
 
-export type SettingsSectionId =
-  (typeof SETTINGS_GROUPS)[number]["items"][number]["id"];
+export type SettingsSectionId = (typeof SETTINGS_GROUPS)[number]["items"][number]["id"];
 
-export function settingsSection(
-  value: unknown,
-  canManage: boolean,
-): SettingsSectionId {
+export function settingsSection(value: unknown, canManage: boolean): SettingsSectionId {
   const item = SETTINGS_GROUPS.flatMap((group) => [...group.items]).find(
     (item) => item.id === value,
   );
-  if (
-    !item ||
-    (!canManage && ["general", "numbers", "alerts"].includes(item.id))
-  ) {
+  if (!item || (!canManage && ["general", "numbers", "alerts"].includes(item.id))) {
     return canManage ? "general" : "profile";
   }
   return item.id;

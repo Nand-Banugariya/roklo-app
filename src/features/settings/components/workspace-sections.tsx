@@ -13,12 +13,7 @@ import { CustomText } from "@/components/shadcn-custom/customtext";
 import { useAppShell } from "@/features/navigation/providers/app-shell-context";
 import type { Workspace } from "@/features/workspaces/types/workspace.types";
 import { SettingsImagePicker } from "./settings-image-picker";
-import {
-  PreviewNote,
-  SettingsDescription,
-  SettingsRow,
-  SettingsSection,
-} from "./settings-section";
+import { PreviewNote, SettingsDescription, SettingsRow, SettingsSection } from "./settings-section";
 
 const TIME_ZONES = [
   { value: "Asia/Kolkata", label: "(UTC+05:30) India Standard Time" },
@@ -37,119 +32,115 @@ export function GeneralSection({ workspace }: { workspace: Workspace | null }) {
   const [confirmation, setConfirmation] = useState("");
   return (
     <>
-      {!deleting && <>
-      <View className="flex-row items-center gap-3 rounded-xl border border-ink-200 bg-card p-5">
-        <View className="h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
-          <CustomIcon as={Gem} size={21} className="text-brand-700" />
-        </View>
-        <View className="flex-1 gap-1">
-          <SettingsDescription>Current plan</SettingsDescription>
-          <CustomText className="font-sans-semibold text-[15px] dark:text-white">
-            —
-          </CustomText>
-        </View>
-      </View>
-      <SettingsSection
-        title="General"
-        description={
-          workspace
-            ? `Applies to everyone in ${workspace.name}.`
-            : "Your workspace details and preferences."
-        }
-      >
-        <SettingsImagePicker
-          name={workspace?.name ?? "Workspace"}
-          src={workspace?.logo}
-          square
-          maxMB={5}
-        />
-        <View className="gap-3">
-          <CustomFormField
-            id="settings-workspace-name"
-            label="Workspace name"
-            required
-            help="Shown to your team and on invites."
-          >
-            {(control) => (
-              <CustomInput
-                {...control}
-                size="xl"
-                maxLength={100}
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g. Acme Corp"
-                autoComplete="organization"
-                className="dark:text-white"
-              />
-            )}
-          </CustomFormField>
-          <View className="flex-row flex-wrap gap-2">
-            <CustomButton size="xl" disabled>
-              Save
-            </CustomButton>
-            <CustomButton
-              variant="ghost"
-              size="xl"
-              disabled={name === (workspace?.name ?? "")}
-              onPress={() => setName(workspace?.name ?? "")}
-            >
-              Discard
-            </CustomButton>
+      {!deleting && (
+        <>
+          <View className="flex-row items-center gap-3 rounded-xl border border-ink-200 bg-card p-5">
+            <View className="h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
+              <CustomIcon as={Gem} size={21} className="text-brand-700" />
+            </View>
+            <View className="flex-1 gap-1">
+              <SettingsDescription>Current plan</SettingsDescription>
+              <CustomText className="font-sans-semibold text-[15px] dark:text-white">—</CustomText>
+            </View>
           </View>
-        </View>
-        <SettingsRow
-          divided
-          title="Time zone"
-          description="Used for scheduled broadcasts, reply-time reports and alert timings."
-        >
-          <View className="sm:w-[280px]">
-            <SettingsSelect
-              value={timeZone}
-              onValueChange={setTimeZone}
-              options={TIME_ZONES}
-              placeholder="Select time zone"
-              accessibilityLabel="Time zone"
-              searchPlaceholder="Search time zones"
-              emptyMessage="No matching time zone"
+          <SettingsSection
+            title="General"
+            description={
+              workspace
+                ? `Applies to everyone in ${workspace.name}.`
+                : "Your workspace details and preferences."
+            }
+          >
+            <SettingsImagePicker
+              name={workspace?.name ?? "Workspace"}
+              src={workspace?.logo}
+              square
+              maxMB={5}
             />
-          </View>
-        </SettingsRow>
-        {!workspace && (
-          <CustomButton
-            variant="secondary"
-            size="xl"
-            onPress={() => openPanel("workspaces")}
-          >
-            Choose a workspace
-          </CustomButton>
-        )}
-        <PreviewNote />
-      </SettingsSection>
-      {workspace?.role === "OWNER" && (
-        <SettingsSection
-          title="Danger zone"
-          description={`These actions affect everyone in ${workspace.name}.`}
-          danger
-        >
-          <SettingsRow
-            title="Delete workspace"
-            description="Permanently deletes all chats, contacts, groups, templates and broadcast history. All WhatsApp numbers are unlinked and teammates lose access."
-            divided
-          >
-            <CustomButton
-              variant="destructive"
-              size="xl"
-              onPress={() => {
-                setConfirmation("");
-                setDeleting(true);
-              }}
+            <View className="gap-3">
+              <CustomFormField
+                id="settings-workspace-name"
+                label="Workspace name"
+                required
+                help="Shown to your team and on invites."
+              >
+                {(control) => (
+                  <CustomInput
+                    {...control}
+                    size="xl"
+                    maxLength={100}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="e.g. Acme Corp"
+                    autoComplete="organization"
+                    className="dark:text-white"
+                  />
+                )}
+              </CustomFormField>
+              <View className="flex-row flex-wrap gap-2">
+                <CustomButton size="xl" disabled>
+                  Save
+                </CustomButton>
+                <CustomButton
+                  variant="ghost"
+                  size="xl"
+                  disabled={name === (workspace?.name ?? "")}
+                  onPress={() => setName(workspace?.name ?? "")}
+                >
+                  Discard
+                </CustomButton>
+              </View>
+            </View>
+            <SettingsRow
+              divided
+              title="Time zone"
+              description="Used for scheduled broadcasts, reply-time reports and alert timings."
             >
-              Delete workspace
-            </CustomButton>
-          </SettingsRow>
-        </SettingsSection>
+              <View className="sm:w-[280px]">
+                <SettingsSelect
+                  value={timeZone}
+                  onValueChange={setTimeZone}
+                  options={TIME_ZONES}
+                  placeholder="Select time zone"
+                  accessibilityLabel="Time zone"
+                  searchPlaceholder="Search time zones"
+                  emptyMessage="No matching time zone"
+                />
+              </View>
+            </SettingsRow>
+            {!workspace && (
+              <CustomButton variant="secondary" size="xl" onPress={() => openPanel("workspaces")}>
+                Choose a workspace
+              </CustomButton>
+            )}
+            <PreviewNote />
+          </SettingsSection>
+          {workspace?.role === "OWNER" && (
+            <SettingsSection
+              title="Danger zone"
+              description={`These actions affect everyone in ${workspace.name}.`}
+              danger
+            >
+              <SettingsRow
+                title="Delete workspace"
+                description="Permanently deletes all chats, contacts, groups, templates and broadcast history. All WhatsApp numbers are unlinked and teammates lose access."
+                divided
+              >
+                <CustomButton
+                  variant="destructive"
+                  size="xl"
+                  onPress={() => {
+                    setConfirmation("");
+                    setDeleting(true);
+                  }}
+                >
+                  Delete workspace
+                </CustomButton>
+              </SettingsRow>
+            </SettingsSection>
+          )}
+        </>
       )}
-      </>}
       {deleting && (
         <SettingsInlineForm
           open
@@ -159,10 +150,7 @@ export function GeneralSection({ workspace }: { workspace: Workspace | null }) {
         >
           <View className="gap-5">
             <CustomIcon as={Trash2} size={28} className="text-error-fg" />
-            <CustomFormField
-              id="settings-delete-name"
-              label="Type the workspace name to confirm"
-            >
+            <CustomFormField id="settings-delete-name" label="Type the workspace name to confirm">
               {(control) => (
                 <CustomInput
                   {...control}
@@ -178,11 +166,7 @@ export function GeneralSection({ workspace }: { workspace: Workspace | null }) {
             <CustomButton variant="destructive-solid" size="xl" disabled>
               Delete permanently
             </CustomButton>
-            <CustomButton
-              variant="secondary"
-              size="xl"
-              onPress={() => setDeleting(false)}
-            >
+            <CustomButton variant="secondary" size="xl" onPress={() => setDeleting(false)}>
               Keep workspace
             </CustomButton>
           </View>
@@ -206,19 +190,13 @@ export function NumbersSection() {
           Your business numbers
         </CustomText>
         <CustomText className="max-w-[320px] text-center text-[13px] leading-5 text-ink-600 dark:text-white">
-          Link your business WhatsApp to bring its chats into Roklo. Numbers and
-          their connection status will appear here.
+          Link your business WhatsApp to bring its chats into Roklo. Numbers and their connection
+          status will appear here.
         </CustomText>
         <CustomButton
           size="xl"
           onPress={() => router.navigate("/connections")}
-          leadingIcon={
-            <CustomIcon
-              as={Plus}
-              size={17}
-              className="text-primary-foreground"
-            />
-          }
+          leadingIcon={<CustomIcon as={Plus} size={17} className="text-primary-foreground" />}
         >
           Connect number
         </CustomButton>
@@ -252,10 +230,7 @@ export function AlertsSection() {
     chatWaiting: false,
   });
   return (
-    <SettingsSection
-      title="Alerts"
-      description="Sent in-app and by email to owners and admins."
-    >
+    <SettingsSection title="Alerts" description="Sent in-app and by email to owners and admins.">
       <View className="flex-row items-center gap-3 rounded-xl bg-brand-50 p-4">
         <CustomIcon as={Bell} size={21} className="text-brand-700" />
         <View className="flex-1">
@@ -265,13 +240,7 @@ export function AlertsSection() {
         </View>
       </View>
       {ALERT_ROWS.map((row) => (
-        <SettingsRow
-          key={row.key}
-          title={row.title}
-          description={row.description}
-          divided
-          inline
-        >
+        <SettingsRow key={row.key} title={row.title} description={row.description} divided inline>
           <CustomSwitch
             accessibilityLabel={row.title}
             checked={alerts[row.key]}

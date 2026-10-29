@@ -9,15 +9,12 @@ import {
 
 import { useRokloTheme } from "@/hooks/use-roklo-theme";
 import { session } from "@/services/storage/session";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { pushRegistration } from "@/features/notifications/services/notification-service";
+import { deleteMessageStore } from "@/features/messaging/services/message-store";
 
 import { getMe, revokeSession } from "../services/auth-service";
-import {
-  restorationFailed,
-  restoring,
-  setUser,
-  signedOut,
-} from "../store/auth-slice";
+import { restorationFailed, restoring, setUser, signedOut } from "../store/auth-slice";
 import type { AuthUser } from "../types/auth.types";
 
 const Context = createContext<{
@@ -28,6 +25,7 @@ const Context = createContext<{
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const dispatch = useAppDispatch();
+  const userId = useAppSelector((state) => state.auth.user?.id ?? null);
   const { setColorScheme } = useRokloTheme();
   const [attempt, setAttempt] = useState(0);
   const applyTheme = useRef(setColorScheme);
@@ -37,11 +35,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   function adoptTheme(user: AuthUser) {
     const theme = user.preferences?.theme;
-    if (theme === "light" || theme === "dark" || theme === "system")
-      applyTheme.current(theme);
+    if (theme === "light" || theme === "dark" || theme === "system") applyTheme.current(theme);
   }
 
-  useEffect(() => session.subscribe(() => dispatch(signedOut())), [dispatch]);
+  // The session ended (expired, revoked, or signed out): the chats saved on this phone go with it, as a
+  // removed number's do. A chat still open meanwhile can't write them back (the store has no owner then).
+  useEffect(
+    () =>
+      session.subscribe(() => {
+        void pushRegistration.stopLocally().catch(() => undefined);
+        void deleteMessageStore();
+        dispatch(signedOut());
+      }),
+    [dispatch],
+  );
   useEffect(() => {
     const controller = new AbortController();
     dispatch(restoring());
@@ -60,10 +67,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
           if (theme === "light" || theme === "dark" || theme === "system")
             applyTheme.current(theme);
           dispatch(setUser(result.data));
-        } else if (
-          !result.ok &&
-          (result.status === 401 || result.status === 403)
-        ) {
+        } else if (!result.ok && (result.status === 401 || result.status === 403)) {
           await session.clear();
         } else dispatch(restorationFailed());
       } catch {
@@ -91,12 +95,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   async function signOut() {
     const token = session.getToken();
+    // Existing device removal is authenticated, so finish it before revoking this session.
+    await pushRegistration.signOut(userId, token).catch(() => undefined);
+    // Every chat saved on this phone (SQLite) is deleted, as when a WhatsApp number is removed.
+    void deleteMessageStore();
     dispatch(signedOut());
     applyTheme.current("system");
-    await Promise.allSettled([
-      session.clear(),
-      ...(token ? [revokeSession(token)] : []),
-    ]);
+    await Promise.allSettled([session.clear(), ...(token ? [revokeSession(token)] : [])]);
   }
 
   return (

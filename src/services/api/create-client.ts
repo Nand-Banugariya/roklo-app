@@ -4,6 +4,8 @@ export type ApiError = {
   status: number;
   message: string;
   retryAfter?: number;
+  /** The refusal's parsed body, for endpoints that send details with it (e.g. a broadcast's E09 contact list). */
+  body?: unknown;
 };
 export type ApiResult<T> = { ok: true; data: T; message: string } | ApiError;
 export interface RequestOptions {
@@ -26,7 +28,14 @@ export function createApiClient(options: {
 }) {
   return async function request<T>(
     path: string,
-    { method = "GET", body, auth = true, signal, token, envelope: unwrap = true }: RequestOptions = {},
+    {
+      method = "GET",
+      body,
+      auth = true,
+      signal,
+      token,
+      envelope: unwrap = true,
+    }: RequestOptions = {},
   ): Promise<ApiResult<T>> {
     if (!options.baseUrl)
       return {
@@ -38,8 +47,7 @@ export function createApiClient(options: {
     const usedToken = auth ? (token ?? options.getToken()) : null;
     const headers: Record<string, string> = { Accept: "application/json" };
     if (usedToken) headers.Authorization = `Bearer ${usedToken}`;
-    const multipart =
-      typeof FormData !== "undefined" && body instanceof FormData;
+    const multipart = typeof FormData !== "undefined" && body instanceof FormData;
     if (body && !multipart) headers["Content-Type"] = "application/json";
     const controller = new AbortController();
     const abort = () => controller.abort();
@@ -47,22 +55,16 @@ export function createApiClient(options: {
     signal?.addEventListener("abort", abort, { once: true });
     const timer = setTimeout(abort, options.timeoutMs ?? 20000);
     try {
-      const response = await (options.fetch ?? fetch)(
-        `${options.baseUrl}${path}`,
-        {
-          method,
-          headers,
-          signal: controller.signal,
-          ...(body && {
-            body: multipart ? (body as FormData) : JSON.stringify(body),
-          }),
-        },
-      );
+      const response = await (options.fetch ?? fetch)(`${options.baseUrl}${path}`, {
+        method,
+        headers,
+        signal: controller.signal,
+        ...(body && {
+          body: multipart ? (body as FormData) : JSON.stringify(body),
+        }),
+      });
       const json: unknown = await response.json().catch(() => null);
-      const envelope =
-        json && typeof json === "object"
-          ? (json as Record<string, unknown>)
-          : null;
+      const envelope = json && typeof json === "object" ? (json as Record<string, unknown>) : null;
       const rawMessage = envelope?.message;
       const message =
         typeof rawMessage === "string"
@@ -79,13 +81,10 @@ export function createApiClient(options: {
       if (response.ok && envelope?.success === true && response.status < 300) {
         return { ok: true, data: undefined as T, message };
       }
-      if (response.status === 401 && usedToken)
-        options.onUnauthorized?.(usedToken);
+      if (response.status === 401 && usedToken) options.onUnauthorized?.(usedToken);
       const wait = message.match(/(?:wait|try again in)\s+(\d+)\s*s/i);
       if (response.status === 429 || wait) {
-        const rawRetry = Number(
-          wait?.[1] ?? response.headers.get("retry-after"),
-        );
+        const rawRetry = Number(wait?.[1] ?? response.headers.get("retry-after"));
         return {
           ok: false,
           reason: "rate_limited",
@@ -94,7 +93,13 @@ export function createApiClient(options: {
           retryAfter: rawRetry > 0 ? Math.ceil(rawRetry) : 60,
         };
       }
-      return { ok: false, reason: "failed", status: response.status, message };
+      return {
+        ok: false,
+        reason: "failed",
+        status: response.status,
+        message,
+        ...(json !== null && { body: json }),
+      };
     } catch {
       return signal?.aborted
         ? { ok: false, reason: "cancelled", status: 0, message: "" }
@@ -102,8 +107,7 @@ export function createApiClient(options: {
             ok: false,
             reason: "network",
             status: 0,
-            message:
-              "We couldn’t connect. Check your internet connection and try again.",
+            message: "We couldn’t connect. Check your internet connection and try again.",
           };
     } finally {
       clearTimeout(timer);

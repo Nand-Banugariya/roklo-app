@@ -21,7 +21,8 @@ export function useMessageStoreSync() {
     });
   });
   useRealtimeEvent<MessageStatusEvent>("inbox.message.status", (event) => {
-    if (event?.conversationId && event.conversationId !== openConversation()) void patchCachedStatus(event.messageId, event.deliveryStatus);
+    if (event?.conversationId && event.conversationId !== openConversation())
+      void patchCachedStatus(event.messageId, event.deliveryStatus);
   });
 }
 

@@ -17,12 +17,8 @@ const slice = createSlice({
   name: "workspace",
   initialState: initialWorkspaceState(),
   reducers: {
-    loadStarted(
-      state,
-      { payload }: PayloadAction<{ userId: string; requestId: string }>,
-    ) {
-      if (state.ownerId !== payload.userId)
-        Object.assign(state, initialWorkspaceState());
+    loadStarted(state, { payload }: PayloadAction<{ userId: string; requestId: string }>) {
+      if (state.ownerId !== payload.userId) Object.assign(state, initialWorkspaceState());
       state.ownerId = payload.userId;
       state.status = "loading";
       state.error = null;
@@ -51,58 +47,36 @@ const slice = createSlice({
       state.requests.load = null;
       state.detailError = null;
     },
-    loadFailed(
-      state,
-      { payload }: PayloadAction<{ requestId: string; message: string }>,
-    ) {
+    loadFailed(state, { payload }: PayloadAction<{ requestId: string; message: string }>) {
       if (state.requests.load !== payload.requestId) return;
       state.requests.load = null;
       state.status = "error";
       state.error = payload.message;
     },
-    detailStarted(
-      state,
-      { payload }: PayloadAction<{ id: string; requestId: string }>,
-    ) {
+    detailStarted(state, { payload }: PayloadAction<{ id: string; requestId: string }>) {
       if (state.activeId !== payload.id) return;
       state.requests.detail = payload.requestId;
       state.detailError = null;
     },
-    detailReceived(
-      state,
-      { payload }: PayloadAction<{ requestId: string; workspace: Workspace }>,
-    ) {
-      if (
-        state.requests.detail !== payload.requestId ||
-        state.activeId !== payload.workspace.id
-      )
+    detailReceived(state, { payload }: PayloadAction<{ requestId: string; workspace: Workspace }>) {
+      if (state.requests.detail !== payload.requestId || state.activeId !== payload.workspace.id)
         return;
-      const index = state.items.findIndex(
-        (item) => item.id === payload.workspace.id,
-      );
-      if (index >= 0)
-        state.items[index] = { ...state.items[index], ...payload.workspace };
+      const index = state.items.findIndex((item) => item.id === payload.workspace.id);
+      if (index >= 0) state.items[index] = { ...state.items[index], ...payload.workspace };
       state.requests.detail = null;
     },
     detailFailed(state, { payload }: PayloadAction<{ requestId: string }>) {
       if (state.requests.detail !== payload.requestId) return;
       state.requests.detail = null;
-      state.detailError =
-        "We couldn't refresh workspace details. Please try again.";
+      state.detailError = "We couldn't refresh workspace details. Please try again.";
     },
-    switchStarted(
-      state,
-      { payload }: PayloadAction<{ id: string; requestId: string }>,
-    ) {
+    switchStarted(state, { payload }: PayloadAction<{ id: string; requestId: string }>) {
       state.switchingId = payload.id;
       state.requests.switch = payload.requestId;
       state.switchError = null;
       state.requests.detail = null;
     },
-    switched(
-      state,
-      { payload }: PayloadAction<{ id: string; requestId: string }>,
-    ) {
+    switched(state, { payload }: PayloadAction<{ id: string; requestId: string }>) {
       if (state.requests.switch !== payload.requestId) return;
       state.activeId = payload.id;
       state.switchingId = null;
@@ -122,8 +96,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signedOut, () => initialWorkspaceState());
     builder.addCase(setUser, (state, action) => {
-      if (state.ownerId && state.ownerId !== action.payload.id)
-        return initialWorkspaceState();
+      if (state.ownerId && state.ownerId !== action.payload.id) return initialWorkspaceState();
     });
   },
 });

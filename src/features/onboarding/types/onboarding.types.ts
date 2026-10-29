@@ -42,9 +42,7 @@ export type RequestEmailCodeResult =
   | OnboardingFailure
   | { ok: false; reason: "email_taken" };
 export type VerifyEmailCodeResult =
-  | { ok: true }
-  | OnboardingFailure
-  | { ok: false; reason: "invalid_code" | "email_taken" };
+  { ok: true } | OnboardingFailure | { ok: false; reason: "invalid_code" | "email_taken" };
 
 export interface SavedSetup {
   version: 1;

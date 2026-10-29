@@ -4,8 +4,7 @@ export function captchaUrl(theme: "light" | "dark"): string | null {
   if (!env.turnstileSiteKey) return null;
   try {
     const url = new URL(env.turnstileUrl);
-    if (url.protocol !== "https:" && !(__DEV__ && url.protocol === "http:"))
-      return null;
+    if (url.protocol !== "https:" && !(__DEV__ && url.protocol === "http:")) return null;
     url.searchParams.set("sitekey", env.turnstileSiteKey);
     url.searchParams.set("theme", theme);
     return url.toString();

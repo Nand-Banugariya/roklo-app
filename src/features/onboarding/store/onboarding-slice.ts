@@ -56,12 +56,8 @@ const slice = createSlice({
   name: "onboarding",
   initialState: initialOnboardingState(),
   reducers: {
-    loadStarted(
-      state,
-      action: PayloadAction<{ userId: string; requestId: string }>,
-    ) {
-      if (state.ownerId !== action.payload.userId)
-        Object.assign(state, initialOnboardingState());
+    loadStarted(state, action: PayloadAction<{ userId: string; requestId: string }>) {
+      if (state.ownerId !== action.payload.userId) Object.assign(state, initialOnboardingState());
       state.ownerId = action.payload.userId;
       state.status = "loading";
       state.error = null;
@@ -87,25 +83,17 @@ const slice = createSlice({
       state.answers = prefillAnswers(user, saved);
       const steps = setupSteps(state.includeWorkspace);
       state.stepId =
-        saved?.userId === user.id && steps.includes(saved.stepId)
-          ? saved.stepId
-          : steps[0];
+        saved?.userId === user.id && steps.includes(saved.stepId) ? saved.stepId : steps[0];
       state.email = emptyEmail();
       if (state.answers.emailVerified) state.email.status = "verified";
     },
-    loadFailed(
-      state,
-      action: PayloadAction<{ requestId: string; message: string }>,
-    ) {
+    loadFailed(state, action: PayloadAction<{ requestId: string; message: string }>) {
       if (state.requests.load !== action.payload.requestId) return;
       state.requests.load = null;
       state.status = "error";
       state.error = action.payload.message;
     },
-    answersChanged(
-      state,
-      action: PayloadAction<Partial<Omit<SetupAnswers, "emailVerified">>>,
-    ) {
+    answersChanged(state, action: PayloadAction<Partial<Omit<SetupAnswers, "emailVerified">>>) {
       if (state.status !== "ready") return;
       const patch = action.payload;
       if (patch.email !== undefined && patch.email !== state.answers.email) {
@@ -139,8 +127,7 @@ const slice = createSlice({
       state.error = validationError(state.stepId, state.answers);
       if (state.error) return;
       const steps = setupSteps(state.includeWorkspace);
-      state.stepId =
-        steps[Math.min(steps.indexOf(state.stepId) + 1, steps.length - 1)];
+      state.stepId = steps[Math.min(steps.indexOf(state.stepId) + 1, steps.length - 1)];
     },
     previousStep(state) {
       if (state.status !== "ready") return;
@@ -159,14 +146,10 @@ const slice = createSlice({
       } else if (state.stepId === "source") state.answers.source = "";
       else return;
       const steps = setupSteps(state.includeWorkspace);
-      state.stepId =
-        steps[Math.min(steps.indexOf(state.stepId) + 1, steps.length - 1)];
+      state.stepId = steps[Math.min(steps.indexOf(state.stepId) + 1, steps.length - 1)];
       state.error = null;
     },
-    emailRequestStarted(
-      state,
-      action: PayloadAction<{ requestId: string; email: string }>,
-    ) {
+    emailRequestStarted(state, action: PayloadAction<{ requestId: string; email: string }>) {
       state.email = {
         ...emptyEmail(),
         status: "sending",
@@ -214,14 +197,10 @@ const slice = createSlice({
       state.email.status = "verifying";
       state.email.error = null;
     },
-    emailVerified(
-      state,
-      action: PayloadAction<{ requestId: string; email: string }>,
-    ) {
+    emailVerified(state, action: PayloadAction<{ requestId: string; email: string }>) {
       if (
         state.email.verifyId !== action.payload.requestId ||
-        emailIdentity(state.answers.email) !==
-          emailIdentity(action.payload.email)
+        emailIdentity(state.answers.email) !== emailIdentity(action.payload.email)
       )
         return;
       state.answers.emailVerified = true;
@@ -264,10 +243,7 @@ const slice = createSlice({
         state.email = { ...emptyEmail(), error: action.payload.message };
       }
     },
-    validationFailed(
-      state,
-      action: PayloadAction<{ step: SetupStepId; message: string }>,
-    ) {
+    validationFailed(state, action: PayloadAction<{ step: SetupStepId; message: string }>) {
       if (state.status !== "ready") return;
       state.stepId = action.payload.step;
       state.error = action.payload.message;
@@ -283,9 +259,7 @@ const slice = createSlice({
       if (state.requests.submit !== action.payload.requestId) return;
       state.requests.submit = null;
       state.status = "completed";
-      state.completion = action.payload.alreadyOnboarded
-        ? "already_onboarded"
-        : "created";
+      state.completion = action.payload.alreadyOnboarded ? "already_onboarded" : "created";
       state.profileRefreshFailed = action.payload.profileRefreshFailed;
       state.email = emptyEmail();
     },
@@ -297,8 +271,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signedOut, () => initialOnboardingState());
     builder.addCase(setUser, (state, action) => {
-      if (state.ownerId && state.ownerId !== action.payload.id)
-        return initialOnboardingState();
+      if (state.ownerId && state.ownerId !== action.payload.id) return initialOnboardingState();
     });
   },
 });

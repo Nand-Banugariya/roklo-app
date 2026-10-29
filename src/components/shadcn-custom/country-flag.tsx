@@ -3,13 +3,7 @@ import { Image } from "expo-image";
 import { countryFlagUrl } from "@/lib/auth/country-flags";
 import { getCountry } from "@/lib/auth/countries";
 
-export function CountryFlag({
-  code,
-  size = 20,
-}: {
-  code: string;
-  size?: number;
-}) {
+export function CountryFlag({ code, size = 20 }: { code: string; size?: number }) {
   return (
     <Image
       source={{ uri: countryFlagUrl(code) }}

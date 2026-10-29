@@ -1,7 +1,4 @@
-import type {
-  ApiError,
-  createApiClient,
-} from "../../../services/api/create-client";
+import type { ApiError, createApiClient } from "../../../services/api/create-client";
 import type {
   CallOptions,
   CompleteOnboardingResult,
@@ -15,10 +12,7 @@ import { emptyAnswers, logoError, stripEmailAlias } from "../utils/validation";
 
 const failure = (error: ApiError): OnboardingFailure => ({
   ok: false,
-  reason:
-    error.status === 401 || error.status === 403
-      ? "unauthorized"
-      : error.reason,
+  reason: error.status === 401 || error.status === 403 ? "unauthorized" : error.reason,
   ...(error.retryAfter && { retryAfter: error.retryAfter }),
 });
 
@@ -32,8 +26,7 @@ export function createOnboardingApi(
     call: CallOptions = {},
   ): Promise<CompleteOnboardingResult> {
     const includeWorkspace = options.includeWorkspace && !options.inviteToken;
-    if (includeWorkspace && logoError(options.logo))
-      return { ok: false, reason: "invalid_logo" };
+    if (includeWorkspace && logoError(options.logo)) return { ok: false, reason: "invalid_logo" };
     const onboardingDto = Object.fromEntries(
       Object.entries({
         name: answers.name.trim(),
@@ -50,8 +43,7 @@ export function createOnboardingApi(
     if (includeWorkspace) {
       form.append("workspaceName", answers.workspaceName.trim());
       const logo = options.logo;
-      if (logo?.kind === "web")
-        form.append("workspaceLogo", logo.file, logo.name);
+      if (logo?.kind === "web") form.append("workspaceLogo", logo.file, logo.name);
       // React Native FormData accepts URI parts; no Blob/File conversion is needed.
       if (logo?.kind === "native")
         form.append("workspaceLogo", {
@@ -87,8 +79,7 @@ export function createOnboardingApi(
         : { ok: false, reason: "failed" };
     if (result.message === "This email is already verified")
       return { ok: true, alreadyVerified: true };
-    if (result.message === "Email already exists")
-      return { ok: false, reason: "email_taken" };
+    if (result.message === "Email already exists") return { ok: false, reason: "email_taken" };
     return failure(result);
   }
 
@@ -97,15 +88,15 @@ export function createOnboardingApi(
     otp: string,
     call: CallOptions = {},
   ): Promise<VerifyEmailCodeResult> {
-    const result = await apiRequest(
-      "/settings/profile/email-verification/verify",
-      { ...call, method: "POST", body: { otpRef, otp } },
-    );
+    const result = await apiRequest("/settings/profile/email-verification/verify", {
+      ...call,
+      method: "POST",
+      body: { otpRef, otp },
+    });
     if (result.ok) return { ok: true };
     if (result.message === "Invalid or expired verification code")
       return { ok: false, reason: "invalid_code" };
-    if (result.message === "Email already exists")
-      return { ok: false, reason: "email_taken" };
+    if (result.message === "Email already exists") return { ok: false, reason: "email_taken" };
     return failure(result);
   }
 
@@ -118,9 +109,7 @@ export function createOnboardingApi(
       { includeWorkspace: false },
       call,
     );
-    return !result.ok && result.reason === "already_onboarded"
-      ? { ok: true as const }
-      : result;
+    return !result.ok && result.reason === "already_onboarded" ? { ok: true as const } : result;
   }
   return {
     completeOnboarding,

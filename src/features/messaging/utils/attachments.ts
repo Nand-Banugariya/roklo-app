@@ -21,20 +21,28 @@ function kindOf(path: string): AttachmentKind {
 export function attachmentName(url: string, stored?: string | null) {
   if (stored) return stored;
   let last = url.split("?")[0].split("/").pop() ?? "";
-  try { last = decodeURIComponent(last); } catch { /* keep the raw name */ }
+  try {
+    last = decodeURIComponent(last);
+  } catch {
+    /* keep the raw name */
+  }
   return last.replace(/^[^_]+__/, "") || "Attachment";
 }
 
 /** "PDF", "DOCX"; empty for a name without an extension. */
 export function attachmentExtension(name: string) {
-  const ext = name.includes(".") ? name.split(".").pop() ?? "" : "";
+  const ext = name.includes(".") ? (name.split(".").pop() ?? "") : "";
   return ext.length <= 5 ? ext.toUpperCase() : "";
 }
 
 /** Only web URLs open: a file:// or javascript: link from a message never reaches the system. */
 export const isWebUrl = (url: string) => /^https?:\/\//i.test(url);
 
-export interface GalleryItem { url: string; kind: "image" | "video"; name: string }
+export interface GalleryItem {
+  url: string;
+  kind: "image" | "video";
+  name: string;
+}
 
 // The media viewer's items, handed over by the bubble that opened it (URLs are too long for route params).
 const galleries = new Map<string, GalleryItem[]>();

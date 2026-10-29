@@ -20,7 +20,9 @@ export function clockTime(value: string | null | undefined) {
 /** Full short date: 7 Oct 2026. */
 export function shortDate(value: string | null | undefined) {
   const date = parse(value);
-  return date ? date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+  return date
+    ? date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "";
 }
 
 /** Conversation list stamp: time today, then Yesterday, weekday within a week, then a short date. */
@@ -31,8 +33,12 @@ export function chatTime(value: string | null | undefined, now = new Date()) {
   if (ago <= 0) return clockTime(value);
   if (ago === 1) return "Yesterday";
   if (ago < 7) return date.toLocaleDateString([], { weekday: "short" });
-  return date.toLocaleDateString([], date.getFullYear() === now.getFullYear()
-    ? { day: "numeric", month: "short" } : { day: "numeric", month: "short", year: "numeric" });
+  return date.toLocaleDateString(
+    [],
+    date.getFullYear() === now.getFullYear()
+      ? { day: "numeric", month: "short" }
+      : { day: "numeric", month: "short", year: "numeric" },
+  );
 }
 
 /** Thread separator label: Today, Yesterday, weekday within a week, then a full date. */
@@ -43,8 +49,12 @@ export function dayLabel(value: string | null | undefined, now = new Date()) {
   if (ago <= 0) return "Today";
   if (ago === 1) return "Yesterday";
   if (ago < 7) return date.toLocaleDateString([], { weekday: "long" });
-  return date.toLocaleDateString([], date.getFullYear() === now.getFullYear()
-    ? { day: "numeric", month: "long" } : { day: "numeric", month: "long", year: "numeric" });
+  return date.toLocaleDateString(
+    [],
+    date.getFullYear() === now.getFullYear()
+      ? { day: "numeric", month: "long" }
+      : { day: "numeric", month: "long", year: "numeric" },
+  );
 }
 
 export function sameDay(a: string | null | undefined, b: string | null | undefined) {

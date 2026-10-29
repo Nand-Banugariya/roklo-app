@@ -152,10 +152,7 @@ test("fresh onboarding keeps its success screen available until dismissed; exist
   store.dispatch(authModule.signedOut());
   assert.equal(selectors.selectShowOnboarding(store.getState()), false);
   const existing = await fixture({ isOnboarded: true });
-  assert.equal(
-    selectors.selectShowOnboarding(existing.store.getState()),
-    false,
-  );
+  assert.equal(selectors.selectShowOnboarding(existing.store.getState()), false);
 });
 
 test("logo picker normalizes native and web assets and rejects unsupported, unreadable or oversized images", () => {
@@ -174,10 +171,7 @@ test("logo picker normalizes native and web assets and rejects unsupported, unre
     type: "image/png",
   });
   const file = new Blob(["image"], { type: "image/jpeg" });
-  const web = workspaceLogoFromAsset(
-    { ...asset, name: "logo.jpg", file },
-    true,
-  );
+  const web = workspaceLogoFromAsset({ ...asset, name: "logo.jpg", file }, true);
   assert.equal(web.kind, "web");
   assert.equal(web.file, file);
   assert.equal(web.size, file.size);
@@ -221,10 +215,7 @@ test("onboarding uses the reference multipart DTO and omits unanswered fields an
     industry: "SAAS",
     useCases: ["inbox"],
   };
-  assert.deepEqual(
-    await api.completeOnboarding(data, { includeWorkspace: true }),
-    { ok: true },
-  );
+  assert.deepEqual(await api.completeOnboarding(data, { includeWorkspace: true }), { ok: true });
   assert.equal(calls[0].path, "/auth/onboarding");
   assert.equal(calls[0].method, "POST");
   assert.equal(calls[0].body.get("workspaceName"), "Acme");
@@ -318,64 +309,54 @@ test("invite setup omits workspace fields, and unverified email never enters the
 
 test("profile email APIs use the exact endpoints and normalize aliases", async () => {
   const request = apiFixture(ok({ otpRef: "ref-1" }));
-  assert.deepEqual(
-    await request.api.requestEmailCode(" ada+work@example.test "),
-    { ok: true, otpRef: "ref-1" },
-  );
-  assert.equal(
-    request.calls[0].path,
-    "/settings/profile/email-verification/request",
-  );
+  assert.deepEqual(await request.api.requestEmailCode(" ada+work@example.test "), {
+    ok: true,
+    otpRef: "ref-1",
+  });
+  assert.equal(request.calls[0].path, "/settings/profile/email-verification/request");
   assert.deepEqual(request.calls[0].body, { email: "ada@example.test" });
   const verify = apiFixture();
   await verify.api.verifyEmailCode("ref-1", "654321");
-  assert.equal(
-    verify.calls[0].path,
-    "/settings/profile/email-verification/verify",
-  );
+  assert.equal(verify.calls[0].path, "/settings/profile/email-verification/verify");
   assert.deepEqual(verify.calls[0].body, { otpRef: "ref-1", otp: "654321" });
 });
 
 test("setup maps already-onboarded, email conflicts, malformed OTP responses and invalid codes", async () => {
   assert.equal(
     (
-      await apiFixture(
-        failure("User already onboarded"),
-      ).api.completeOnboarding(answers(), { includeWorkspace: true })
+      await apiFixture(failure("User already onboarded")).api.completeOnboarding(answers(), {
+        includeWorkspace: true,
+      })
     ).reason,
     "already_onboarded",
   );
   assert.equal(
     (
-      await apiFixture(
-        failure("A user with this email already exists."),
-      ).api.completeOnboarding(answers(), { includeWorkspace: true })
-    ).reason,
-    "email_taken",
-  );
-  assert.deepEqual(
-    await apiFixture(
-      failure("This email is already verified"),
-    ).api.requestEmailCode("a@example.test"),
-    { ok: true, alreadyVerified: true },
-  );
-  assert.equal(
-    (
-      await apiFixture(failure("Email already exists")).api.requestEmailCode(
-        "a@example.test",
+      await apiFixture(failure("A user with this email already exists.")).api.completeOnboarding(
+        answers(),
+        { includeWorkspace: true },
       )
     ).reason,
     "email_taken",
   );
-  assert.equal(
-    (await apiFixture(ok({})).api.requestEmailCode("a@example.test")).reason,
-    "failed",
+  assert.deepEqual(
+    await apiFixture(failure("This email is already verified")).api.requestEmailCode(
+      "a@example.test",
+    ),
+    { ok: true, alreadyVerified: true },
   );
   assert.equal(
+    (await apiFixture(failure("Email already exists")).api.requestEmailCode("a@example.test"))
+      .reason,
+    "email_taken",
+  );
+  assert.equal((await apiFixture(ok({})).api.requestEmailCode("a@example.test")).reason, "failed");
+  assert.equal(
     (
-      await apiFixture(
-        failure("Invalid or expired verification code"),
-      ).api.verifyEmailCode("ref", "654321")
+      await apiFixture(failure("Invalid or expired verification code")).api.verifyEmailCode(
+        "ref",
+        "654321",
+      )
     ).reason,
     "invalid_code",
   );
@@ -398,9 +379,7 @@ test("new owners start with workspace, invitees start with About you, and option
   );
   owner.store.dispatch(actions.answersChanged({ email: "" }));
   owner.store.dispatch(actions.nextStep());
-  owner.store.dispatch(
-    actions.answersChanged({ industry: "SAAS", teamSize: "JUST_ME" }),
-  );
+  owner.store.dispatch(actions.answersChanged({ industry: "SAAS", teamSize: "JUST_ME" }));
   owner.store.dispatch(actions.stepSkipped());
   assert.equal(owner.store.getState().onboarding.stepId, "usage");
   assert.equal(owner.store.getState().onboarding.answers.industry, "");
@@ -418,18 +397,14 @@ test("saved emailVerified is reconciled with the server, not trusted from draft 
     answers: { ...answers(), email: "other@example.test", emailVerified: true },
   };
   assert.equal(
-    prefillAnswers(
-      { ...user, email: "ada@example.test", isEmailVerified: true },
-      saved,
-    ).emailVerified,
+    prefillAnswers({ ...user, email: "ada@example.test", isEmailVerified: true }, saved)
+      .emailVerified,
     false,
   );
   saved.answers.email = "ada+tag@example.test";
   assert.equal(
-    prefillAnswers(
-      { ...user, email: "ada@example.test", isEmailVerified: true },
-      saved,
-    ).emailVerified,
+    prefillAnswers({ ...user, email: "ada@example.test", isEmailVerified: true }, saved)
+      .emailVerified,
     true,
   );
   saved.userId = "different-account";
@@ -459,10 +434,7 @@ test("email verify keeps OTP out of Redux actions and persisted drafts; cooldown
   assert.equal(f.store.getState().onboarding.answers.emailVerified, true);
   assert.equal(f.store.getState().auth.user.email, "ada@example.test");
   assert.equal(JSON.stringify(f.recorded).includes("472819"), false);
-  assert.equal(
-    JSON.stringify(await f.services.drafts.read(user.id)).includes("472819"),
-    false,
-  );
+  assert.equal(JSON.stringify(await f.services.drafts.read(user.id)).includes("472819"), false);
 });
 
 test("email rate-limit deadlines use server retry seconds, and resend replaces the reference", async () => {
@@ -605,10 +577,7 @@ test("failed setup retains the draft and can be retried explicitly", async () =>
   });
   await f.store.dispatch(thunks.submitOnboarding());
   assert.equal(f.store.getState().onboarding.status, "ready");
-  assert.equal(
-    (await f.services.drafts.read(user.id)).answers.workspaceName,
-    "Acme",
-  );
+  assert.equal((await f.services.drafts.read(user.id)).answers.workspaceName, "Acme");
   f.services.api.completeOnboarding = async () => ({ ok: true });
   await f.store.dispatch(thunks.submitOnboarding());
   assert.equal(f.store.getState().onboarding.status, "completed");

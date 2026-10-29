@@ -7,11 +7,7 @@ import { INDUSTRIES, TEAM_SIZES } from "../../constants";
 import type { useOnboarding } from "../../hooks/use-onboarding";
 import { StepHeader } from "../step-header";
 
-export function BusinessStep({
-  flow,
-}: {
-  flow: ReturnType<typeof useOnboarding>;
-}) {
+export function BusinessStep({ flow }: { flow: ReturnType<typeof useOnboarding> }) {
   return (
     <View className="gap-7">
       <StepHeader
@@ -29,14 +25,8 @@ export function BusinessStep({
           />
         )}
       </CustomFormField>
-      <View
-        className="gap-3"
-        accessibilityRole="radiogroup"
-        accessibilityLabel="Team size"
-      >
-        <CustomText className="font-sans-semibold text-[13px]">
-          How big is your team?
-        </CustomText>
+      <View className="gap-3" accessibilityRole="radiogroup" accessibilityLabel="Team size">
+        <CustomText className="font-sans-semibold text-[13px]">How big is your team?</CustomText>
         {TEAM_SIZES.map((option) => (
           <CustomOptionCard
             key={option.value}
@@ -44,8 +34,7 @@ export function BusinessStep({
             selected={flow.answers.teamSize === option.value}
             onPress={() =>
               flow.updateAnswers({
-                teamSize:
-                  flow.answers.teamSize === option.value ? "" : option.value,
+                teamSize: flow.answers.teamSize === option.value ? "" : option.value,
               })
             }
           />

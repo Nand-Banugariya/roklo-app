@@ -11,8 +11,16 @@ export const JOINED_EVENT = "joined";
  * (lib/realtime/socket.ts): `join` with { userId, workspaceId } puts the socket in the user's room
  * and the workspace's. Rooms don't survive a reconnect, so it joins on every connect.
  */
-export function createRealtimeSocket({ baseUrl, getToken, userId, workspaceId }: {
-  baseUrl: string; getToken: () => string | null; userId: string; workspaceId: string;
+export function createRealtimeSocket({
+  baseUrl,
+  getToken,
+  userId,
+  workspaceId,
+}: {
+  baseUrl: string;
+  getToken: () => string | null;
+  userId: string;
+  workspaceId: string;
 }): Socket {
   const socket = io(baseUrl, {
     // Read on every (re)connect, so a reconnect never sends a stale token.
@@ -21,6 +29,8 @@ export function createRealtimeSocket({ baseUrl, getToken, userId, workspaceId }:
     transports: ["polling", "websocket"],
     autoConnect: false,
   });
-  socket.on("connect", () => { socket.emit("join", { userId, workspaceId }); });
+  socket.on("connect", () => {
+    socket.emit("join", { userId, workspaceId });
+  });
   return socket;
 }

@@ -32,8 +32,7 @@ export function createSetupDrafts(storage: {
         return null;
       }
     },
-    save: (draft) =>
-      mutate(() => storage.write(key(draft.userId), JSON.stringify(draft))),
+    save: (draft) => mutate(() => storage.write(key(draft.userId), JSON.stringify(draft))),
     clear: (userId) => mutate(() => storage.remove(key(userId))),
   };
 }

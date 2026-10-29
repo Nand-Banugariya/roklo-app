@@ -16,9 +16,7 @@ import { CustomText } from "@/components/shadcn-custom/customtext";
 import { useKeyboardScroll } from "@/features/auth/hooks/use-keyboard-scroll";
 import { cn } from "@/lib/utils";
 
-const FocusContext = createContext<(target: RefObject<View | null>) => void>(
-  () => undefined,
-);
+const FocusContext = createContext<(target: RefObject<View | null>) => void>(() => undefined);
 export const useSetupFocus = () => useContext(FocusContext);
 
 export function SetupLayout({
@@ -45,14 +43,8 @@ export function SetupLayout({
     }),
     [],
   );
-  const {
-    scrollRef,
-    viewportRef,
-    keyboardInset,
-    keyboardVisible,
-    scheduleReveal,
-    onScroll,
-  } = useKeyboardScroll(target);
+  const { scrollRef, viewportRef, keyboardInset, keyboardVisible, scheduleReveal, onScroll } =
+    useKeyboardScroll(target);
   useEffect(() => {
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   }, [current, scrollRef]);
@@ -67,12 +59,7 @@ export function SetupLayout({
         <View className="w-full max-w-[520px] flex-row items-center justify-between gap-4">
           <RokloWordmark width={130} height={25} />
           {onSignOut && (
-            <CustomButton
-              variant="ghost"
-              size="sm"
-              className="h-11 px-0"
-              onPress={onSignOut}
-            >
+            <CustomButton variant="ghost" size="sm" className="h-11 px-0" onPress={onSignOut}>
               Sign out
             </CustomButton>
           )}
@@ -104,12 +91,7 @@ export function SetupLayout({
           </View>
         )}
       </View>
-      <View
-        ref={viewportRef}
-        collapsable={false}
-        style={{ flex: 1 }}
-        onLayout={scheduleReveal}
-      >
+      <View ref={viewportRef} collapsable={false} style={{ flex: 1 }} onLayout={scheduleReveal}>
         <View style={{ flex: 1, paddingBottom: keyboardInset }}>
           <ScrollView
             ref={scrollRef}
@@ -134,9 +116,7 @@ export function SetupLayout({
                 style={{ flexGrow: 1 }}
               >
                 {children}
-                {footer && (
-                  <View className="grow justify-end pt-4">{footer}</View>
-                )}
+                {footer && <View className="grow justify-end pt-4">{footer}</View>}
               </View>
             </FocusContext.Provider>
           </ScrollView>

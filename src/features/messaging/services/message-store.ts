@@ -46,10 +46,15 @@ const ms = (iso: string) => {
   return Number.isNaN(value) ? 0 : value;
 };
 const parse = (json: string): ChatMessage | null => {
-  try { return JSON.parse(json) as ChatMessage; } catch { return null; }
+  try {
+    return JSON.parse(json) as ChatMessage;
+  } catch {
+    return null;
+  }
 };
 /** Only server copies are kept: a message still sending never is. */
-const storable = (messages: ChatMessage[]) => messages.filter((message) => !message.id.startsWith("local-"));
+const storable = (messages: ChatMessage[]) =>
+  messages.filter((message) => !message.id.startsWith("local-"));
 
 let owner: string | null = null;
 let ready: Promise<SQLite.SQLiteDatabase | null> | null = null;
@@ -74,7 +79,8 @@ export function setMessageStoreOwner(userId: string, workspaceId: string) {
 /** Opens the database for the current owner, wiping another owner's copy or an unknown layout. */
 async function open(key: string): Promise<SQLite.SQLiteDatabase> {
   let db = await SQLite.openDatabaseAsync(MESSAGE_STORE_DB);
-  const version = (await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version"))?.user_version ?? 0;
+  const version =
+    (await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version"))?.user_version ?? 0;
   if (version !== SCHEMA_VERSION && version !== 0) {
     // A layout this build doesn't know: it's only a cache, so start over.
     await db.closeAsync();
@@ -82,7 +88,9 @@ async function open(key: string): Promise<SQLite.SQLiteDatabase> {
     db = await SQLite.openDatabaseAsync(MESSAGE_STORE_DB);
   }
   await db.execAsync(`${SCHEMA}\nPRAGMA user_version = ${SCHEMA_VERSION};`);
-  const stored = await db.getFirstAsync<{ value: string }>("SELECT value FROM meta WHERE key = 'owner'");
+  const stored = await db.getFirstAsync<{ value: string }>(
+    "SELECT value FROM meta WHERE key = 'owner'",
+  );
   if (stored?.value !== key) {
     await db.withTransactionAsync(async () => {
       await db.runAsync("DELETE FROM messages");
@@ -97,7 +105,13 @@ function getDb(): Promise<SQLite.SQLiteDatabase | null> {
   if (unavailable || !owner) return Promise.resolve(null);
   if (!ready) {
     const key = owner;
-    const opening = open(key).then((db) => db, () => { unavailable = true; return null; });
+    const opening = open(key).then(
+      (db) => db,
+      () => {
+        unavailable = true;
+        return null;
+      },
+    );
     ready = opening;
   }
   return ready;
@@ -113,19 +127,33 @@ function onWriteError(error: unknown) {
 }
 
 /** Marks the chat as just written, keeping its number label and details when the caller doesn't know them. */
-async function touch(db: SQLite.SQLiteDatabase, conversationId: string, sessionId?: string, conversation?: Conversation) {
+async function touch(
+  db: SQLite.SQLiteDatabase,
+  conversationId: string,
+  sessionId?: string,
+  conversation?: Conversation,
+) {
   await db.runAsync(
     `INSERT INTO threads (conversation_id, session_id, updated_at, conversation_json) VALUES (?, ?, ?, ?)
      ON CONFLICT(conversation_id) DO UPDATE SET updated_at = excluded.updated_at,
        session_id = COALESCE(excluded.session_id, threads.session_id),
        conversation_json = COALESCE(excluded.conversation_json, threads.conversation_json)`,
-    conversationId, sessionId ?? null, Date.now(), conversation ? JSON.stringify(conversation) : null);
+    conversationId,
+    sessionId ?? null,
+    Date.now(),
+    conversation ? JSON.stringify(conversation) : null,
+  );
 }
 
 async function putRows(db: SQLite.SQLiteDatabase, messages: ChatMessage[]) {
   for (const message of messages) {
-    await db.runAsync("INSERT OR REPLACE INTO messages (id, conversation_id, created_ms, json) VALUES (?, ?, ?, ?)",
-      message.id, message.conversationId, ms(message.createdAt), JSON.stringify(message));
+    await db.runAsync(
+      "INSERT OR REPLACE INTO messages (id, conversation_id, created_ms, json) VALUES (?, ?, ?, ?)",
+      message.id,
+      message.conversationId,
+      ms(message.createdAt),
+      JSON.stringify(message),
+    );
   }
 }
 
@@ -143,18 +171,35 @@ async function dropChats(db: SQLite.SQLiteDatabase, conversationIds: string[]) {
 // ─── Reads ───────────────────────────────────────────────────────────────────
 
 /** One chat's cached messages, newest first (the thread's order), and its details; empty when nothing (or no store). */
-export function readCachedChat(conversationId: string): Promise<{ messages: ChatMessage[]; conversation: Conversation | null }> {
+export function readCachedChat(
+  conversationId: string,
+): Promise<{ messages: ChatMessage[]; conversation: Conversation | null }> {
   return serial(async () => {
     const db = await getDb();
     if (!db) return { messages: [], conversation: null };
     try {
       const rows = await db.getAllAsync<{ json: string }>(
-        "SELECT json FROM messages WHERE conversation_id = ? ORDER BY created_ms DESC, id DESC", conversationId);
+        "SELECT json FROM messages WHERE conversation_id = ? ORDER BY created_ms DESC, id DESC",
+        conversationId,
+      );
       const thread = await db.getFirstAsync<{ conversation_json: string | null }>(
-        "SELECT conversation_json FROM threads WHERE conversation_id = ?", conversationId);
+        "SELECT conversation_json FROM threads WHERE conversation_id = ?",
+        conversationId,
+      );
       let conversation: Conversation | null = null;
-      try { conversation = thread?.conversation_json ? JSON.parse(thread.conversation_json) as Conversation : null; } catch { /* details are optional */ }
-      return { messages: rows.map((row) => parse(row.json)).filter((message): message is ChatMessage => !!message), conversation };
+      try {
+        conversation = thread?.conversation_json
+          ? (JSON.parse(thread.conversation_json) as Conversation)
+          : null;
+      } catch {
+        /* details are optional */
+      }
+      return {
+        messages: rows
+          .map((row) => parse(row.json))
+          .filter((message): message is ChatMessage => !!message),
+        conversation,
+      };
     } catch {
       return { messages: [], conversation: null };
     }
@@ -167,7 +212,10 @@ export function hasCachedChat(conversationId: string): Promise<boolean> {
     const db = await getDb();
     if (!db) return false;
     try {
-      return !!(await db.getFirstAsync("SELECT 1 FROM threads WHERE conversation_id = ?", conversationId));
+      return !!(await db.getFirstAsync(
+        "SELECT 1 FROM threads WHERE conversation_id = ?",
+        conversationId,
+      ));
     } catch {
       return false;
     }
@@ -199,7 +247,12 @@ export function putCachedMessages(messages: ChatMessage[], sessionId?: string): 
  * lacks were deleted and go. When the cached copy ends before the page starts, there may be a gap between
  * them, so the whole cached copy is replaced. Also keeps the chat's details for its header.
  */
-export function replaceCachedWindow(conversationId: string, page: ChatMessage[], sessionId?: string, conversation?: Conversation): Promise<void> {
+export function replaceCachedWindow(
+  conversationId: string,
+  page: ChatMessage[],
+  sessionId?: string,
+  conversation?: Conversation,
+): Promise<void> {
   const rows = storable(page);
   if (!rows.length) return Promise.resolve();
   return serial(async () => {
@@ -213,13 +266,20 @@ export function replaceCachedWindow(conversationId: string, page: ChatMessage[],
     try {
       await db.withTransactionAsync(async () => {
         const cachedNewest = await db.getFirstAsync<{ created_ms: number }>(
-          "SELECT created_ms FROM messages WHERE conversation_id = ? ORDER BY created_ms DESC LIMIT 1", conversationId);
+          "SELECT created_ms FROM messages WHERE conversation_id = ? ORDER BY created_ms DESC LIMIT 1",
+          conversationId,
+        );
         if (cachedNewest && cachedNewest.created_ms < oldest) {
           await db.runAsync("DELETE FROM messages WHERE conversation_id = ?", conversationId);
         } else {
           const inWindow = await db.getAllAsync<{ id: string }>(
-            "SELECT id FROM messages WHERE conversation_id = ? AND created_ms BETWEEN ? AND ?", conversationId, oldest, newest);
-          for (const { id } of inWindow) if (!fresh.has(id)) await db.runAsync("DELETE FROM messages WHERE id = ?", id);
+            "SELECT id FROM messages WHERE conversation_id = ? AND created_ms BETWEEN ? AND ?",
+            conversationId,
+            oldest,
+            newest,
+          );
+          for (const { id } of inWindow)
+            if (!fresh.has(id)) await db.runAsync("DELETE FROM messages WHERE id = ?", id);
         }
         await putRows(db, rows);
         await touch(db, conversationId, sessionId, conversation);
@@ -236,8 +296,14 @@ export function deleteCachedNumber(sessionId: string): Promise<void> {
     const db = await getDb();
     if (!db) return;
     try {
-      const ids = await db.getAllAsync<{ conversation_id: string }>("SELECT conversation_id FROM threads WHERE session_id = ?", sessionId);
-      await dropChats(db, ids.map((row) => row.conversation_id));
+      const ids = await db.getAllAsync<{ conversation_id: string }>(
+        "SELECT conversation_id FROM threads WHERE session_id = ?",
+        sessionId,
+      );
+      await dropChats(
+        db,
+        ids.map((row) => row.conversation_id),
+      );
     } catch (error) {
       onWriteError(error);
     }
@@ -254,8 +320,15 @@ export function keepCachedNumbers(sessionIds: string[]): Promise<void> {
     if (!db) return;
     const current = new Set(sessionIds);
     try {
-      const threads = await db.getAllAsync<{ conversation_id: string; session_id: string | null }>("SELECT conversation_id, session_id FROM threads");
-      await dropChats(db, threads.filter((thread) => thread.session_id && !current.has(thread.session_id)).map((thread) => thread.conversation_id));
+      const threads = await db.getAllAsync<{ conversation_id: string; session_id: string | null }>(
+        "SELECT conversation_id, session_id FROM threads",
+      );
+      await dropChats(
+        db,
+        threads
+          .filter((thread) => thread.session_id && !current.has(thread.session_id))
+          .map((thread) => thread.conversation_id),
+      );
     } catch (error) {
       onWriteError(error);
     }
@@ -263,15 +336,25 @@ export function keepCachedNumbers(sessionIds: string[]): Promise<void> {
 }
 
 /** Moves a cached message's tick forward (never back); a no-op for one not cached. */
-export function patchCachedStatus(messageId: string, deliveryStatus: DeliveryStatus): Promise<void> {
+export function patchCachedStatus(
+  messageId: string,
+  deliveryStatus: DeliveryStatus,
+): Promise<void> {
   return serial(async () => {
     const db = await getDb();
     if (!db) return;
     try {
-      const row = await db.getFirstAsync<{ json: string }>("SELECT json FROM messages WHERE id = ?", messageId);
+      const row = await db.getFirstAsync<{ json: string }>(
+        "SELECT json FROM messages WHERE id = ?",
+        messageId,
+      );
       const message = row ? parse(row.json) : null;
       if (!message || !statusMovesForward(message.deliveryStatus, deliveryStatus)) return;
-      await db.runAsync("UPDATE messages SET json = ? WHERE id = ?", JSON.stringify({ ...message, deliveryStatus }), messageId);
+      await db.runAsync(
+        "UPDATE messages SET json = ? WHERE id = ?",
+        JSON.stringify({ ...message, deliveryStatus }),
+        messageId,
+      );
     } catch (error) {
       onWriteError(error);
     }
@@ -289,15 +372,29 @@ export function pruneCache(conversationId: string): Promise<void> {
     const db = await getDb();
     if (!db) return;
     try {
-      const total = (await db.getFirstAsync<{ n: number }>("SELECT COUNT(*) AS n FROM messages WHERE conversation_id = ?", conversationId))?.n ?? 0;
+      const total =
+        (
+          await db.getFirstAsync<{ n: number }>(
+            "SELECT COUNT(*) AS n FROM messages WHERE conversation_id = ?",
+            conversationId,
+          )
+        )?.n ?? 0;
       if (total > CACHE_MESSAGES_PER_CHAT) {
-        await db.runAsync(`DELETE FROM messages WHERE id IN (
-          SELECT id FROM messages WHERE conversation_id = ? ORDER BY created_ms ASC, id ASC LIMIT ?)`, conversationId, total - CACHE_MESSAGES_PER_CHAT);
+        await db.runAsync(
+          `DELETE FROM messages WHERE id IN (
+          SELECT id FROM messages WHERE conversation_id = ? ORDER BY created_ms ASC, id ASC LIMIT ?)`,
+          conversationId,
+          total - CACHE_MESSAGES_PER_CHAT,
+        );
       }
-      const threads = await db.getAllAsync<{ conversation_id: string }>("SELECT conversation_id FROM threads ORDER BY updated_at ASC");
+      const threads = await db.getAllAsync<{ conversation_id: string }>(
+        "SELECT conversation_id FROM threads ORDER BY updated_at ASC",
+      );
       if (threads.length <= CACHE_CHATS) return;
-      const evicted = threads.slice(0, threads.length - CACHE_CHATS)
-        .map((thread) => thread.conversation_id).filter((id) => id !== conversationId);
+      const evicted = threads
+        .slice(0, threads.length - CACHE_CHATS)
+        .map((thread) => thread.conversation_id)
+        .filter((id) => id !== conversationId);
       await dropChats(db, evicted);
     } catch (error) {
       onWriteError(error);
@@ -325,4 +422,6 @@ export function deleteMessageStore(): Promise<void> {
 }
 
 // The session only notifies on sign-out (and an expired token): the copy goes with it.
-session.subscribe(() => { if (!session.getToken()) void deleteMessageStore(); });
+session.subscribe(() => {
+  if (!session.getToken()) void deleteMessageStore();
+});

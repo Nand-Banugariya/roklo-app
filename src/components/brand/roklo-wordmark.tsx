@@ -5,8 +5,7 @@ import { useRokloTheme } from "@/hooks/use-roklo-theme";
 // Logo geometry (viewBox 0 0 3773 692), shared with the animated intro.
 export const ROKLO_BUBBLE_PATH =
   "M346.948 639.762L389.74 486.461C363.334 441.588 349.459 390.72 349.484 338.558C349.56 175.482 484.887 42.7773 651.159 42.7773C731.848 42.8022 807.59 73.6215 864.561 129.539C921.507 185.457 952.859 259.781 952.834 338.832C952.758 501.933 817.432 634.638 651.159 634.638C600.681 634.613 550.939 622.201 506.879 598.62L346.948 639.762ZM514.286 545.065C556.799 569.815 597.384 584.64 651.058 584.665C789.25 584.665 901.823 474.372 901.9 338.782C901.95 202.918 789.91 92.7748 651.261 92.725C512.967 92.725 400.469 203.018 400.419 338.583C400.393 393.929 416.932 435.369 444.707 478.725L419.367 569.467L514.286 545.065Z";
-export const ROKLO_TAIL_PATH =
-  "M401.304 594.246L437.67 467.506L531.415 561.761L401.304 594.246Z";
+export const ROKLO_TAIL_PATH = "M401.304 594.246L437.67 467.506L531.415 561.761L401.304 594.246Z";
 export const ROKLO_MEGAPHONE_PATH =
   "M500.747 317.212L780.029 233.842V433.931L500.747 367.235V317.212Z";
 export const ROKLO_HANDLE_PATH =
@@ -42,29 +41,11 @@ export function RokloWordmark({
           })}
       {...props}
     >
-      <Path
-        d={ROKLO_BUBBLE_PATH}
-        fill={colors["logo-mark"]}
-      />
-      <Ellipse
-        cx="651.341"
-        cy="341.281"
-        rx="253.657"
-        ry="248.743"
-        fill={colors["logo-mark"]}
-      />
-      <Path
-        d={ROKLO_TAIL_PATH}
-        fill={colors["logo-mark"]}
-      />
-      <Path
-        d={ROKLO_MEGAPHONE_PATH}
-        fill={colors["logo-glyph"]}
-      />
-      <Path
-        d={ROKLO_HANDLE_PATH}
-        fill={colors["logo-glyph"]}
-      />
+      <Path d={ROKLO_BUBBLE_PATH} fill={colors["logo-mark"]} />
+      <Ellipse cx="651.341" cy="341.281" rx="253.657" ry="248.743" fill={colors["logo-mark"]} />
+      <Path d={ROKLO_TAIL_PATH} fill={colors["logo-mark"]} />
+      <Path d={ROKLO_MEGAPHONE_PATH} fill={colors["logo-glyph"]} />
+      <Path d={ROKLO_HANDLE_PATH} fill={colors["logo-glyph"]} />
       <Path
         d={ROKLO_GLYPH_STROKE_PATH}
         stroke={colors["logo-glyph"]}
@@ -72,10 +53,7 @@ export function RokloWordmark({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <Path
-        d={ROKLO_TEXT_PATH}
-        fill={colors["logo-text"]}
-      />
+      <Path d={ROKLO_TEXT_PATH} fill={colors["logo-text"]} />
     </Svg>
   );
 }

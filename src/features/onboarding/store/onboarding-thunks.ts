@@ -1,18 +1,8 @@
 import { nanoid, type ThunkAction, type UnknownAction } from "@reduxjs/toolkit";
-import {
-  setUser,
-  onboardingCompleted,
-  profileEmailVerified,
-} from "../../auth/store/auth-slice";
+import { setUser, onboardingCompleted, profileEmailVerified } from "../../auth/store/auth-slice";
 import type { AuthUser } from "../../auth/types/auth.types";
-import {
-  onboardingActions as actions,
-  type OnboardingState,
-} from "./onboarding-slice";
-import type {
-  OnboardingServices,
-  WorkspaceLogo,
-} from "../types/onboarding.types";
+import { onboardingActions as actions, type OnboardingState } from "./onboarding-slice";
+import type { OnboardingServices, WorkspaceLogo } from "../types/onboarding.types";
 import {
   emailIdentity,
   isValidEmail,
@@ -41,12 +31,7 @@ export function loadOnboarding(
     const { user } = getState().auth;
     const token = services.getToken();
     const existing = getState().onboarding;
-    if (
-      !user ||
-      !token ||
-      existing.status === "loading" ||
-      existing.status === "submitting"
-    )
+    if (!user || !token || existing.status === "loading" || existing.status === "submitting")
       return;
     if (
       !options.force &&
@@ -69,8 +54,7 @@ export function loadOnboarding(
     if (result.ok && result.data?.id === user.id) {
       dispatch(setUser(result.data));
       dispatch(actions.initialized({ requestId, user: result.data, saved }));
-      if (result.data.isOnboarded)
-        void services.drafts.clear(user.id).catch(() => undefined);
+      if (result.data.isOnboarded) void services.drafts.clear(user.id).catch(() => undefined);
     } else
       dispatch(
         actions.loadFailed({
@@ -81,9 +65,7 @@ export function loadOnboarding(
   };
 }
 
-export function sendOnboardingEmailCode(
-  signal?: AbortSignal,
-): OnboardingThunk<Promise<void>> {
+export function sendOnboardingEmailCode(signal?: AbortSignal): OnboardingThunk<Promise<void>> {
   return async (dispatch, getState, services) => {
     const { user } = getState().auth;
     const token = services.getToken();
@@ -101,9 +83,7 @@ export function sendOnboardingEmailCode(
       return;
     }
     if (services.now() < setup.email.retryAvailableAt) {
-      dispatch(
-        actions.emailErrorSet("Please wait before requesting another code."),
-      );
+      dispatch(actions.emailErrorSet("Please wait before requesting another code."));
       return;
     }
     const email = stripEmailAlias(setup.answers.email);
@@ -171,8 +151,7 @@ export function verifyOnboardingEmailCode(
       return;
     }
     const email = stripEmailAlias(setup.answers.email);
-    if (emailIdentity(email) !== emailIdentity(setup.email.target ?? ""))
-      return;
+    if (emailIdentity(email) !== emailIdentity(setup.email.target ?? "")) return;
     const requestId = nanoid();
     dispatch(actions.emailVerificationStarted(requestId));
     const result = await services.api.verifyEmailCode(setup.email.otpRef, otp, {

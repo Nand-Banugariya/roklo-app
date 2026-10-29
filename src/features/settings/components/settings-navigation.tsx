@@ -4,10 +4,7 @@ import { Pressable } from "@/components/ui/pressable";
 import { CustomIcon } from "@/components/shadcn-custom/customicon";
 import { CustomText } from "@/components/shadcn-custom/customtext";
 import { cn } from "@/lib/utils";
-import {
-  SETTINGS_GROUPS,
-  type SettingsSectionId,
-} from "../config/settings-navigation";
+import { SETTINGS_GROUPS, type SettingsSectionId } from "../config/settings-navigation";
 
 export function SettingsNavigation({
   active,
@@ -40,10 +37,7 @@ export function SettingsNavigation({
         )
           return;
         scroll.scrollTo({
-          x: Math.max(
-            0,
-            offset.current + itemLeft - left - (width - itemWidth) / 2,
-          ),
+          x: Math.max(0, offset.current + itemLeft - left - (width - itemWidth) / 2),
           animated: true,
         });
       });
@@ -56,10 +50,7 @@ export function SettingsNavigation({
   return (
     <View
       ref={viewportRef}
-      className={cn(
-        "border-ink-200 bg-card",
-        wide ? "w-[208px] border-r" : "border-b",
-      )}
+      className={cn("border-ink-200 bg-card", wide ? "w-[208px] border-r" : "border-b")}
     >
       <ScrollView
         ref={scrollRef}
@@ -82,16 +73,11 @@ export function SettingsNavigation({
                 className="mb-1 px-3 font-sans-semibold text-[10px] uppercase tracking-[1px] text-ink-500 dark:text-white"
               >
                 {group.label}
-                {group.label === "Workspace" && workspaceName
-                  ? ` · ${workspaceName}`
-                  : ""}
+                {group.label === "Workspace" && workspaceName ? ` · ${workspaceName}` : ""}
               </CustomText>
             )}
             {group.items
-              .filter(
-                (item) =>
-                  canManage || group.label === "Account" || item.id === "team",
-              )
+              .filter((item) => canManage || group.label === "Account" || item.id === "team")
               .map((item) => {
                 const selected = item.id === active;
                 return (

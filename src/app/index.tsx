@@ -24,9 +24,7 @@ export default function Index() {
   return (
     <View className="flex-1 bg-brand-100">
       <AuthBackdrop />
-      <Redirect
-        href={!user ? "/login" : user.isOnboarded ? "/inbox" : "/setup"}
-      />
+      <Redirect href={!user ? "/login" : user.isOnboarded ? "/inbox" : "/setup"} />
     </View>
   );
 }

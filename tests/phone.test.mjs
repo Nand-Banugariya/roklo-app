@@ -2,28 +2,15 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { countries } from "country-data-list";
 
-import {
-  COUNTRIES,
-  filterCountries,
-  getCountry,
-} from "../src/lib/auth/countries.ts";
+import { COUNTRIES, filterCountries, getCountry } from "../src/lib/auth/countries.ts";
 import { countryFlagUrl } from "../src/lib/auth/country-flags.ts";
-import {
-  isValidPhone,
-  sanitizePhone,
-  formatPhone,
-} from "../src/lib/auth/phone.ts";
+import { isValidPhone, sanitizePhone, formatPhone } from "../src/lib/auth/phone.ts";
 
 test("country picker uses active country-data-list entries supported for phone validation", () => {
   assert.ok(COUNTRIES.length > 200);
-  assert.equal(
-    new Set(COUNTRIES.map((country) => country.code)).size,
-    COUNTRIES.length,
-  );
+  assert.equal(new Set(COUNTRIES.map((country) => country.code)).size, COUNTRIES.length);
   for (const country of COUNTRIES) {
-    const data = countries.all.find(
-      (entry) => entry.alpha2.toLowerCase() === country.code,
-    );
+    const data = countries.all.find((entry) => entry.alpha2.toLowerCase() === country.code);
     assert.equal(country.name, data?.name);
     assert.notEqual(data?.status, "deleted");
     assert.notEqual(data?.ioc, "PRK");
@@ -53,12 +40,6 @@ test("phone paste removes the selected calling code without losing significant n
 });
 
 test("native flags use react-circle-flags assets and its supported-country fallback", () => {
-  assert.equal(
-    countryFlagUrl("IN"),
-    "https://react-circle-flags.pages.dev/in.svg",
-  );
-  assert.equal(
-    countryFlagUrl("unknown"),
-    "https://react-circle-flags.pages.dev/xx.svg",
-  );
+  assert.equal(countryFlagUrl("IN"), "https://react-circle-flags.pages.dev/in.svg");
+  assert.equal(countryFlagUrl("unknown"), "https://react-circle-flags.pages.dev/xx.svg");
 });

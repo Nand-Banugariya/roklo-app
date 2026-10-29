@@ -11,5 +11,7 @@ import { cn } from "@/lib/utils";
  */
 export function MotionPressable({ className, ...props }: ComponentProps<typeof Pressable>) {
   const reducedMotion = useReducedMotion();
-  return <Pressable {...props} className={cn(!reducedMotion && "active:scale-[0.98]", className)} />;
+  return (
+    <Pressable {...props} className={cn(!reducedMotion && "active:scale-[0.98]", className)} />
+  );
 }

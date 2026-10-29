@@ -19,8 +19,7 @@ export function useWorkspaceLogo() {
     };
   }, []);
   useEffect(() => {
-    if (Platform.OS === "web" && preview)
-      return () => URL.revokeObjectURL(preview);
+    if (Platform.OS === "web" && preview) return () => URL.revokeObjectURL(preview);
   }, [preview]);
 
   async function choose() {
@@ -54,8 +53,7 @@ export function useWorkspaceLogo() {
     } catch (cause) {
       if (mounted.current)
         setError(
-          cause instanceof Error &&
-            /^(Choose |We couldn't read)/.test(cause.message)
+          cause instanceof Error && /^(Choose |We couldn't read)/.test(cause.message)
             ? cause.message
             : "We couldn't open your files. Please try again.",
         );

@@ -1,10 +1,4 @@
-import {
-  Bell,
-  Inbox,
-  Megaphone,
-  Users,
-  type LucideIcon,
-} from "lucide-react-native";
+import { Bell, Inbox, Megaphone, Users, type LucideIcon } from "lucide-react-native";
 import { View } from "react-native";
 import { CustomOptionCard } from "@/components/shadcn-custom/customoptioncard";
 import { CustomText } from "@/components/shadcn-custom/customtext";
@@ -18,11 +12,7 @@ const icons: Record<UseCaseId, LucideIcon> = {
   reminders: Bell,
   team: Users,
 };
-export function UsageStep({
-  flow,
-}: {
-  flow: ReturnType<typeof useOnboarding>;
-}) {
+export function UsageStep({ flow }: { flow: ReturnType<typeof useOnboarding> }) {
   return (
     <View className="gap-7">
       <StepHeader
@@ -57,8 +47,7 @@ export function UsageStep({
             selected={flow.answers.volume === option.value}
             onPress={() =>
               flow.updateAnswers({
-                volume:
-                  flow.answers.volume === option.value ? "" : option.value,
+                volume: flow.answers.volume === option.value ? "" : option.value,
               })
             }
           />

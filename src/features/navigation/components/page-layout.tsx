@@ -31,38 +31,38 @@ export function PageLayout({
   const disabled = workspace?.status === "DISABLED" && !accountPage;
   const page = (
     <View className="flex-1 bg-card">
-    {!tab && !hideHeader && <ScreenHeader title={title} />}
-    <ScrollView
-      className="flex-1 bg-ink-50"
-      contentContainerStyle={{ flexGrow: 1 }}
-      contentContainerClassName="items-center"
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-    >
-      <View
-        key={workspace?.id ?? "workspace"}
-        className="w-full max-w-[1100px] gap-6 px-5 pb-8 pt-7 sm:px-8 sm:pt-9"
+      {!tab && !hideHeader && <ScreenHeader title={title} />}
+      <ScrollView
+        className="flex-1 bg-ink-50"
+        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerClassName="items-center"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
-        <View className="gap-2">
-          <CustomText className="text-sm leading-6 text-ink-600 dark:text-white">
-            {description}
-          </CustomText>
-        </View>
-        {disabled ? (
-          <View className="gap-5 py-8">
-            <CustomAlert tone="warning" title="Workspace disabled">
-              This workspace has been disabled. Choose another workspace or
-              contact your workspace owner.
-            </CustomAlert>
-            <CustomButton size="xl" onPress={() => openPanel("workspaces")}>
-              Choose a workspace
-            </CustomButton>
+        <View
+          key={workspace?.id ?? "workspace"}
+          className="w-full max-w-[1100px] gap-6 px-5 pb-8 pt-7 sm:px-8 sm:pt-9"
+        >
+          <View className="gap-2">
+            <CustomText className="text-sm leading-6 text-ink-600 dark:text-white">
+              {description}
+            </CustomText>
           </View>
-        ) : (
-          children
-        )}
-      </View>
-    </ScrollView>
+          {disabled ? (
+            <View className="gap-5 py-8">
+              <CustomAlert tone="warning" title="Workspace disabled">
+                This workspace has been disabled. Choose another workspace or contact your workspace
+                owner.
+              </CustomAlert>
+              <CustomButton size="xl" onPress={() => openPanel("workspaces")}>
+                Choose a workspace
+              </CustomButton>
+            </View>
+          ) : (
+            children
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
   return tab ? <TabScreen tab={tab}>{page}</TabScreen> : page;

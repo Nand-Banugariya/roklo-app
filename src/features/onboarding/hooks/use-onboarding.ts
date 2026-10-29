@@ -29,16 +29,14 @@ export function useOnboarding() {
     initialize: (force = false) => dispatch(loadOnboarding({ force })),
     updateAnswers: (patch: Partial<Omit<SetupAnswers, "emailVerified">>) =>
       dispatch(onboardingActions.answersChanged(patch)),
-    toggleUseCase: (value: UseCaseId) =>
-      dispatch(onboardingActions.useCaseToggled(value)),
+    toggleUseCase: (value: UseCaseId) => dispatch(onboardingActions.useCaseToggled(value)),
     next: () => dispatch(onboardingActions.nextStep()),
     back: () => dispatch(onboardingActions.previousStep()),
     skip: () => dispatch(onboardingActions.stepSkipped()),
     requestEmailCode: () => dispatch(sendOnboardingEmailCode()),
     clearEmailError: () => dispatch(onboardingActions.emailErrorSet(null)),
     verifyEmailCode: (otp: string) => dispatch(verifyOnboardingEmailCode(otp)),
-    submit: (
-      options: { logo?: WorkspaceLogo | null; inviteToken?: string } = {},
-    ) => dispatch(submitOnboarding(options)),
+    submit: (options: { logo?: WorkspaceLogo | null; inviteToken?: string } = {}) =>
+      dispatch(submitOnboarding(options)),
   };
 }

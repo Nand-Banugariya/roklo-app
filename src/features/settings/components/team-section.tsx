@@ -1,11 +1,4 @@
-import {
-  Clock,
-  Plus,
-  Search,
-  UserPlus,
-  Users,
-  UsersRound,
-} from "lucide-react-native";
+import { Clock, Plus, Search, UserPlus, Users, UsersRound } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { CustomButton } from "@/components/shadcn-custom/custombutton";
@@ -34,128 +27,116 @@ export function TeamSection({ canManage }: { canManage: boolean }) {
   }
   return (
     <>
-      {!dialog && <>
-      <View className="flex-row flex-wrap gap-3">
-        {[
-          { label: "Members", icon: Users },
-          { label: "Teams", icon: UsersRound },
-          { label: "Pending invites", icon: Clock },
-        ].map(({ label, icon }) => (
-          <View
-            key={label}
-            className="min-w-[120px] flex-1 gap-3 rounded-xl border border-ink-200 bg-card p-4"
-          >
-            <View className="flex-row items-center gap-2">
-              <CustomIcon as={icon} size={17} className="text-brand-700" />
-              <CustomText className="text-xs text-ink-600 dark:text-white">
-                {label}
-              </CustomText>
-            </View>
-            <CustomText className="font-sans-semibold text-2xl dark:text-white">
-              —
-            </CustomText>
-          </View>
-        ))}
-      </View>
-      <SettingsSection
-        title="Your team"
-        description="Manage teammates, roles and the teams they work in."
-        action={
-          canManage ? (
-            <CustomButton
-              variant="secondary"
-              size="xl"
-              onPress={() => open("invite")}
-              leadingIcon={
-                <CustomIcon as={UserPlus} size={17} className="text-ink-700" />
-              }
-            >
-              Invite teammate
-            </CustomButton>
-          ) : undefined
-        }
-      >
-        <View
-          className="flex-row gap-2 border-b border-ink-200 pb-3"
-          role="tablist"
-          accessibilityLabel="Team views"
-        >
-          {(["members", "teams"] as const).map((item) => (
-            <Pressable
-              key={item}
-              role="tab"
-              accessibilityLabel={item === "members" ? "Members" : "Teams"}
-              aria-selected={tab === item}
-              accessibilityState={{ selected: tab === item }}
-              onPress={() => {
-                setTab(item);
-                setQuery("");
-              }}
-              className={cn(
-                "min-h-11 flex-1 items-center justify-center rounded-lg px-4",
-                tab === item && "bg-brand-50",
-              )}
-            >
-              <CustomText
-                className={cn(
-                  "text-sm dark:text-white",
-                  tab === item && "font-sans-semibold text-brand-800",
-                )}
+      {!dialog && (
+        <>
+          <View className="flex-row flex-wrap gap-3">
+            {[
+              { label: "Members", icon: Users },
+              { label: "Teams", icon: UsersRound },
+              { label: "Pending invites", icon: Clock },
+            ].map(({ label, icon }) => (
+              <View
+                key={label}
+                className="min-w-[120px] flex-1 gap-3 rounded-xl border border-ink-200 bg-card p-4"
               >
-                {item === "members" ? "Members" : "Teams"}
-              </CustomText>
-            </Pressable>
-          ))}
-        </View>
-        <View className="flex-row items-center gap-2">
-          <CustomIcon as={Search} size={18} className="text-ink-500" />
-          <CustomInput
-            size="xl"
-            className="flex-1 dark:text-white"
-            value={query}
-            onChangeText={setQuery}
-            placeholder={
-              tab === "members" ? "Search teammates" : "Search teams"
+                <View className="flex-row items-center gap-2">
+                  <CustomIcon as={icon} size={17} className="text-brand-700" />
+                  <CustomText className="text-xs text-ink-600 dark:text-white">{label}</CustomText>
+                </View>
+                <CustomText className="font-sans-semibold text-2xl dark:text-white">—</CustomText>
+              </View>
+            ))}
+          </View>
+          <SettingsSection
+            title="Your team"
+            description="Manage teammates, roles and the teams they work in."
+            action={
+              canManage ? (
+                <CustomButton
+                  variant="secondary"
+                  size="xl"
+                  onPress={() => open("invite")}
+                  leadingIcon={<CustomIcon as={UserPlus} size={17} className="text-ink-700" />}
+                >
+                  Invite teammate
+                </CustomButton>
+              ) : undefined
             }
-            accessibilityLabel={
-              tab === "members" ? "Search teammates" : "Search teams"
-            }
-          />
-        </View>
-        <View className="items-center gap-3 rounded-xl border border-dashed border-ink-250 px-5 py-9">
-          <CustomIcon
-            as={tab === "members" ? Users : UsersRound}
-            size={32}
-            className="text-brand-700"
-          />
-          <CustomText className="text-center font-sans-semibold text-base dark:text-white">
-            {tab === "members"
-              ? "A shared space for your team"
-              : "Bring the right people together"}
-          </CustomText>
-          <CustomText className="max-w-[300px] text-center text-[13px] leading-5 text-ink-600 dark:text-white">
-            {tab === "members"
-              ? "Teammates, roles and pending invitations will appear here."
-              : "Organize teammates into teams for shared conversations."}
-          </CustomText>
-          {canManage && (
-            <CustomButton
-              size="xl"
-              onPress={() => open(tab === "members" ? "invite" : "team")}
-              leadingIcon={
-                <CustomIcon
-                  as={Plus}
-                  size={17}
-                  className="text-primary-foreground"
-                />
-              }
+          >
+            <View
+              className="flex-row gap-2 border-b border-ink-200 pb-3"
+              role="tablist"
+              accessibilityLabel="Team views"
             >
-              {tab === "members" ? "Invite teammate" : "Create team"}
-            </CustomButton>
-          )}
-        </View>
-      </SettingsSection>
-      </>}
+              {(["members", "teams"] as const).map((item) => (
+                <Pressable
+                  key={item}
+                  role="tab"
+                  accessibilityLabel={item === "members" ? "Members" : "Teams"}
+                  aria-selected={tab === item}
+                  accessibilityState={{ selected: tab === item }}
+                  onPress={() => {
+                    setTab(item);
+                    setQuery("");
+                  }}
+                  className={cn(
+                    "min-h-11 flex-1 items-center justify-center rounded-lg px-4",
+                    tab === item && "bg-brand-50",
+                  )}
+                >
+                  <CustomText
+                    className={cn(
+                      "text-sm dark:text-white",
+                      tab === item && "font-sans-semibold text-brand-800",
+                    )}
+                  >
+                    {item === "members" ? "Members" : "Teams"}
+                  </CustomText>
+                </Pressable>
+              ))}
+            </View>
+            <View className="flex-row items-center gap-2">
+              <CustomIcon as={Search} size={18} className="text-ink-500" />
+              <CustomInput
+                size="xl"
+                className="flex-1 dark:text-white"
+                value={query}
+                onChangeText={setQuery}
+                placeholder={tab === "members" ? "Search teammates" : "Search teams"}
+                accessibilityLabel={tab === "members" ? "Search teammates" : "Search teams"}
+              />
+            </View>
+            <View className="items-center gap-3 rounded-xl border border-dashed border-ink-250 px-5 py-9">
+              <CustomIcon
+                as={tab === "members" ? Users : UsersRound}
+                size={32}
+                className="text-brand-700"
+              />
+              <CustomText className="text-center font-sans-semibold text-base dark:text-white">
+                {tab === "members"
+                  ? "A shared space for your team"
+                  : "Bring the right people together"}
+              </CustomText>
+              <CustomText className="max-w-[300px] text-center text-[13px] leading-5 text-ink-600 dark:text-white">
+                {tab === "members"
+                  ? "Teammates, roles and pending invitations will appear here."
+                  : "Organize teammates into teams for shared conversations."}
+              </CustomText>
+              {canManage && (
+                <CustomButton
+                  size="xl"
+                  onPress={() => open(tab === "members" ? "invite" : "team")}
+                  leadingIcon={
+                    <CustomIcon as={Plus} size={17} className="text-primary-foreground" />
+                  }
+                >
+                  {tab === "members" ? "Invite teammate" : "Create team"}
+                </CustomButton>
+              )}
+            </View>
+          </SettingsSection>
+        </>
+      )}
       {dialog && (
         <SettingsInlineForm
           open
@@ -170,11 +151,7 @@ export function TeamSection({ canManage }: { canManage: boolean }) {
           <View className="gap-5">
             {dialog === "invite" ? (
               <>
-                <CustomFormField
-                  id="settings-invite-phone"
-                  label="WhatsApp number"
-                  required
-                >
+                <CustomFormField id="settings-invite-phone" label="WhatsApp number" required>
                   {(control) => (
                     <CustomInput
                       {...control}
@@ -202,11 +179,7 @@ export function TeamSection({ canManage }: { canManage: boolean }) {
                 </CustomFormField>
               </>
             ) : (
-              <CustomFormField
-                id="settings-team-name"
-                label="Team name"
-                required
-              >
+              <CustomFormField id="settings-team-name" label="Team name" required>
                 {(control) => (
                   <CustomInput
                     {...control}

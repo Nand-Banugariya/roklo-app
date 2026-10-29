@@ -42,13 +42,7 @@ export function CustomNavItem({
         as={icon}
         size={21}
         strokeWidth={active ? 2 : 1.7}
-        className={
-          destructive
-            ? "text-error-fg"
-            : active
-              ? "text-brand-700"
-              : "text-ink-600"
-        }
+        className={destructive ? "text-error-fg" : active ? "text-brand-700" : "text-ink-600"}
       />
       <View className="flex-1 gap-0.5">
         <CustomText

@@ -79,17 +79,11 @@ export const APP_DESTINATIONS = [
 ] as const;
 export type DestinationId = (typeof APP_DESTINATIONS)[number]["id"];
 export type AppDestination = (typeof APP_DESTINATIONS)[number];
-export const PRIMARY_DESTINATIONS: readonly DestinationId[] = [
-  "inbox",
-  "broadcasts",
-  "contacts",
-];
+export const PRIMARY_DESTINATIONS: readonly DestinationId[] = ["inbox", "broadcasts", "contacts"];
 export function activeDestination(pathname: string) {
   const path = pathname.split(/[?#]/)[0];
   return (
-    APP_DESTINATIONS.find(
-      (item) => path === item.href || path.startsWith(`${item.href}/`),
-    ) ?? null
+    APP_DESTINATIONS.find((item) => path === item.href || path.startsWith(`${item.href}/`)) ?? null
   );
 }
 export const isPrimaryDestination = (id?: string) =>

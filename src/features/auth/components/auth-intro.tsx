@@ -82,19 +82,12 @@ function Bubble({
   const progress = useSharedValue(0);
   const tick = useSharedValue(0);
   useEffect(() => {
-    progress.value = withDelay(
-      delay,
-      withSpring(1, { damping: 12, stiffness: 190, mass: 0.7 }),
-    );
-    if (ticks)
-      tick.value = withDelay(ticks.at, withTiming(1, { duration: 220 }));
+    progress.value = withDelay(delay, withSpring(1, { damping: 12, stiffness: 190, mass: 0.7 }));
+    if (ticks) tick.value = withDelay(ticks.at, withTiming(1, { duration: 220 }));
   }, [delay, progress, tick, ticks]);
   const style = useAnimatedStyle(() => ({
     opacity: Math.min(1, progress.value * 1.8),
-    transform: [
-      { translateY: (1 - progress.value) * 18 },
-      { scale: 0.7 + progress.value * 0.3 },
-    ],
+    transform: [{ translateY: (1 - progress.value) * 18 }, { scale: 0.7 + progress.value * 0.3 }],
   }));
   const tickStyle = useAnimatedStyle(() => ({
     opacity: tick.value,
@@ -169,10 +162,7 @@ function Dot({ index, color }: { index: number; color: string }) {
   }));
   return (
     <Animated.View
-      style={[
-        { width: 8, height: 8, borderRadius: 4, backgroundColor: color },
-        style,
-      ]}
+      style={[{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }, style]}
     />
   );
 }
@@ -189,17 +179,11 @@ function Typing({
 }) {
   const visible = useSharedValue(0);
   useEffect(() => {
-    visible.value = withDelay(
-      TYPING_AT,
-      withSpring(1, { damping: 12, stiffness: 190, mass: 0.7 }),
-    );
+    visible.value = withDelay(TYPING_AT, withSpring(1, { damping: 12, stiffness: 190, mass: 0.7 }));
   }, [visible]);
   const style = useAnimatedStyle(() => ({
     opacity: Math.min(1, visible.value * 1.8),
-    transform: [
-      { translateY: (1 - visible.value) * 14 },
-      { scale: 0.7 + visible.value * 0.3 },
-    ],
+    transform: [{ translateY: (1 - visible.value) * 14 }, { scale: 0.7 + visible.value * 0.3 }],
   }));
   return (
     <Animated.View
@@ -234,13 +218,7 @@ function Typing({
  * Roklo logo mark. The megaphone is drawn stroke by stroke. Tap to skip. With
  * reduced motion it only holds the finished mark briefly.
  */
-export function AuthIntro({
-  onDone,
-  tinted = true,
-}: {
-  onDone: () => void;
-  tinted?: boolean;
-}) {
+export function AuthIntro({ onDone, tinted = true }: { onDone: () => void; tinted?: boolean }) {
   const { colors } = useRokloTheme();
   const reduced = useReducedMotion();
   const { width } = useWindowDimensions();
@@ -312,10 +290,7 @@ export function AuthIntro({
         withTiming(0, { duration: EXIT_MS, easing: Easing.out(Easing.quad) }),
       );
     }
-    const timer = setTimeout(
-      finish,
-      reduced ? REDUCED_HOLD : EXIT_AT + EXIT_MS,
-    );
+    const timer = setTimeout(finish, reduced ? REDUCED_HOLD : EXIT_AT + EXIT_MS);
     return () => clearTimeout(timer);
     // The timeline is set up once for the screen's lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -354,10 +329,7 @@ export function AuthIntro({
     >
       <AuthBackdrop />
       <Animated.View
-        style={[
-          { flex: 1, alignItems: "center", justifyContent: "center" },
-          screenStyle,
-        ]}
+        style={[{ flex: 1, alignItems: "center", justifyContent: "center" }, screenStyle]}
       >
         <View
           style={{
@@ -381,9 +353,7 @@ export function AuthIntro({
                 justifyContent: "center",
               }}
             >
-              <Animated.View
-                style={[{ width: stackWidth, gap: 10 }, stackStyle]}
-              >
+              <Animated.View style={[{ width: stackWidth, gap: 10 }, stackStyle]}>
                 <Bubble
                   side="in"
                   delay={REPLY_IN_AT}
@@ -411,12 +381,7 @@ export function AuthIntro({
             </View>
           )}
           <Animated.View style={[{ zIndex: 1 }, markStyle]}>
-            <Svg
-              width={markW}
-              height={markH}
-              viewBox="330 30 640 620"
-              fill="none"
-            >
+            <Svg width={markW} height={markH} viewBox="330 30 640 620" fill="none">
               <Path d={ROKLO_BUBBLE_PATH} fill={colors["logo-mark"]} />
               <Ellipse
                 cx="651.341"
@@ -458,12 +423,7 @@ export function AuthIntro({
               textStyle,
             ]}
           >
-            <Svg
-              width={textW}
-              height={textH}
-              viewBox="1120 93 2269 469"
-              fill="none"
-            >
+            <Svg width={textW} height={textH} viewBox="1120 93 2269 469" fill="none">
               <Path d={ROKLO_TEXT_PATH} fill={colors["logo-text"]} />
             </Svg>
           </Animated.View>

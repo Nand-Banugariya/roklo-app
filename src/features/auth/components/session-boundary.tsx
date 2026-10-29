@@ -27,8 +27,7 @@ export function SessionBoundary({ children }: PropsWithChildren) {
       <SafeAreaView className="flex-1 items-center justify-center bg-ink-50 px-6">
         <View className="w-full max-w-sm items-center gap-8">
           <CustomAlert tone="warning">
-            We couldn’t restore your session. Check your connection and try
-            again.
+            We couldn’t restore your session. Check your connection and try again.
           </CustomAlert>
           <CustomButton size="xl" fullWidth onPress={retryRestore}>
             Try again

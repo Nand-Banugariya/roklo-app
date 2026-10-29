@@ -3,9 +3,165 @@ import "./register-typescript.mjs";
 import { test } from "node:test";
 import { createApiClient } from "../src/services/api/create-client.ts";
 import { createMessagingApi } from "../src/features/messaging/services/messaging-api.ts";
-import { chooseNumber, connectionState, isConnected, numberName, numberPhone } from "../src/features/messaging/types.ts";
+import {
+  chooseNumber,
+  connectionState,
+  isConnected,
+  numberName,
+  numberPhone,
+  numberSharedWith,
+} from "../src/features/messaging/types.ts";
+import {
+  createPreviewMentionResolver,
+  hasNumericMention,
+  mentionRuns,
+  resolveMentionText,
+} from "../src/features/messaging/utils/mentions.ts";
 
-const number = (id, connected = true) => ({ id, status: connected ? "WORKING" : "STOPPED", isWhatsAppConnected: connected });
+const number = (id, connected = true) => ({
+  id,
+  status: connected ? "WORKING" : "STOPPED",
+  isWhatsAppConnected: connected,
+});
+
+const mentionPeople = [
+  { number: "23984327598432", name: "Priya Shah", mobileNumber: "919876543210" },
+  { number: "919999999999", name: "Kabir Khan", mobileNumber: "919999999999" },
+];
+
+test("WhatsApp group mentions display resolved names, preserving punctuation, unknown ids and source text", () => {
+  const body = "Hi @23984327598432, ask (@919999999999@c.us)! @23984327598432@lid and @123456.";
+  assert.equal(
+    resolveMentionText(body, mentionPeople),
+    "Hi @Priya Shah, ask (@Kabir Khan)! @Priya Shah and @123456.",
+  );
+  assert.ok(
+    body.includes("@23984327598432"),
+    "Rendering must not mutate the message sent or forwarded",
+  );
+  assert.equal(mentionRuns(body, mentionPeople).filter((run) => run.mention).length, 3);
+  assert.equal(
+    resolveMentionText("@239843275984320 @23984327598432x", mentionPeople),
+    "@239843275984320 @23984327598432x",
+    "Match the complete id",
+  );
+  assert.equal(resolveMentionText("नमस्ते @23984327598432!", mentionPeople), "नमस्ते @Priya Shah!");
+  assert.equal(
+    resolveMentionText("@23984327598432", [{ ...mentionPeople[0], name: null }]),
+    "@+919876543210",
+  );
+  assert.equal(
+    resolveMentionText("@23984327598432", [
+      { ...mentionPeople[0], name: null, mobileNumber: null },
+    ]),
+    "@23984327598432",
+  );
+});
+
+test("mention rendering leaves emails, links, code and short non-person references intact", () => {
+  const literal =
+    "name@23984327598432.test https://example.test/@23984327598432 ```@23984327598432``` @123";
+  assert.equal(resolveMentionText(literal, mentionPeople), literal);
+  assert.equal(hasNumericMention(literal), false);
+  assert.equal(hasNumericMention("Hello @23984327598432"), true);
+});
+
+test("last-message previews resolve only affected groups, match the public reply and cache its names", async () => {
+  const row = {
+    id: "group",
+    isGroup: true,
+    lastMessageAt: "2026-10-26T09:00:00Z",
+    lastMessagePreview: "Hi @23984327598432",
+  };
+  let calls = 0;
+  const resolver = createPreviewMentionResolver(async (id, signal) => {
+    assert.equal(id, "group");
+    assert.ok(signal instanceof AbortSignal);
+    calls++;
+    return {
+      ok: true,
+      data: {
+        data: [
+          {
+            type: "REPLY",
+            body: row.lastMessagePreview + ", please review.",
+            mentionedParticipants: mentionPeople,
+          },
+          {
+            type: "PRIVATE_NOTE",
+            body: row.lastMessagePreview,
+            mentionedParticipants: [{ ...mentionPeople[0], name: "Wrong teammate" }],
+          },
+        ],
+      },
+    };
+  });
+  const controller = new AbortController();
+  const resolved = [];
+  await resolver.resolve(
+    [
+      row,
+      { ...row, id: "direct", isGroup: false },
+      { ...row, id: "no-mention", lastMessagePreview: "Hello" },
+    ],
+    controller.signal,
+    (value) => resolved.push(value),
+  );
+  assert.equal(calls, 1, "Normal chats must not issue extra message requests");
+  assert.equal(
+    resolveMentionText(
+      resolved[0].lastMessagePreview,
+      resolved[0].lastMessageMentionedParticipants,
+    ),
+    "Hi @Priya Shah",
+  );
+  assert.deepEqual(resolver.cached(row).lastMessageMentionedParticipants, mentionPeople);
+  await resolver.resolve([row], controller.signal, () =>
+    assert.fail("Fresh cache must not refetch"),
+  );
+  assert.equal(calls, 1);
+  assert.equal(
+    resolver.cached({ ...row, lastMessageAt: "new" }).lastMessageMentionedParticipants,
+    undefined,
+    "New last messages never reuse an old preview mapping",
+  );
+});
+
+test("preview name requests cap concurrency, stop on cancellation, and keep failed reads recoverable", async () => {
+  let inFlight = 0;
+  let peak = 0;
+  const resolver = createPreviewMentionResolver(async () => {
+    inFlight++;
+    peak = Math.max(peak, inFlight);
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    inFlight--;
+    return { ok: true, data: { data: [] } };
+  });
+  const rows = Array.from({ length: 8 }, (_, id) => ({
+    id: String(id),
+    isGroup: true,
+    lastMessagePreview: "@23984327598432",
+  }));
+  await resolver.resolve(rows, new AbortController().signal, () => {});
+  assert.equal(peak, 2);
+  const cancelled = new AbortController();
+  cancelled.abort();
+  await resolver.resolve(
+    rows.map((row) => ({ ...row, id: `other-${row.id}` })),
+    cancelled.signal,
+    () => assert.fail("Cancelled request must not update the inbox"),
+  );
+  let calls = 0;
+  const failed = createPreviewMentionResolver(async () => {
+    calls++;
+    return { ok: false, message: "Offline" };
+  });
+  await failed.resolve(rows.slice(0, 1), new AbortController().signal, () =>
+    assert.fail("Failed reads must keep the original preview"),
+  );
+  await failed.resolve(rows.slice(0, 1), new AbortController().signal, () => {});
+  assert.equal(calls, 2);
+});
 
 test("a stale connected flag cannot enable replies after the session stops", () => {
   assert.equal(isConnected({ ...number("sales"), status: "STOPPED" }), false);
@@ -14,8 +170,14 @@ test("a stale connected flag cannot enable replies after the session stops", () 
 
 test("connection state separates reconnecting, disconnected and never-linked numbers", () => {
   assert.equal(connectionState({ ...number("sales"), phoneNumber: "919876543210" }), "connected");
-  assert.equal(connectionState({ ...number("sales", false), status: "STARTING", phoneNumber: "919876543210" }), "connecting");
-  assert.equal(connectionState({ ...number("sales", false), phoneNumber: "919876543210" }), "disconnected");
+  assert.equal(
+    connectionState({ ...number("sales", false), status: "STARTING", phoneNumber: "919876543210" }),
+    "connecting",
+  );
+  assert.equal(
+    connectionState({ ...number("sales", false), phoneNumber: "919876543210" }),
+    "disconnected",
+  );
   assert.equal(connectionState({ ...number("sales", false), phoneNumber: null }), "unlinked");
 });
 
@@ -37,7 +199,10 @@ test("number selection retains a remembered disconnected number instead of silen
 test("chat queries always scope to one number, safely encode workspace IDs, and cancel stale requests", async () => {
   const calls = [];
   const controller = new AbortController();
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: {}, message: "" }; }, "team/west");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "team/west");
   await api.conversations("sales/one", "unread", "Ananya +91", 2, controller.signal);
   const query = new URL(`https://example.test${calls[0].path}`);
   assert.equal(query.pathname, "/w/team%2Fwest/inbox/conversations");
@@ -53,7 +218,10 @@ test("chat queries always scope to one number, safely encode workspace IDs, and 
 
 test("a missing workspace never issues a request against an unscoped endpoint", async () => {
   let calls = 0;
-  const api = createMessagingApi(async () => { calls++; throw new Error("Should not request"); }, "");
+  const api = createMessagingApi(async () => {
+    calls++;
+    throw new Error("Should not request");
+  }, "");
   const result = await api.numbers();
   assert.equal(result.ok, false);
   assert.equal(calls, 0);
@@ -61,7 +229,10 @@ test("a missing workspace never issues a request against an unscoped endpoint", 
 
 test("phone-number linking uses pairing-code endpoint and does not request QR data", async () => {
   const calls = [];
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: { code: "ABCD1234" }, message: "" }; }, "workspace");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: { code: "ABCD1234" }, message: "" };
+  }, "workspace");
   const result = await api.pairingCode("number/1", "+919876543210");
   assert.equal(result.data.code, "ABCD1234");
   assert.equal(calls[0].path, "/w/workspace/whatsapp/sessions/number%2F1/pairing-code");
@@ -71,21 +242,31 @@ test("phone-number linking uses pairing-code endpoint and does not request QR da
 
 test("inbox bare responses preserve pagination while ordinary API envelopes still unwrap", async () => {
   const body = { data: [{ id: "chat" }], total: 1, limit: 30, page: 1 };
-  const request = createApiClient({ baseUrl: "https://example.test", getToken: () => "token",
-    fetch: async () => new Response(JSON.stringify(body), { status: 200 }) });
+  const request = createApiClient({
+    baseUrl: "https://example.test",
+    getToken: () => "token",
+    fetch: async () => new Response(JSON.stringify(body), { status: 200 }),
+  });
   const result = await request("/inbox", { envelope: false });
   assert.deepEqual(result.data, body);
   assert.equal((await request("/ordinary")).ok, false);
-  const standard = createApiClient({ baseUrl: "https://example.test", getToken: () => "token",
-    fetch: async () => new Response(JSON.stringify({ success: true, data: body }), { status: 200 }) });
+  const standard = createApiClient({
+    baseUrl: "https://example.test",
+    getToken: () => "token",
+    fetch: async () => new Response(JSON.stringify({ success: true, data: body }), { status: 200 }),
+  });
   assert.deepEqual((await standard("/ordinary")).data, body);
 });
 
 test("bare inbox endpoints still reject unauthorized replies and invalidate the used session", async () => {
   const invalidated = [];
-  const request = createApiClient({ baseUrl: "https://example.test", getToken: () => "expired",
+  const request = createApiClient({
+    baseUrl: "https://example.test",
+    getToken: () => "expired",
     onUnauthorized: (token) => invalidated.push(token),
-    fetch: async () => new Response(JSON.stringify({ message: "Session expired" }), { status: 401 }) });
+    fetch: async () =>
+      new Response(JSON.stringify({ message: "Session expired" }), { status: 401 }),
+  });
   const result = await request("/inbox", { envelope: false });
   assert.equal(result.ok, false);
   assert.equal(result.status, 401);
@@ -94,7 +275,10 @@ test("bare inbox endpoints still reject unauthorized replies and invalidate the 
 
 test("replies use multipart text and never default to a different conversation", async () => {
   const calls = [];
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: {}, message: "" }; }, "workspace");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
   await api.send("chat/one", "Hello Ananya");
   assert.equal(calls[0].path, "/w/workspace/inbox/conversations/chat%2Fone/messages");
   assert.equal(calls[0].options.body.get("text"), "Hello Ananya");
@@ -104,34 +288,65 @@ test("replies use multipart text and never default to a different conversation",
 
 test("private notes are text only, and reply attachments go up as repeated files fields", async () => {
   const calls = [];
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: {}, message: "" }; }, "workspace");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
   const photo = new File(["x"], "photo.png", { type: "image/png" });
-  await api.send("chat", "Called back", "PRIVATE_NOTE", [{ uri: "blob:1", name: "photo.png", mimeType: "image/png", file: photo }]);
+  await api.send("chat", "Called back", "PRIVATE_NOTE", [
+    { uri: "blob:1", name: "photo.png", mimeType: "image/png", file: photo },
+  ]);
   assert.equal(calls[0].options.body.get("type"), "PRIVATE_NOTE");
   assert.equal(calls[0].options.body.getAll("files").length, 0);
-  await api.send("chat", "", "REPLY", [{ uri: "blob:1", name: "photo.png", mimeType: "image/png", file: photo },
-    { uri: "blob:2", name: "menu.pdf", mimeType: "application/pdf", file: new File(["y"], "menu.pdf", { type: "application/pdf" }) }]);
-  assert.equal(calls[1].options.body.get("text"), null, "an attachment-only reply sends no empty text");
-  assert.deepEqual(calls[1].options.body.getAll("files").map((file) => file.name), ["photo.png", "menu.pdf"]);
+  await api.send("chat", "", "REPLY", [
+    { uri: "blob:1", name: "photo.png", mimeType: "image/png", file: photo },
+    {
+      uri: "blob:2",
+      name: "menu.pdf",
+      mimeType: "application/pdf",
+      file: new File(["y"], "menu.pdf", { type: "application/pdf" }),
+    },
+  ]);
+  assert.equal(
+    calls[1].options.body.get("text"),
+    null,
+    "an attachment-only reply sends no empty text",
+  );
+  assert.deepEqual(
+    calls[1].options.body.getAll("files").map((file) => file.name),
+    ["photo.png", "menu.pdf"],
+  );
 });
 
 test("media URLs are sorted into photos, videos, audio and documents like WhatsApp, with readable names", async () => {
-  const { attachmentKind, attachmentName, attachmentExtension, isWebUrl } = await import("../src/features/messaging/utils/attachments.ts");
+  const { attachmentKind, attachmentName, attachmentExtension, isWebUrl } =
+    await import("../src/features/messaging/utils/attachments.ts");
   assert.equal(attachmentKind("https://cdn.example/a/photo.JPG?sig=1"), "image");
   assert.equal(attachmentKind("https://cdn.example/clip.mp4"), "video");
   assert.equal(attachmentKind("https://cdn.example/voice.opus"), "audio");
   assert.equal(attachmentKind("https://cdn.example/menu.pdf"), "file");
-  assert.equal(attachmentKind("https://cdn.example/media/8f2c1a", "clip.mp4"), "video", "a URL without an extension uses the file name");
+  assert.equal(
+    attachmentKind("https://cdn.example/media/8f2c1a", "clip.mp4"),
+    "video",
+    "a URL without an extension uses the file name",
+  );
   assert.equal(attachmentName("https://cdn.example/abc123__Menu%20card.pdf"), "Menu card.pdf");
   assert.equal(attachmentName("https://cdn.example/x.pdf", "Invoice.pdf"), "Invoice.pdf");
-  assert.equal(attachmentName("https://cdn.example/%E0%A4bad"), "%E0%A4bad", "a broken escape keeps the raw name");
+  assert.equal(
+    attachmentName("https://cdn.example/%E0%A4bad"),
+    "%E0%A4bad",
+    "a broken escape keeps the raw name",
+  );
   assert.equal(attachmentExtension("Menu card.pdf"), "PDF");
   assert.equal(isWebUrl("javascript:alert(1)"), false);
 });
 
 test("live inbox calls: one message by id, and typing state for the open chat", async () => {
   const calls = [];
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: {}, message: "" }; }, "workspace");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
   await api.message("chat/one", "msg 1");
   assert.equal(calls[0].path, "/w/workspace/inbox/conversations/chat%2Fone/messages/msg%201");
   assert.equal(calls[0].options.envelope, false);
@@ -143,7 +358,8 @@ test("live inbox calls: one message by id, and typing state for the open chat", 
 });
 
 test("only one audio or video plays at a time: starting another pauses the first", async () => {
-  const { claimPlayback, releasePlayback } = await import("../src/features/messaging/utils/playback.ts");
+  const { claimPlayback, releasePlayback } =
+    await import("../src/features/messaging/utils/playback.ts");
   const paused = [];
   claimPlayback("audio:a", () => paused.push("audio:a"));
   claimPlayback("audio:a", () => paused.push("audio:a"));
@@ -152,7 +368,11 @@ test("only one audio or video plays at a time: starting another pauses the first
   assert.deepEqual(paused, ["audio:a"]);
   releasePlayback("audio:a");
   claimPlayback("audio:c", () => paused.push("audio:c"));
-  assert.deepEqual(paused, ["audio:a", "video:b"], "a stale release never drops the current player");
+  assert.deepEqual(
+    paused,
+    ["audio:a", "video:b"],
+    "a stale release never drops the current player",
+  );
   releasePlayback("audio:c");
   claimPlayback("audio:d", () => paused.push("audio:d"));
   assert.deepEqual(paused, ["audio:a", "video:b"], "a released player is not paused again");
@@ -160,28 +380,134 @@ test("only one audio or video plays at a time: starting another pauses the first
 
 test("message actions: react, pin, forward and reply hit the web app's endpoints", async () => {
   const calls = [];
-  const api = createMessagingApi(async (path, options) => { calls.push({ path, options }); return { ok: true, data: {}, message: "" }; }, "workspace");
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
   await api.react("chat", "m1", "👍");
   await api.react("chat", "m1", null);
   await api.togglePin("chat", "m1");
   await api.forward("chat", "m1", ["a", "b"]);
   await api.send("chat", "Sure", "REPLY", [], "m1");
-  assert.deepEqual(calls.map((call) => [call.options.method, call.path]), [
-    ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/react"],
-    ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/react"],
-    ["PATCH", "/w/workspace/inbox/conversations/chat/messages/m1/pin"],
-    ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/forward"],
-    ["POST", "/w/workspace/inbox/conversations/chat/messages"],
-  ]);
+  assert.deepEqual(
+    calls.map((call) => [call.options.method, call.path]),
+    [
+      ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/react"],
+      ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/react"],
+      ["PATCH", "/w/workspace/inbox/conversations/chat/messages/m1/pin"],
+      ["POST", "/w/workspace/inbox/conversations/chat/messages/m1/forward"],
+      ["POST", "/w/workspace/inbox/conversations/chat/messages"],
+    ],
+  );
   assert.deepEqual(calls[1].options.body, { emoji: null });
   assert.deepEqual(calls[3].options.body, { targetConversationIds: ["a", "b"] });
   assert.equal(calls[4].options.body.get("replyToMessageId"), "m1");
 });
 
+test("disconnecting a number logs its phone out but keeps it, unlike remove", async () => {
+  const calls = [];
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
+  await api.disconnectNumber("number/1");
+  await api.removeNumber("number/1");
+  assert.deepEqual(
+    calls.map((call) => [call.options.method, call.path]),
+    [
+      ["POST", "/w/workspace/whatsapp/sessions/number%2F1/logout"],
+      ["DELETE", "/w/workspace/whatsapp/sessions/number%2F1"],
+    ],
+  );
+});
+
+test("contact info words a number's visibility like the web contact panel", () => {
+  const team = (name) => ({ id: name, team: { id: name, name }, user: null });
+  const person = (name) => ({ id: name ?? "unnamed", team: null, user: { id: "u", name } });
+  assert.equal(numberSharedWith({}), "Everyone");
+  assert.equal(numberSharedWith({ visibility: "EVERYONE" }), "Everyone");
+  assert.equal(numberSharedWith({ visibility: "ME_ONLY" }), "Only its owner");
+  assert.equal(numberSharedWith({ visibility: "TEAM", accessGrants: [] }), "Only admins");
+  assert.equal(numberSharedWith({ visibility: "TEAM", accessGrants: [person("Asha")] }), "Asha");
+  // Teams before people, as the web app lists them.
+  assert.equal(
+    numberSharedWith({ visibility: "TEAM", accessGrants: [person("Asha"), team("Sales")] }),
+    "Sales and Asha",
+  );
+  assert.equal(
+    numberSharedWith({
+      visibility: "TEAM",
+      accessGrants: [team("Sales"), team("Support"), person(null)],
+    }),
+    "Sales, Support and Unnamed",
+  );
+});
+
+test("chat list actions: pin, mark read, ignore and remove hit the web app's endpoints", async () => {
+  const calls = [];
+  const api = createMessagingApi(async (path, options) => {
+    calls.push({ path, options });
+    return { ok: true, data: {}, message: "" };
+  }, "workspace");
+  await api.setPinned("chat/1", true);
+  await api.setPinned("chat/1", false);
+  await api.markRead("a");
+  await api.markRead(["a", "b"]);
+  await api.ignoreWaiting([
+    { id: "a", lastMessageAt: "2026-10-27T10:00:00.000Z", name: "Extra fields are not sent" },
+    { id: "b", lastMessageAt: null },
+  ]);
+  await api.removeChats(["a", "b"]);
+  assert.deepEqual(
+    calls.map((call) => [call.options.method, call.path, call.options.body]),
+    [
+      ["PATCH", "/w/workspace/inbox/conversations/chat%2F1", { isPinned: true }],
+      ["PATCH", "/w/workspace/inbox/conversations/chat%2F1", { isPinned: false }],
+      [
+        "PATCH",
+        "/w/workspace/inbox/conversations/bulk",
+        { conversationIds: ["a"], action: "MARK_READ" },
+      ],
+      [
+        "PATCH",
+        "/w/workspace/inbox/conversations/bulk",
+        { conversationIds: ["a", "b"], action: "MARK_READ" },
+      ],
+      [
+        "POST",
+        "/w/workspace/inbox/conversations/ignore-awaiting-reply",
+        {
+          conversations: [
+            { id: "a", lastMessageAt: "2026-10-27T10:00:00.000Z" },
+            { id: "b", lastMessageAt: null },
+          ],
+        },
+      ],
+      [
+        "PATCH",
+        "/w/workspace/inbox/conversations/bulk",
+        { conversationIds: ["a", "b"], action: "DELETE" },
+      ],
+    ],
+  );
+});
+
 test("reactions toggle like WhatsApp, and only sent messages with content can be forwarded", async () => {
-  const { nextReactions, myReaction, canForward, canReact, messageSummary } = await import("../src/features/messaging/utils/message-actions.ts");
-  const base = { id: "m1", type: "REPLY", direction: "INBOUND", body: "Hi", files: [], fileNames: [], deliveryStatus: "READ", isRevoked: false,
-    reactions: [{ emoji: "❤️", reactorUserId: null, reactorContactId: "c1", reactorMobileNumber: null }] };
+  const { nextReactions, myReaction, canForward, canReact, messageSummary } =
+    await import("../src/features/messaging/utils/message-actions.ts");
+  const base = {
+    id: "m1",
+    type: "REPLY",
+    direction: "INBOUND",
+    body: "Hi",
+    files: [],
+    fileNames: [],
+    deliveryStatus: "READ",
+    isRevoked: false,
+    reactions: [
+      { emoji: "❤️", reactorUserId: null, reactorContactId: "c1", reactorMobileNumber: null },
+    ],
+  };
   const added = nextReactions(base, "me", "👍");
   assert.equal(added.emoji, "👍");
   assert.equal(added.reactions.length, 2, "the customer's reaction stays");
@@ -190,7 +516,11 @@ test("reactions toggle like WhatsApp, and only sent messages with content can be
   const removed = nextReactions(withMine, "me", "👍");
   assert.equal(removed.emoji, null, "the same emoji again takes it off");
   assert.equal(removed.reactions.length, 1);
-  assert.equal(nextReactions(withMine, "me", "😂").reactions.filter((r) => r.reactorUserId === "me")[0].emoji, "😂", "a new emoji replaces yours");
+  assert.equal(
+    nextReactions(withMine, "me", "😂").reactions.filter((r) => r.reactorUserId === "me")[0].emoji,
+    "😂",
+    "a new emoji replaces yours",
+  );
   assert.equal(canForward(base), true);
   assert.equal(canForward({ ...base, type: "PRIVATE_NOTE" }), false);
   assert.equal(canForward({ ...base, isRevoked: true }), false);
@@ -200,18 +530,43 @@ test("reactions toggle like WhatsApp, and only sent messages with content can be
 });
 
 test("chat pictures: one request per chat, at most 4 at once, kept when the chat has none, only web URLs", async () => {
-  const { cachedPicture, clearPictures, loadPicture, subscribePictures } = await import("../src/features/messaging/services/picture-cache.ts");
+  const { cachedPicture, clearPictures, loadPicture, subscribePictures } =
+    await import("../src/features/messaging/services/picture-cache.ts");
   clearPictures();
-  let inFlight = 0, peak = 0, calls = 0;
+  let inFlight = 0,
+    peak = 0,
+    calls = 0;
   const release = [];
-  const loader = (id) => { calls++; inFlight++; peak = Math.max(peak, inFlight); return new Promise((resolve) => release.push(() => { inFlight--;
-    resolve({ ok: true, data: { url: id === "none" ? null : id === "bad" ? "javascript:alert(1)" : `https://pics.example/${id}.jpg` } }); })); };
+  const loader = (id) => {
+    calls++;
+    inFlight++;
+    peak = Math.max(peak, inFlight);
+    return new Promise((resolve) =>
+      release.push(() => {
+        inFlight--;
+        resolve({
+          ok: true,
+          data: {
+            url:
+              id === "none"
+                ? null
+                : id === "bad"
+                  ? "javascript:alert(1)"
+                  : `https://pics.example/${id}.jpg`,
+          },
+        });
+      }),
+    );
+  };
   let changes = 0;
   const stop = subscribePictures(() => changes++);
   for (const id of ["a", "b", "c", "d", "e", "none", "bad"]) loadPicture(id, loader);
   loadPicture("a", loader);
   assert.equal(calls, 4, "four at once, the rest queued, no duplicate for a");
-  while (release.length) { release.shift()(); await new Promise((resolve) => setTimeout(resolve, 0)); }
+  while (release.length) {
+    release.shift()();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
   assert.equal(peak, 4);
   assert.equal(calls, 7);
   assert.equal(cachedPicture("a"), "https://pics.example/a.jpg");
@@ -219,40 +574,37 @@ test("chat pictures: one request per chat, at most 4 at once, kept when the chat
   assert.equal(cachedPicture("bad"), null, "a non-web URL never reaches the image");
   assert.equal(cachedPicture("unknown"), undefined);
   assert.ok(changes >= 7);
-  stop(); clearPictures();
-});
-
-test("inbox cache: reopened chats and lists come back at once, without optimistic copies, and reads clear badges once", async () => {
-  const cache = await import("../src/features/messaging/services/inbox-cache.ts");
-  cache.clearInboxCache();
-  const conversation = { id: "c1", sessionId: "s1", name: "Ananya" };
-  cache.saveThread("c1", { conversation, cursor: null, hasMore: false,
-    messages: [{ id: "m1" }, { id: "local-123" }] });
-  assert.deepEqual(cache.cachedThread("c1").messages.map((m) => m.id), ["m1"], "a message still sending is never cached");
-  cache.saveList("s1:all:", { rows: [conversation], page: 1, more: false });
-  assert.equal(cache.cachedList("s1:all:").rows.length, 1);
-  cache.markReadLocally("c1");
-  assert.deepEqual(cache.takeReadLocally(), ["c1"]);
-  assert.deepEqual(cache.takeReadLocally(), [], "taken once");
-  for (let i = 0; i < 25; i++) cache.saveThread(`t${i}`, { conversation, cursor: null, hasMore: false, messages: [] });
-  assert.equal(cache.cachedThread("c1"), null, "only the most recent chats are kept");
-  cache.clearInboxCache();
-  assert.equal(cache.cachedList("s1:all:"), null);
+  stop();
+  clearPictures();
 });
 
 test("stored chats reconcile like the web app: the newest page wins its window, ticks only move forward", async () => {
-  const { applyNewestPage, statusMovesForward } = await import("../src/features/messaging/utils/message-order.ts");
+  const { applyNewestPage, statusMovesForward } =
+    await import("../src/features/messaging/utils/message-order.ts");
   const at = (minute) => `2026-10-24T10:${String(minute).padStart(2, "0")}:00.000Z`;
   const message = (id, minute) => ({ id, createdAt: at(minute), body: id });
-  const stored = [message("old", 1), message("deleted", 5), message("kept", 6), message("socket", 9), message("local-1", 10)];
+  const stored = [
+    message("old", 1),
+    message("deleted", 5),
+    message("kept", 6),
+    message("socket", 9),
+    message("local-1", 10),
+  ];
   const page = [message("kept", 6), message("new", 7), message("edge", 8), message("first", 4)];
   const shown = applyNewestPage(stored, page).map((m) => m.id);
   assert.deepEqual(shown, ["local-1", "socket", "edge", "new", "kept", "first", "old"]);
-  assert.ok(!shown.includes("deleted"), "a stored message the page lacks inside its window was deleted");
+  assert.ok(
+    !shown.includes("deleted"),
+    "a stored message the page lacks inside its window was deleted",
+  );
   assert.deepEqual(applyNewestPage(stored, []), stored, "an empty page changes nothing");
   assert.equal(statusMovesForward("SENT", "READ"), true);
   assert.equal(statusMovesForward("READ", "DELIVERED"), false);
   assert.equal(statusMovesForward("SENT", "FAILED"), true);
-  assert.equal(statusMovesForward("DELIVERED", "FAILED"), false, "a delivered message can't fail afterwards");
+  assert.equal(
+    statusMovesForward("DELIVERED", "FAILED"),
+    false,
+    "a delivered message can't fail afterwards",
+  );
   assert.equal(statusMovesForward("FAILED", "SENT"), true, "a retry moves on from failed");
 });

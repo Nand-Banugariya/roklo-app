@@ -72,10 +72,7 @@ function useSignInController() {
     pending.current = null;
     setBusy(null);
   }
-  function receiveCode(
-    result: Extract<SendOtpResult, { ok: true }>,
-    replace = false,
-  ) {
+  function receiveCode(result: Extract<SendOtpResult, { ok: true }>, replace = false) {
     if (result.channel === "email_required") {
       setEmailRequired(true);
       setChallenge(null);
@@ -129,12 +126,8 @@ function useSignInController() {
     if (result.ok) receiveCode(result);
     else {
       if (result.reason === "rate_limited")
-        setSendBlockedUntil(
-          Date.now() + (result.retryAfter ?? RESEND_SECONDS) * 1000,
-        );
-      setError(
-        failureMessage(result, "We couldn’t send the code. Please try again."),
-      );
+        setSendBlockedUntil(Date.now() + (result.retryAfter ?? RESEND_SECONDS) * 1000);
+      setError(failureMessage(result, "We couldn’t send the code. Please try again."));
     }
   }
 
@@ -167,20 +160,14 @@ function useSignInController() {
       } catch {
         setCode("");
         setInputAttempt((value) => value + 1);
-        setChallenge((current) =>
-          current ? { ...current, resendAvailableAt: 0 } : null,
-        );
-        setCodeError(
-          "We couldn’t save your sign-in on this device. Please request a new code.",
-        );
+        setChallenge((current) => (current ? { ...current, resendAvailableAt: 0 } : null));
+        setCodeError("We couldn’t save your sign-in on this device. Please request a new code.");
       }
     } else {
       setCode("");
       setInputAttempt((value) => value + 1);
       if (result.reason === "expired") {
-        setChallenge((current) =>
-          current ? { ...current, resendAvailableAt: 0 } : null,
-        );
+        setChallenge((current) => (current ? { ...current, resendAvailableAt: 0 } : null));
         setCodeError("That code has expired. Request a new one.");
       } else if (result.reason === "invalid_code") {
         setCodeError(
@@ -188,13 +175,7 @@ function useSignInController() {
             ? "That code didn’t match. Check your email and try again."
             : "That code didn’t match. Check the SMS and try again.",
         );
-      } else
-        setCodeError(
-          failureMessage(
-            result,
-            "We couldn’t verify the code. Please try again.",
-          ),
-        );
+      } else setCodeError(failureMessage(result, "We couldn’t verify the code. Please try again."));
     }
     finish(controller);
   }
@@ -232,14 +213,11 @@ function useSignInController() {
           current
             ? {
                 ...current,
-                resendAvailableAt:
-                  Date.now() + (result.retryAfter ?? RESEND_SECONDS) * 1000,
+                resendAvailableAt: Date.now() + (result.retryAfter ?? RESEND_SECONDS) * 1000,
               }
             : null,
         );
-      setCodeError(
-        failureMessage(result, "We couldn’t send the code. Please try again."),
-      );
+      setCodeError(failureMessage(result, "We couldn’t send the code. Please try again."));
     }
   }
 
@@ -307,9 +285,7 @@ function useSignInController() {
   };
 }
 
-const Context = createContext<ReturnType<typeof useSignInController> | null>(
-  null,
-);
+const Context = createContext<ReturnType<typeof useSignInController> | null>(null);
 export function SignInProvider({ children }: PropsWithChildren) {
   const controller = useSignInController();
   return <Context.Provider value={controller}>{children}</Context.Provider>;

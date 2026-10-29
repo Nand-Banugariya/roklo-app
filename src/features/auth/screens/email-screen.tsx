@@ -26,11 +26,9 @@ export default function EmailScreen() {
           Use a different number
         </CustomBackButton>
         <AuthHeader title="Add your email">
-          For numbers outside India we check your email first, then text a code
-          to{" "}
+          For numbers outside India we check your email first, then text a code to{" "}
           <CustomText className="font-sans-semibold text-[15px] text-ink-900">
-            {getCountry(form.countryCode).dial}{" "}
-            {formatPhone(form.phone, form.countryCode)}
+            {getCountry(form.countryCode).dial} {formatPhone(form.phone, form.countryCode)}
           </CustomText>
           .
         </AuthHeader>
@@ -61,10 +59,7 @@ export default function EmailScreen() {
             />
           )}
         </CustomFormField>
-        <CustomCaptcha
-          resetKey={form.captchaKey}
-          onToken={form.setCaptchaToken}
-        />
+        <CustomCaptcha resetKey={form.captchaKey} onToken={form.setCaptchaToken} />
         <CustomButton
           size="xl"
           fullWidth

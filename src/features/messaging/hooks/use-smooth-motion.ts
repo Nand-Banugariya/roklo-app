@@ -1,4 +1,10 @@
-import { FadeIn, FadeInDown, FadeOut, LinearTransition, useReducedMotion } from "react-native-reanimated";
+import {
+  FadeIn,
+  FadeInDown,
+  FadeOut,
+  LinearTransition,
+  useReducedMotion,
+} from "react-native-reanimated";
 
 /**
  * Small Reanimated transitions for content that opens in place: panels slide in, menus fade in,

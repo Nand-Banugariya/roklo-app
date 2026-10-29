@@ -23,8 +23,7 @@ const SLIDES: {
   {
     key: "welcome",
     title: "Welcome to Roklo!",
-    description:
-      "Talk to all your customers on WhatsApp, together with your team.",
+    description: "Talk to all your customers on WhatsApp, together with your team.",
   },
   {
     key: "inbox",
@@ -105,10 +104,7 @@ export function AuthCarousel({ compact = false }: { compact?: boolean }) {
   useFocusEffect(
     useCallback(() => {
       if (reducedMotion || dragging || !width) return;
-      const timer = setTimeout(
-        () => goTo((index + 1) % SLIDES.length),
-        ADVANCE_MS,
-      );
+      const timer = setTimeout(() => goTo((index + 1) % SLIDES.length), ADVANCE_MS);
       return () => clearTimeout(timer);
     }, [dragging, goTo, index, reducedMotion, width]),
   );
@@ -151,22 +147,12 @@ export function AuthCarousel({ compact = false }: { compact?: boolean }) {
         onScrollEndDrag={() => setDragging(false)}
       >
         {SLIDES.map((slide) => (
-          <View
-            key={slide.key}
-            style={{ width }}
-            className="items-center gap-2"
-          >
+          <View key={slide.key} style={{ width }} className="items-center gap-2">
             <View
               accessibilityElementsHidden
               importantForAccessibility="no-hide-descendants"
               style={{
-                height: artHeight(
-                  available,
-                  width,
-                  windowHeight,
-                  compact,
-                  compactHeight,
-                ),
+                height: artHeight(available, width, windowHeight, compact, compactHeight),
               }}
               className="w-full"
             >

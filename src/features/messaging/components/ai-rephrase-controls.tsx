@@ -1,11 +1,7 @@
 import { CustomIcon } from "@/components/shadcn-custom/customicon";
 import { CustomSpinner } from "@/components/shadcn-custom/customspinner";
 import { CustomText } from "@/components/shadcn-custom/customtext";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { MotionPressable } from "@/features/navigation/components/motion-pressable";
 import { useKeyboardViewport } from "@/hooks/use-keyboard-viewport";
 import { cn } from "@/lib/utils";
@@ -71,27 +67,17 @@ function AiRephraseControls({
 }
 
 /** Request feedback and Undo stay with the draft being reviewed. */
-export function AiRephraseFeedback({
-  ai,
-}: {
-  ai: ReturnType<typeof useAiRephrase>;
-}) {
+export function AiRephraseFeedback({ ai }: { ai: ReturnType<typeof useAiRephrase> }) {
   if (!ai.busy && !ai.error && !ai.rephrased) return null;
   return (
     <View className="px-3">
       {ai.busy && (
-        <CustomText
-          accessibilityLiveRegion="polite"
-          className="py-3 text-xs text-muted-foreground"
-        >
+        <CustomText accessibilityLiveRegion="polite" className="py-3 text-xs text-muted-foreground">
           Rephrasing… Tap the AI icon to cancel.
         </CustomText>
       )}
       {ai.error && (
-        <CustomText
-          role="alert"
-          className="py-3 text-xs leading-5 text-error-fg"
-        >
+        <CustomText role="alert" className="py-3 text-xs leading-5 text-error-fg">
           {ai.error}
         </CustomText>
       )}
@@ -111,9 +97,7 @@ export function AiRephraseFeedback({
               className="min-h-11 flex-row items-center gap-1.5"
             >
               <CustomIcon as={Undo2} size={14} className="text-primary" />
-              <CustomText className="font-sans-medium text-xs text-primary">
-                Undo
-              </CustomText>
+              <CustomText className="font-sans-medium text-xs text-primary">Undo</CustomText>
             </MotionPressable>
             <MotionPressable
               role="button"
@@ -152,13 +136,7 @@ export function AiRephraseButton({
     // Re-measure after keyboard or window changes so the popup follows the icon.
     const frame = requestAnimationFrame(() => trigger.current?.open());
     return () => cancelAnimationFrame(frame);
-  }, [
-    open,
-    viewport.width,
-    viewport.windowHeight,
-    viewport.top,
-    viewport.bottom,
-  ]);
+  }, [open, viewport.width, viewport.windowHeight, viewport.top, viewport.bottom]);
   const disabled = !ai.busy && !ai.canRephrase;
   if (ai.busy)
     return (
@@ -180,22 +158,12 @@ export function AiRephraseButton({
           accessibilityHint="Choose a tone to rewrite your draft for review"
           accessibilityState={{ expanded: open, disabled }}
           disabled={disabled}
-          className={cn(
-            "h-11 w-11 items-center justify-center",
-            disabled && "opacity-40",
-          )}
+          className={cn("h-11 w-11 items-center justify-center", disabled && "opacity-40")}
         >
           <View
-            className={cn(
-              "h-7 w-7 items-center justify-center rounded-md",
-              open && "bg-ink-100",
-            )}
+            className={cn("h-7 w-7 items-center justify-center rounded-md", open && "bg-ink-100")}
           >
-            <CustomIcon
-              as={Sparkles}
-              size={19}
-              className="text-purple-accent"
-            />
+            <CustomIcon as={Sparkles} size={19} className="text-purple-accent" />
           </View>
         </MotionPressable>
       </PopoverTrigger>
@@ -214,11 +182,7 @@ export function AiRephraseButton({
         onOpenAutoFocus={(event) => event.preventDefault()}
         className="w-44 overflow-hidden rounded-xl border-ink-200 bg-card p-0 shadow-lg shadow-black/10"
       >
-        <AiRephraseControls
-          ai={ai}
-          open={open}
-          onClose={() => trigger.current?.close()}
-        />
+        <AiRephraseControls ai={ai} open={open} onClose={() => trigger.current?.close()} />
       </PopoverContent>
     </Popover>
   );

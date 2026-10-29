@@ -4,11 +4,7 @@ import { REFERRAL_SOURCES } from "../../constants";
 import type { useOnboarding } from "../../hooks/use-onboarding";
 import { StepHeader } from "../step-header";
 
-export function SourceStep({
-  flow,
-}: {
-  flow: ReturnType<typeof useOnboarding>;
-}) {
+export function SourceStep({ flow }: { flow: ReturnType<typeof useOnboarding> }) {
   return (
     <View className="gap-7">
       <StepHeader
@@ -28,8 +24,7 @@ export function SourceStep({
             selected={flow.answers.source === option.value}
             onPress={() =>
               flow.updateAnswers({
-                source:
-                  flow.answers.source === option.value ? "" : option.value,
+                source: flow.answers.source === option.value ? "" : option.value,
               })
             }
           />

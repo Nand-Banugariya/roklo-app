@@ -3,37 +3,80 @@ import { test } from "node:test";
 import { configureStore } from "@reduxjs/toolkit";
 import "./register-typescript.mjs";
 
-const [apiModule, workspaceModule, thunkModule, authModule, selectors, navigation] = await Promise.all([
-  import("../src/features/workspaces/services/workspace-api.ts"),
-  import("../src/features/workspaces/store/workspace-slice.ts"),
-  import("../src/features/workspaces/store/create-workspace-thunks.ts"),
-  import("../src/features/auth/store/auth-slice.ts"),
-  import("../src/features/workspaces/store/workspace-selectors.ts"),
-  import("../src/features/navigation/config/navigation.ts"),
-]);
-const user = { id: "user-1", name: "Priya Sharma", email: "priya@example.test", mobileNumber: "919876543210", isVerified: true, isEmailVerified: true, isOnboarded: true, workspaceId: "one", defaultWorkspaceId: "two" };
-const items = [{ id: "one", name: "Sharma Insurance", logo: null, role: "OWNER", status: "ENABLED" }, { id: "two", name: "Studio", logo: null, role: "MEMBER", status: "ENABLED" }, { id: "disabled", name: "Disabled", logo: null, status: "DISABLED" }];
-const ok = data => ({ ok: true, data, message: "OK" });
+const [apiModule, workspaceModule, thunkModule, authModule, selectors, navigation] =
+  await Promise.all([
+    import("../src/features/workspaces/services/workspace-api.ts"),
+    import("../src/features/workspaces/store/workspace-slice.ts"),
+    import("../src/features/workspaces/store/create-workspace-thunks.ts"),
+    import("../src/features/auth/store/auth-slice.ts"),
+    import("../src/features/workspaces/store/workspace-selectors.ts"),
+    import("../src/features/navigation/config/navigation.ts"),
+  ]);
+const user = {
+  id: "user-1",
+  name: "Priya Sharma",
+  email: "priya@example.test",
+  mobileNumber: "919876543210",
+  isVerified: true,
+  isEmailVerified: true,
+  isOnboarded: true,
+  workspaceId: "one",
+  defaultWorkspaceId: "two",
+};
+const items = [
+  { id: "one", name: "Sharma Insurance", logo: null, role: "OWNER", status: "ENABLED" },
+  { id: "two", name: "Studio", logo: null, role: "MEMBER", status: "ENABLED" },
+  { id: "disabled", name: "Disabled", logo: null, status: "DISABLED" },
+];
+const ok = (data) => ({ ok: true, data, message: "OK" });
 const fail = () => ({ ok: false, reason: "network", status: 0, message: "" });
-const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
+const deferred = () => {
+  let resolve;
+  const promise = new Promise((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
+};
 function fixture(profile = user) {
   let token = "session-one";
   const calls = [];
   const api = {
-    list: async options => { calls.push(["list", options.token]); return ok([...items]); },
-    detail: async (id, options) => { calls.push(["detail", id, options.token]); return ok(items.find(item => item.id === id)); },
-    setDefault: async (id, options) => { calls.push(["default", id, options.token]); return ok(null); },
+    list: async (options) => {
+      calls.push(["list", options.token]);
+      return ok([...items]);
+    },
+    detail: async (id, options) => {
+      calls.push(["detail", id, options.token]);
+      return ok(items.find((item) => item.id === id));
+    },
+    setDefault: async (id, options) => {
+      calls.push(["default", id, options.token]);
+      return ok(null);
+    },
   };
   const thunks = thunkModule.createWorkspaceThunks({ api, getToken: () => token });
-  const store = configureStore({ reducer: { auth: authModule.default, workspace: workspaceModule.default } });
+  const store = configureStore({
+    reducer: { auth: authModule.default, workspace: workspaceModule.default },
+  });
   store.dispatch(authModule.setUser(profile));
-  return { api, thunks, store, calls, token: value => { token = value; } };
+  return {
+    api,
+    thunks,
+    store,
+    calls,
+    token: (value) => {
+      token = value;
+    },
+  };
 }
 
 test("workspace API follows v2 endpoints, encodes IDs, and rejects malformed or deleted records", async () => {
   const calls = [];
   let data = [...items, { ...items[0], id: "deleted", isDeleted: true }];
-  const api = apiModule.createWorkspaceApi(async (path, options) => { calls.push([path, options]); return ok(data); });
+  const api = apiModule.createWorkspaceApi(async (path, options) => {
+    calls.push([path, options]);
+    return ok(data);
+  });
   assert.deepEqual((await api.list({ token: "token" })).data, items);
   data = { ...items[0], id: "space/id" };
   assert.equal((await api.detail("space/id")).ok, true);
@@ -64,7 +107,10 @@ test("switch waits for default-workspace success, preserves auth profile, and ga
   const { store, thunks, api, calls } = fixture();
   await store.dispatch(thunks.loadWorkspaces());
   const response = deferred();
-  api.setDefault = async id => { calls.push(["default", id]); return response.promise; };
+  api.setDefault = async (id) => {
+    calls.push(["default", id]);
+    return response.promise;
+  };
   const switching = store.dispatch(thunks.switchWorkspace("one"));
   assert.equal(store.getState().workspace.activeId, "two");
   assert.equal(await store.dispatch(thunks.switchWorkspace("one")), false);
@@ -135,7 +181,7 @@ test("a late detail response cannot overwrite the workspace selected afterward",
   const { store, thunks, api } = fixture();
   await store.dispatch(thunks.loadWorkspaces());
   const old = deferred();
-  api.detail = async id => id === "two" ? old.promise : ok(items[0]);
+  api.detail = async (id) => (id === "two" ? old.promise : ok(items[0]));
   const refresh = store.dispatch(thunks.refreshWorkspace("two"));
   await store.dispatch(thunks.switchWorkspace("one"));
   old.resolve(ok({ ...items[1], name: "Stale workspace" }));
@@ -152,6 +198,14 @@ test("mobile navigation marks secondary/nested destinations without matching unr
 });
 
 test("tab roots are the primary destinations plus More, and nested or secondary routes are not", () => {
-  for (const path of ["/inbox", "/broadcasts", "/contacts", "/menu", "/inbox?filter=unread"]) assert.equal(navigation.isTabRoot(path), true, path);
-  for (const path of ["/groups", "/templates", "/broadcasts/campaign-1", "/menu-other", "/settings"]) assert.equal(navigation.isTabRoot(path), false, path);
+  for (const path of ["/inbox", "/broadcasts", "/contacts", "/menu", "/inbox?filter=unread"])
+    assert.equal(navigation.isTabRoot(path), true, path);
+  for (const path of [
+    "/groups",
+    "/templates",
+    "/broadcasts/campaign-1",
+    "/menu-other",
+    "/settings",
+  ])
+    assert.equal(navigation.isTabRoot(path), false, path);
 });

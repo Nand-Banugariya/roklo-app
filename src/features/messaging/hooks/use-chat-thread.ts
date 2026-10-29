@@ -2,17 +2,34 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { useMessaging } from "../providers/messaging-context";
-import { cachedThread, markReadLocally, saveThread } from "../services/inbox-cache";
-import { patchCachedStatus, pruneCache, putCachedMessages, readCachedChat, replaceCachedWindow } from "../services/message-store";
+import { useAppDispatch, useAppStore } from "@/store/hooks";
+import { messagingActions } from "../store/messaging-slice";
+import { selectThread } from "../store/messaging-selectors";
+import {
+  patchCachedStatus,
+  pruneCache,
+  putCachedMessages,
+  readCachedChat,
+  replaceCachedWindow,
+} from "../services/message-store";
 import { setOpenConversation } from "../services/open-conversation";
 import { applyNewestPage, mergeMessages } from "../utils/message-order";
 import { JOINED_EVENT } from "../services/realtime";
-import type { ChatMessage, Conversation, DeliveryStatus, MessageNewEvent, MessagePage, MessageStatusEvent } from "../types";
+import type {
+  ChatMessage,
+  Conversation,
+  DeliveryStatus,
+  MessageNewEvent,
+  MessagePage,
+  MessageStatusEvent,
+} from "../types";
 import { useRealtimeEvent } from "./use-realtime-event";
 
 // The web app's reveal (lib/inbox/constants.ts).
 const REVEAL_PAGE_SIZE = 100;
 const REVEAL_MAX_PAGES = 20;
+// How long a chat stays blank while its stored copy is read, before the skeleton shows anyway.
+const READ_GRACE_MS = 400;
 const STATUS_ORDER: DeliveryStatus[] = ["QUEUED", "SENT", "DELIVERED", "READ"];
 /** Ticks only move forward (a late "delivered" never undoes "read"); FAILED always shows. */
 function laterStatus(current: DeliveryStatus, next: DeliveryStatus) {
@@ -23,16 +40,23 @@ const merge = mergeMessages;
 
 export function useChatThread(id: string, sessionId: string) {
   const { api, activeNumber, live } = useMessaging();
-  // A chat opened before shows at once from memory and refreshes quietly; only a first open shows the skeleton.
+  const dispatch = useAppDispatch();
+  const store = useAppStore();
+  // A chat opened before shows at once from the `messaging` slice and refreshes quietly; only a first
+  // open shows the skeleton.
   const [cached] = useState(() => {
-    const thread = cachedThread(id);
+    const thread = selectThread(store.getState(), id);
     return thread && thread.conversation.sessionId === sessionId ? thread : null;
   });
-  const [conversation, setConversation] = useState<Conversation | null>(cached?.conversation ?? null);
+  const [conversation, setConversation] = useState<Conversation | null>(
+    cached?.conversation ?? null,
+  );
   const [messages, setMessages] = useState<ChatMessage[]>(cached?.messages ?? []);
   // The loaded messages for async work (finding a quoted message) that outlives a render.
   const latest = useRef<ChatMessage[]>(cached?.messages ?? []);
-  useEffect(() => { latest.current = messages; }, [messages]);
+  useEffect(() => {
+    latest.current = messages;
+  }, [messages]);
   // An empty cached copy cannot prove the server still has no messages.
   const [loading, setLoading] = useState(!cached?.messages.length);
   const [backfilling, setBackfilling] = useState(false);
@@ -47,89 +71,168 @@ export function useChatThread(id: string, sessionId: string) {
   const valid = sessionId === activeNumber?.id;
   /** The API's first page arrived this visit: the stored copy no longer paints over it. */
   const apiLoaded = useRef(false);
+  // Still reading the phone's stored copy: the thread stays blank then, not a skeleton, as the copy usually
+  // arrives a moment later (a skeleton flashed on every open after a restart). Past READ_GRACE_MS, or with
+  // nothing stored, the skeleton shows: only a chat never opened on this phone waits on the API with one.
+  const [readingStore, setReadingStore] = useState(!cached);
+  useEffect(() => {
+    if (!readingStore) return;
+    const timer = setTimeout(() => setReadingStore(false), READ_GRACE_MS);
+    return () => clearTimeout(timer);
+  }, [readingStore]);
   // The phone's stored copy (SQLite) paints at once when this chat isn't in memory; the API then reconciles it.
-  // The skeleton shows only while it's read, or when nothing is stored.
   useEffect(() => {
     if (cached) return;
     let cancelled = false;
     void readCachedChat(id).then((stored) => {
-      if (cancelled || apiLoaded.current || !stored.messages.length) return;
+      if (cancelled) return;
+      setReadingStore(false);
+      if (apiLoaded.current || !stored.messages.length) return;
       setMessages((old) => merge(old, stored.messages));
-      if (stored.conversation?.id === id && stored.conversation.sessionId === sessionId) setConversation((old) => old ?? stored.conversation);
+      if (stored.conversation?.id === id && stored.conversation.sessionId === sessionId)
+        setConversation((old) => old ?? stored.conversation);
       setLoading(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [cached, id, sessionId]);
   // Socket messages for other chats update their stored copies (MessageStoreSync); this one keeps itself current.
-  useEffect(() => { setOpenConversation(id); return () => setOpenConversation(null); }, [id]);
+  useEffect(() => {
+    setOpenConversation(id);
+    return () => setOpenConversation(null);
+  }, [id]);
   const load = useCallback(async () => {
     if (!valid) return;
     controller.current?.abort();
-    const request = new AbortController(); controller.current = request;
+    const request = new AbortController();
+    controller.current = request;
     if (!apiLoaded.current && !latest.current.length) setLoading(true);
     setError(null);
     const result = await api.conversation(id, sessionId, request.signal);
     if (request.signal.aborted) return;
-    if (!result.ok) { setError(result.message || "Couldn't open this conversation."); setLoading(false); return; }
+    if (!result.ok) {
+      setError(result.message || "Couldn't open this conversation.");
+      setLoading(false);
+      return;
+    }
     const chat = result.data.data.find((row) => row.id === id && row.sessionId === sessionId);
-    if (!chat) { setError("This conversation is no longer available."); setLoading(false); return; }
+    if (!chat) {
+      setError("This conversation is no longer available.");
+      setLoading(false);
+      return;
+    }
     setConversation(chat);
     const thread = await api.messages(id, null, request.signal);
     if (request.signal.aborted) return;
-    if (!thread.ok) { setError(thread.message || "Couldn't load messages."); setLoading(false); return; }
+    if (!thread.ok) {
+      setError(thread.message || "Couldn't load messages.");
+      setLoading(false);
+      return;
+    }
     setBackfilling(thread.data.backfilling);
     // The newest page is the truth for its window, over the stored copy and older pages already loaded.
     setMessages((old) => applyNewestPage(old, thread.data.data));
     // Stored as on the web app: the first page of a visit reconciles the copy and trims it; refreshes add to it.
-    if (!apiLoaded.current) void replaceCachedWindow(id, thread.data.data, sessionId, chat).then(() => pruneCache(id));
+    if (!apiLoaded.current)
+      void replaceCachedWindow(id, thread.data.data, sessionId, chat).then(() => pruneCache(id));
     else void putCachedMessages(thread.data.data, sessionId);
     apiLoaded.current = true;
-    if (!cursor.current) { cursor.current = thread.data.nextCursor; hasMore.current = thread.data.hasMore; setMore(thread.data.hasMore); }
-    if (chat.unreadCount > 0) { void api.markRead(id); markReadLocally(id); }
-    setLoading(false);
-  }, [api, id, sessionId, valid]);
-  // Kept for the next time this chat opens.
-  useEffect(() => {
-    if (conversation && !awaitingMessages && !error) saveThread(id, { conversation, messages, cursor: cursor.current, hasMore: hasMore.current });
-  }, [id, conversation, messages, awaitingMessages, error]);
-  useFocusEffect(useCallback(() => {
-    void load();
-    return () => controller.current?.abort();
-  }, [load]));
-  useFocusEffect(useCallback(() => {
-    // The socket brings new messages and ticks; polling is the fallback while it's down.
-    // While importing history, check again sooner without overlapping slow requests.
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-    function schedule() {
-      timer = setTimeout(async () => {
-        if (AppState.currentState === "active") await load();
-        if (!cancelled) schedule();
-      }, backfilling ? 2000 : live ? 60000 : 10000);
+    if (!cursor.current) {
+      cursor.current = thread.data.nextCursor;
+      hasMore.current = thread.data.hasMore;
+      setMore(thread.data.hasMore);
     }
-    schedule();
-    return () => { cancelled = true; clearTimeout(timer); };
-  }, [load, live, backfilling]));
-  useRealtimeEvent<MessageNewEvent>("inbox.message.new", (event) => {
-    if (event?.conversationId !== id) return;
-    // Also sent again once inbound media finishes downloading: always re-read.
-    void api.message(id, event.messageId).then((result) => {
-      if (!result.ok) { void load(); return; }
-      setMessages((old) => merge(old, [result.data]));
-      setLoading(false);
-      void putCachedMessages([result.data], sessionId);
-      if (result.data.direction === "INBOUND") { void api.markRead(id); markReadLocally(id); }
-    });
-  }, valid);
-  useRealtimeEvent<MessageStatusEvent>("inbox.message.status", (event) => {
-    if (event?.conversationId !== id) return;
-    setMessages((old) => old.map((message) => message.id === event.messageId
-      ? { ...message, deliveryStatus: laterStatus(message.deliveryStatus, event.deliveryStatus) } : message));
-    void patchCachedStatus(event.messageId, event.deliveryStatus);
-  }, valid);
-  useRealtimeEvent<{ conversationId: string }>("inbox.conversation.backfilled", (event) => {
-    if (event?.conversationId === id) void load();
-  }, valid);
+    if (chat.unreadCount > 0) {
+      void api.markRead(id);
+      dispatch(messagingActions.readLocally(id));
+    }
+    setLoading(false);
+  }, [api, id, sessionId, valid, dispatch]);
+  // Kept in the `messaging` slice for the next time this chat opens.
+  useEffect(() => {
+    if (conversation && !awaitingMessages && !error)
+      dispatch(
+        messagingActions.threadSaved({
+          id,
+          thread: { conversation, messages, cursor: cursor.current, hasMore: hasMore.current },
+        }),
+      );
+  }, [id, conversation, messages, awaitingMessages, error, dispatch]);
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+      return () => controller.current?.abort();
+    }, [load]),
+  );
+  useFocusEffect(
+    useCallback(() => {
+      // The socket brings new messages and ticks; polling is the fallback while it's down.
+      // While importing history, check again sooner without overlapping slow requests.
+      let cancelled = false;
+      let timer: ReturnType<typeof setTimeout>;
+      function schedule() {
+        timer = setTimeout(
+          async () => {
+            if (AppState.currentState === "active") await load();
+            if (!cancelled) schedule();
+          },
+          backfilling ? 2000 : live ? 60000 : 10000,
+        );
+      }
+      schedule();
+      return () => {
+        cancelled = true;
+        clearTimeout(timer);
+      };
+    }, [load, live, backfilling]),
+  );
+  useRealtimeEvent<MessageNewEvent>(
+    "inbox.message.new",
+    (event) => {
+      if (event?.conversationId !== id) return;
+      // Also sent again once inbound media finishes downloading: always re-read.
+      void api.message(id, event.messageId).then((result) => {
+        if (!result.ok) {
+          void load();
+          return;
+        }
+        setMessages((old) => merge(old, [result.data]));
+        setLoading(false);
+        void putCachedMessages([result.data], sessionId);
+        if (result.data.direction === "INBOUND") {
+          void api.markRead(id);
+          dispatch(messagingActions.readLocally(id));
+        }
+      });
+    },
+    valid,
+  );
+  useRealtimeEvent<MessageStatusEvent>(
+    "inbox.message.status",
+    (event) => {
+      if (event?.conversationId !== id) return;
+      setMessages((old) =>
+        old.map((message) =>
+          message.id === event.messageId
+            ? {
+                ...message,
+                deliveryStatus: laterStatus(message.deliveryStatus, event.deliveryStatus),
+              }
+            : message,
+        ),
+      );
+      void patchCachedStatus(event.messageId, event.deliveryStatus);
+    },
+    valid,
+  );
+  useRealtimeEvent<{ conversationId: string }>(
+    "inbox.conversation.backfilled",
+    (event) => {
+      if (event?.conversationId === id) void load();
+    },
+    valid,
+  );
   // Events sent while disconnected were missed.
   useRealtimeEvent(JOINED_EVENT, () => void load(), valid);
   /** The next older page; resolves with its messages, or null when there's none or it failed. */
@@ -140,8 +243,13 @@ export function useChatThread(id: string, sessionId: string) {
     const result = await api.messages(id, cursor.current, signal, limit);
     loadingOlder.current = false;
     if (signal?.aborted) return null;
-    if (!result.ok) { setError(result.message || "Couldn't load older messages."); return null; }
-    cursor.current = result.data.nextCursor; hasMore.current = result.data.hasMore; setMore(result.data.hasMore);
+    if (!result.ok) {
+      setError(result.message || "Couldn't load older messages.");
+      return null;
+    }
+    cursor.current = result.data.nextCursor;
+    hasMore.current = result.data.hasMore;
+    setMore(result.data.hasMore);
     setMessages((old) => merge(old, result.data.data));
     void putCachedMessages(result.data.data, sessionId);
     return result.data.data;
@@ -156,7 +264,8 @@ export function useChatThread(id: string, sessionId: string) {
     if (has(latest.current)) return true;
     for (let page = 0; page < REVEAL_MAX_PAGES; page++) {
       // An older page already on its way (scrolling up) comes first: wait for it rather than giving up.
-      for (let wait = 0; loadingOlder.current && wait < 50; wait++) await new Promise((resolve) => setTimeout(resolve, 100));
+      for (let wait = 0; loadingOlder.current && wait < 50; wait++)
+        await new Promise((resolve) => setTimeout(resolve, 100));
       if (has(latest.current)) return true;
       const older = await loadOlder(REVEAL_PAGE_SIZE);
       if (!older) return has(latest.current);
@@ -181,11 +290,30 @@ export function useChatThread(id: string, sessionId: string) {
     const current = latest.current.find((message) => message.id === messageId);
     // The stored copy follows (a reaction, a pin, or putting either back when the API refused).
     if (current) void putCachedMessages([{ ...current, ...change }], sessionId);
-    setMessages((old) => old.map((message) => message.id === messageId ? { ...message, ...change } : message));
+    setMessages((old) =>
+      old.map((message) => (message.id === messageId ? { ...message, ...change } : message)),
+    );
   }
   function refresh() {
     if (!latest.current.length) setLoading(true);
     return load();
   }
-  return { conversation, messages, loading: awaitingMessages && !error, error, more, loadOlder, findOlder, refresh, append, replace, patch, valid };
+  const waiting = awaitingMessages && !error;
+  return {
+    conversation,
+    messages,
+    /** Reading the stored copy: nothing to show yet, and no skeleton (see `readingStore`). */
+    resolving: waiting && readingStore,
+    /** No messages to show and none stored: the skeleton. */
+    loading: waiting && !readingStore,
+    error,
+    more,
+    loadOlder,
+    findOlder,
+    refresh,
+    append,
+    replace,
+    patch,
+    valid,
+  };
 }

@@ -17,9 +17,7 @@ export function CustomCaptcha({ resetKey, onToken }: CustomCaptchaProps) {
   const url = captchaUrl(mode);
   if (!url)
     return (
-      <CustomAlert tone="error">
-        We couldn’t load verification. Please try again later.
-      </CustomAlert>
+      <CustomAlert tone="error">We couldn’t load verification. Please try again later.</CustomAlert>
     );
   const origin = new URL(url).origin;
   return (
@@ -39,8 +37,7 @@ export function CustomCaptcha({ resetKey, onToken }: CustomCaptchaProps) {
           "about:srcdoc",
         ]}
         onShouldStartLoadWithRequest={(request) => {
-          if (request.url === "about:blank" || request.url === "about:srcdoc")
-            return true;
+          if (request.url === "about:blank" || request.url === "about:srcdoc") return true;
           try {
             return [origin, "https://challenges.cloudflare.com"].includes(
               new URL(request.url).origin,

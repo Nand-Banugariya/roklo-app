@@ -6,7 +6,9 @@ const TTL_MS = 60 * 60 * 1000;
 /** Requests in flight at once, so a fresh list doesn't fire a page of them together. */
 const CONCURRENCY = 4;
 
-export type PictureLoader = (id: string) => Promise<{ ok: true; data: { url: string | null } } | { ok: false }>;
+export type PictureLoader = (
+  id: string,
+) => Promise<{ ok: true; data: { url: string | null } } | { ok: false }>;
 
 /** `url` null: the chat has no picture. */
 const pictures = new Map<string, { url: string | null; at: number }>();
@@ -22,12 +24,15 @@ export function cachedPicture(id: string): string | null | undefined {
 
 export function subscribePictures(listener: () => void) {
   listeners.add(listener);
-  return () => { listeners.delete(listener); };
+  return () => {
+    listeners.delete(listener);
+  };
 }
 
 /** Queues a fetch of the chat's picture unless it's known or on its way. */
 export function loadPicture(id: string, load: PictureLoader) {
-  if (cachedPicture(id) !== undefined || loading.has(id) || queued.some((item) => item.id === id)) return;
+  if (cachedPicture(id) !== undefined || loading.has(id) || queued.some((item) => item.id === id))
+    return;
   queued.push({ id, load });
   pump();
 }
@@ -43,15 +48,18 @@ function pump() {
   while (loading.size < CONCURRENCY && queued.length) {
     const { id, load } = queued.shift()!;
     loading.add(id);
-    void load(id).catch(() => ({ ok: false as const })).then((result) => {
-      loading.delete(id);
-      if (result.ok) {
-        // Only web URLs reach the image view.
-        const url = result.data?.url && /^https?:\/\//i.test(result.data.url) ? result.data.url : null;
-        pictures.set(id, { url, at: Date.now() });
-        listeners.forEach((listener) => listener());
-      }
-      pump();
-    });
+    void load(id)
+      .catch(() => ({ ok: false as const }))
+      .then((result) => {
+        loading.delete(id);
+        if (result.ok) {
+          // Only web URLs reach the image view.
+          const url =
+            result.data?.url && /^https?:\/\//i.test(result.data.url) ? result.data.url : null;
+          pictures.set(id, { url, at: Date.now() });
+          listeners.forEach((listener) => listener());
+        }
+        pump();
+      });
   }
 }

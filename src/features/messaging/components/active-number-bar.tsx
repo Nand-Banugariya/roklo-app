@@ -17,28 +17,74 @@ import { PulseHalo } from "./connection-pulse";
 export function ActiveNumberBar({ disabled }: { disabled?: boolean }) {
   const { activeNumber, numbers } = useMessaging();
   const { colors } = useRokloTheme();
-  // Nothing until the connection is known, and nothing for first-time users: the inbox's link prompt carries that message.
+  // Nothing until the connection is known. Any number picked shows, linked or not, so switching
+  // to one that isn't connected still says which it is.
   if (!activeNumber) return null;
   const state = connectionState(activeNumber);
   const connected = state === "connected";
-  if (!connected && !activeNumber.phoneNumber) return null;
   const connecting = state === "connecting";
   const warn = !connected && !connecting;
   const name = numberName(activeNumber);
   const phone = activeNumber.phoneNumber ? numberPhone(activeNumber) : null;
-  const detail = connected ? (phone && phone !== name ? phone : null) : connecting ? "Connecting…" : "Not connected";
+  // The number cards' words: a never-linked number is "Not linked", a dropped one "Not connected".
+  const detail = connected
+    ? phone && phone !== name
+      ? phone
+      : null
+    : connecting
+      ? "Connecting…"
+      : state === "unlinked"
+        ? "Not linked"
+        : "Not connected";
   const dot = warn ? colors["warning-solid"] : colors.primary;
-  function open() { Keyboard.dismiss(); router.push("/connections"); }
+  function open() {
+    Keyboard.dismiss();
+    router.push("/connections");
+  }
 
-  return <MotionPressable role="button" disabled={disabled} accessibilityState={{ disabled: !!disabled, busy: connecting }}
-    accessibilityLabel={`Working from ${name}${detail ? `, ${detail}` : ""}. ${numbers.length > 1 ? "Switch number" : "Open WhatsApp numbers"}`}
-    accessibilityHint="Open the WhatsApp numbers screen" onPress={open}
-    className={cn("h-10 max-w-full self-start flex-row items-center gap-2 rounded-full border pl-3 pr-2.5 active:bg-accent",
-      warn ? "border-warning-border bg-warning-pill-bg" : "border-border bg-background", disabled && "opacity-40")}>
-    {connected ? <View className="h-2 w-2 rounded-full" style={{ backgroundColor: dot }} />
-      : <PulseHalo size={8} color={dot}><View className="h-2 w-2 rounded-full" style={{ backgroundColor: dot }} /></PulseHalo>}
-    <CustomText numberOfLines={1} className={cn("shrink-0 font-sans-semibold text-sm", warn ? "text-warning-pill-fg" : "text-foreground")}>{name}</CustomText>
-    {detail && <CustomText numberOfLines={1} className={cn("shrink text-xs", warn ? "text-warning-pill-fg" : "text-muted-foreground")}>{detail}</CustomText>}
-    <CustomIcon as={ArrowLeftRight} size={14} className={warn ? "text-warning-pill-fg" : "text-muted-foreground"} />
-  </MotionPressable>;
+  return (
+    <MotionPressable
+      role="button"
+      disabled={disabled}
+      accessibilityState={{ disabled: !!disabled, busy: connecting }}
+      accessibilityLabel={`Working from ${name}${detail ? `, ${detail}` : ""}. ${numbers.length > 1 ? "Switch number" : "Open WhatsApp numbers"}`}
+      accessibilityHint="Open the WhatsApp numbers screen"
+      onPress={open}
+      className={cn(
+        "h-10 max-w-full self-start flex-row items-center gap-2 rounded-full border pl-3 pr-2.5 active:bg-accent",
+        warn ? "border-warning-border bg-warning-pill-bg" : "border-border bg-background",
+        disabled && "opacity-40",
+      )}
+    >
+      {connected ? (
+        <View className="h-2 w-2 rounded-full" style={{ backgroundColor: dot }} />
+      ) : (
+        <PulseHalo size={8} color={dot}>
+          <View className="h-2 w-2 rounded-full" style={{ backgroundColor: dot }} />
+        </PulseHalo>
+      )}
+      <CustomText
+        numberOfLines={1}
+        className={cn(
+          "shrink-0 font-sans-semibold text-sm",
+          warn ? "text-warning-pill-fg" : "text-foreground",
+        )}
+      >
+        {name}
+      </CustomText>
+      {detail && (
+        <CustomText
+          numberOfLines={1}
+          className={cn("shrink text-xs", warn ? "text-warning-pill-fg" : "text-muted-foreground")}
+        >
+          {detail}
+        </CustomText>
+      )}
+      <CustomIcon
+        as={ArrowLeftRight}
+        size={14}
+        className={warn ? "text-warning-pill-fg" : "text-muted-foreground"}
+      />
+    </MotionPressable>
+  );
 }

@@ -68,22 +68,11 @@ function Avatar({
           opacity={0.9}
         />
         {person.style === "long" && (
-          <Ellipse
-            cx={cx}
-            cy={headY + hr * 0.4}
-            rx={hr * 1.2}
-            ry={hr * 1.55}
-            fill={person.hair}
-          />
+          <Ellipse cx={cx} cy={headY + hr * 0.4} rx={hr * 1.2} ry={hr * 1.55} fill={person.hair} />
         )}
         <Circle cx={cx} cy={headY} r={hr} fill={person.skin} />
         {person.style === "bun" && (
-          <Circle
-            cx={cx}
-            cy={headY - hr - hr * 0.3}
-            r={hr * 0.42}
-            fill={person.hair}
-          />
+          <Circle cx={cx} cy={headY - hr - hr * 0.3} r={hr * 0.42} fill={person.hair} />
         )}
         <Path
           d={`M ${cx - hr} ${headY} A ${hr} ${hr} 0 0 1 ${cx + hr} ${headY} Q ${cx} ${headY - hr * 0.55} ${cx - hr} ${headY} Z`}
@@ -116,15 +105,7 @@ function Card({
 }) {
   return (
     <G>
-      <Rect
-        x={x}
-        y={y + 3}
-        width={w}
-        height={h}
-        rx={r}
-        fill={shadow}
-        opacity={0.07}
-      />
+      <Rect x={x} y={y + 3} width={w} height={h} rx={r} fill={shadow} opacity={0.07} />
       <Rect x={x} y={y} width={w} height={h} rx={r} fill={fill} />
       {children}
     </G>
@@ -146,17 +127,7 @@ function Bar({
   fill: string;
   opacity?: number;
 }) {
-  return (
-    <Rect
-      x={x}
-      y={y}
-      width={w}
-      height={h}
-      rx={h / 2}
-      fill={fill}
-      opacity={opacity}
-    />
-  );
+  return <Rect x={x} y={y} width={w} height={h} rx={h / 2} fill={fill} opacity={opacity} />;
 }
 
 function Sparkle({ cx, cy, s = 9 }: { cx: number; cy: number; s?: number }) {
@@ -169,15 +140,7 @@ function Sparkle({ cx, cy, s = 9 }: { cx: number; cy: number; s?: number }) {
   );
 }
 
-function DoubleTick({
-  x,
-  y,
-  color,
-}: {
-  x: number;
-  y: number;
-  color: string;
-}) {
+function DoubleTick({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <Path
       d={`M ${x} ${y} l 3 3 l 6 -7 M ${x + 5} ${y} l 3 3 l 6 -7`}
@@ -204,34 +167,13 @@ function Phone({
 }) {
   return (
     <G>
-      <Rect
-        x={100}
-        y={top}
-        width={120}
-        height={height}
-        rx={22}
-        fill={p["brand-300"]}
-      />
+      <Rect x={100} y={top} width={120} height={height} rx={22} fill={p["brand-300"]} />
       {header && (
         <G>
-          <Rect
-            x={108}
-            y={top + 8}
-            width={104}
-            height={26}
-            rx={13}
-            fill={p["brand-500"]}
-          />
+          <Rect x={108} y={top + 8} width={104} height={26} rx={13} fill={p["brand-500"]} />
           <Bar x={119} y={top + 15} w={38} h={4} fill="#FFFFFF" />
           <Bar x={119} y={top + 23} w={26} h={4} fill="#FFFFFF" opacity={0.8} />
-          <Circle
-            cx={183}
-            cy={top + 20}
-            r={4.2}
-            stroke="#FFFFFF"
-            strokeWidth={1.4}
-            fill="none"
-          />
+          <Circle cx={183} cy={top + 20} r={4.2} stroke="#FFFFFF" strokeWidth={1.4} fill="none" />
           <Line
             x1={186}
             y1={top + 23}
@@ -279,32 +221,12 @@ function InboxCard({
   const assigneeX = labelX + label.length * 4.3 + 11;
   return (
     <Card x={x} y={y} w={w} h={h} fill={p.card} shadow={p["ink-900"]}>
-      <Avatar
-        id={`${id}-a`}
-        cx={x + 20}
-        cy={y + 19}
-        r={11}
-        person={owner}
-        ring={p.card}
-      />
+      <Avatar id={`${id}-a`} cx={x + 20} cy={y + 19} r={11} person={owner} ring={p.card} />
       <Bar x={labelX} y={y + 9} w={22} h={4} fill={p["ink-200"]} />
-      <SvgText
-        x={labelX}
-        y={y + 24}
-        fontSize={8}
-        fontWeight="600"
-        fill={p["ink-900"]}
-      >
+      <SvgText x={labelX} y={y + 24} fontSize={8} fontWeight="600" fill={p["ink-900"]}>
         {label}
       </SvgText>
-      <Avatar
-        id={`${id}-b`}
-        cx={assigneeX}
-        cy={y + 21}
-        r={5}
-        person={assignee}
-        ring={p.card}
-      />
+      <Avatar id={`${id}-b`} cx={assigneeX} cy={y + 21} r={5} person={assignee} ring={p.card} />
       <Line
         x1={x + 8}
         x2={x + w - 8}
@@ -375,14 +297,7 @@ function Welcome({ p }: { p: Palette }) {
         <Bar x={124} y={69} w={52} h={5} fill={p["ink-200"]} />
         <Bar x={124} y={80} w={34} h={5} fill={p["ink-200"]} />
       </Card>
-      <Card
-        x={126}
-        y={108}
-        w={84}
-        h={40}
-        fill={p["brand-600"]}
-        shadow={p["ink-900"]}
-      >
+      <Card x={126} y={108} w={84} h={40} fill={p["brand-600"]} shadow={p["ink-900"]}>
         <Bar x={136} y={119} w={50} h={5} fill="#FFFFFF" opacity={0.9} />
         <Bar x={136} y={130} w={32} h={5} fill="#FFFFFF" opacity={0.65} />
         <DoubleTick x={188} y={137} color="#FFFFFF" />
@@ -391,30 +306,9 @@ function Welcome({ p }: { p: Palette }) {
         <Bar x={124} y={168} w={40} h={5} fill={p["ink-200"]} />
         <Bar x={124} y={178} w={24} h={5} fill={p["ink-200"]} />
       </Card>
-      <Avatar
-        id="w1"
-        cx={56}
-        cy={64}
-        r={18}
-        person={PEOPLE.maria}
-        ring={p.card}
-      />
-      <Avatar
-        id="w2"
-        cx={264}
-        cy={112}
-        r={18}
-        person={PEOPLE.rahul}
-        ring={p.card}
-      />
-      <Avatar
-        id="w3"
-        cx={58}
-        cy={184}
-        r={18}
-        person={PEOPLE.lisa}
-        ring={p.card}
-      />
+      <Avatar id="w1" cx={56} cy={64} r={18} person={PEOPLE.maria} ring={p.card} />
+      <Avatar id="w2" cx={264} cy={112} r={18} person={PEOPLE.rahul} ring={p.card} />
+      <Avatar id="w3" cx={58} cy={184} r={18} person={PEOPLE.lisa} ring={p.card} />
       <Sparkle cx={252} cy={42} />
     </G>
   );
@@ -425,79 +319,27 @@ function Broadcast({ p }: { p: Palette }) {
     <G>
       <Phone p={p} top={40} height={220} header={false} />
       <Card x={108} y={84} w={104} h={110} fill={p.card} shadow={p["ink-900"]}>
-        <Rect
-          x={116}
-          y={92}
-          width={88}
-          height={62}
-          rx={8}
-          fill={p["brand-100"]}
-        />
-        <Rect
-          x={146}
-          y={102}
-          width={28}
-          height={28}
-          rx={7}
-          fill={p["brand-500"]}
-        />
+        <Rect x={116} y={92} width={88} height={62} rx={8} fill={p["brand-100"]} />
+        <Rect x={146} y={102} width={28} height={28} rx={7} fill={p["brand-500"]} />
         <Circle cx={165} cy={111} r={3} fill="#FFFFFF" />
         <Path d="M 150 126 l 8 -10 l 5 6 l 3 -3 l 5 7 z" fill="#FFFFFF" />
         <Bar x={116} y={163} w={62} h={6} fill={p["ink-200"]} />
         <Bar x={116} y={175} w={40} h={6} fill={p["ink-200"]} />
       </Card>
       <Card x={66} y={18} w={188} h={46} fill={p.card} shadow={p["ink-900"]}>
-        <Avatar
-          id="b1"
-          cx={90}
-          cy={41}
-          r={11}
-          person={PEOPLE.rahul}
-          ring={p.card}
-        />
-        <Avatar
-          id="b2"
-          cx={106}
-          cy={44}
-          r={11}
-          person={PEOPLE.maria}
-          ring={p.card}
-        />
-        <SvgText
-          x={128}
-          y={38}
-          fontSize={10}
-          fontWeight="700"
-          fill={p["ink-900"]}
-        >
+        <Avatar id="b1" cx={90} cy={41} r={11} person={PEOPLE.rahul} ring={p.card} />
+        <Avatar id="b2" cx={106} cy={44} r={11} person={PEOPLE.maria} ring={p.card} />
+        <SvgText x={128} y={38} fontSize={10} fontWeight="700" fill={p["ink-900"]}>
           Broadcast
         </SvgText>
         <SvgText x={128} y={51} fontSize={8} fill={p["ink-600"]}>
           2,317 contacts
         </SvgText>
       </Card>
-      <Path
-        d="M 232 118 L 278 100 L 254 146 L 247 128 Z"
-        fill={ACCENT}
-        strokeLinejoin="round"
-      />
+      <Path d="M 232 118 L 278 100 L 254 146 L 247 128 Z" fill={ACCENT} strokeLinejoin="round" />
       <Path d="M 247 128 L 278 100 L 252 134 Z" fill="#E09B1E" />
-      <Avatar
-        id="b3"
-        cx={52}
-        cy={128}
-        r={16}
-        person={PEOPLE.lisa}
-        ring={p.card}
-      />
-      <Avatar
-        id="b4"
-        cx={268}
-        cy={188}
-        r={16}
-        person={PEOPLE.sam}
-        ring={p.card}
-      />
+      <Avatar id="b3" cx={52} cy={128} r={16} person={PEOPLE.lisa} ring={p.card} />
+      <Avatar id="b4" cx={268} cy={188} r={16} person={PEOPLE.sam} ring={p.card} />
     </G>
   );
 }
@@ -510,14 +352,7 @@ function Note({ p }: { p: Palette }) {
         <Bar x={124} y={66} w={54} h={5} fill={p["ink-200"]} />
         <Bar x={124} y={77} w={34} h={5} fill={p["ink-200"]} />
       </Card>
-      <Card
-        x={124}
-        y={100}
-        w={88}
-        h={36}
-        fill={p["brand-600"]}
-        shadow={p["ink-900"]}
-      >
+      <Card x={124} y={100} w={88} h={36} fill={p["brand-600"]} shadow={p["ink-900"]}>
         <Bar x={134} y={110} w={52} h={5} fill="#FFFFFF" opacity={0.9} />
         <Bar x={134} y={121} w={32} h={5} fill="#FFFFFF" opacity={0.65} />
         <DoubleTick x={190} y={129} color="#FFFFFF" />
@@ -543,14 +378,7 @@ function Note({ p }: { p: Palette }) {
         strokeWidth={1}
         strokeOpacity={0.5}
       />
-      <Rect
-        x={98}
-        y={165}
-        width={14}
-        height={11}
-        rx={3}
-        fill={p["warning-solid"]}
-      />
+      <Rect x={98} y={165} width={14} height={11} rx={3} fill={p["warning-solid"]} />
       <Path
         d="M 101 165 v -3 a 4 4 0 0 1 8 0 v 3"
         stroke={p["warning-solid"]}
@@ -558,25 +386,12 @@ function Note({ p }: { p: Palette }) {
         fill="none"
         strokeLinecap="round"
       />
-      <SvgText
-        x={120}
-        y={174}
-        fontSize={9}
-        fontWeight="700"
-        fill={p["warning-pill-fg"]}
-      >
+      <SvgText x={120} y={174} fontSize={9} fontWeight="700" fill={p["warning-pill-fg"]}>
         Private note
       </SvgText>
       <Bar x={98} y={186} w={104} h={4} fill={p["warning-solid"]} opacity={0.35} />
       <Bar x={98} y={196} w={64} h={4} fill={p["warning-solid"]} opacity={0.35} />
-      <Avatar
-        id="n1"
-        cx={236}
-        cy={152}
-        r={13}
-        person={PEOPLE.maria}
-        ring={p.card}
-      />
+      <Avatar id="n1" cx={236} cy={152} r={13} person={PEOPLE.maria} ring={p.card} />
       <Sparkle cx={54} cy={60} s={8} />
     </G>
   );
@@ -602,9 +417,7 @@ export function AuthArt({ name }: { name: AuthArtName }) {
       height="100%"
       viewBox="0 0 320 240"
       preserveAspectRatio="xMidYMid meet"
-      {...(Platform.OS === "web"
-        ? { "aria-hidden": true }
-        : { accessible: false })}
+      {...(Platform.OS === "web" ? { "aria-hidden": true } : { accessible: false })}
     >
       <Scene p={colors} />
     </Svg>

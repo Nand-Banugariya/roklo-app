@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "roklo-app",
+    "name": "Roklo.ai",
     "slug": "roklo-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,12 +8,13 @@
     "scheme": "rokloapp",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.nand05.rokloapp",
       "icon": "./assets/images/icon.png"
     },
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
+        "backgroundColor": "#075E54",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
@@ -31,6 +32,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#075E54",
+          "defaultChannel": "mentions"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -52,7 +61,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,

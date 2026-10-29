@@ -26,9 +26,7 @@ export function AppearanceControls() {
         accessibilityState={{ selected: mode === "dark" }}
         aria-pressed={mode === "dark"}
         onPress={() => setColorScheme("dark")}
-        leadingIcon={
-          <CustomIcon as={Moon} size={18} className="text-ink-700" />
-        }
+        leadingIcon={<CustomIcon as={Moon} size={18} className="text-ink-700" />}
       >
         Dark
       </CustomButton>

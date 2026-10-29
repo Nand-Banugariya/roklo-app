@@ -4,15 +4,10 @@ import { Platform, TextInput, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-export interface CustomOTPInputProps
-  extends Pick<
-    ComponentProps<typeof TextInput>,
-    | "nativeID"
-    | "accessibilityLabel"
-    | "accessibilityHint"
-    | "autoFocus"
-    | "onFocus"
-  > {
+export interface CustomOTPInputProps extends Pick<
+  ComponentProps<typeof TextInput>,
+  "nativeID" | "accessibilityLabel" | "accessibilityHint" | "autoFocus" | "onFocus"
+> {
   length?: number;
   value: string;
   onValueChange: (value: string) => void;
@@ -39,9 +34,7 @@ export function CustomOTPInput({
   const [focused, setFocused] = useState(false);
   const activeIndex = Math.min(value.length, length - 1);
   return (
-    <View
-      className={cn("relative w-full", disabled && "opacity-50", className)}
-    >
+    <View className={cn("relative w-full", disabled && "opacity-50", className)}>
       <View
         className="flex-row gap-2.5"
         pointerEvents="none"
@@ -65,18 +58,12 @@ export function CustomOTPInput({
       </View>
       <TextInput
         {...props}
-        accessibilityLabel={
-          props.accessibilityLabel ?? `${length}-digit verification code`
-        }
+        accessibilityLabel={props.accessibilityLabel ?? `${length}-digit verification code`}
         value={value}
         editable={!disabled}
         keyboardType="number-pad"
         textContentType="oneTimeCode"
-        autoComplete={
-          Platform.OS === "android" && channel === "sms"
-            ? "sms-otp"
-            : "one-time-code"
-        }
+        autoComplete={Platform.OS === "android" && channel === "sms" ? "sms-otp" : "one-time-code"}
         autoCorrect={false}
         caretHidden
         selectionColor="transparent"

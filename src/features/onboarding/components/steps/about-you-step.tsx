@@ -21,8 +21,7 @@ export function AboutYouStep({ flow }: { flow: Flow }) {
   const emailSection = useRef<View>(null);
   const reveal = useSetupFocus();
   const seconds = useCountdown(flow.email.retryAvailableAt);
-  const pending =
-    flow.email.status === "sending" || flow.email.status === "verifying";
+  const pending = flow.email.status === "sending" || flow.email.status === "verifying";
   const verified = flow.answers.emailVerified;
   return (
     <View className="gap-7">
@@ -55,9 +54,7 @@ export function AboutYouStep({ flow }: { flow: Flow }) {
           optional
           size="lg"
           help={
-            verified
-              ? undefined
-              : "For invoices and alerts. Verify this email, or leave it empty."
+            verified ? undefined : "For invoices and alerts. Verify this email, or leave it empty."
           }
           error={!flow.email.otpRef ? flow.email.error : null}
         >
@@ -79,10 +76,7 @@ export function AboutYouStep({ flow }: { flow: Flow }) {
           )}
         </CustomFormField>
         {verified ? (
-          <View
-            className="flex-row items-center gap-1.5"
-            accessibilityLiveRegion="polite"
-          >
+          <View className="flex-row items-center gap-1.5" accessibilityLiveRegion="polite">
             <CustomIcon as={Check} size={16} className="text-brand-700" />
             <CustomText className="font-sans-medium text-[13px] text-brand-700">
               Email verified
@@ -132,8 +126,7 @@ function EmailCode({ flow, seconds }: { flow: Flow; seconds: number }) {
   return (
     <View className="gap-3.5 rounded-xl border border-ink-200 bg-card p-4">
       <CustomText className="text-[13px] leading-5 text-ink-700">
-        Enter the 6-digit code we emailed to{" "}
-        {stripEmailAlias(flow.answers.email)}.
+        Enter the 6-digit code we emailed to {stripEmailAlias(flow.answers.email)}.
       </CustomText>
       <View ref={section} collapsable={false} className="gap-3.5">
         <CustomFormField

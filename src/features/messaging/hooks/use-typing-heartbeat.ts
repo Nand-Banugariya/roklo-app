@@ -17,31 +17,45 @@ export function useTypingHeartbeat(conversationId: string, enabled: boolean) {
   const { api } = useMessaging();
   const lastSentAt = useRef<number | null>(null);
   const idle = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const stop = useCallback((notify: boolean) => {
-    if (idle.current) { clearTimeout(idle.current); idle.current = null; }
-    const wasTyping = lastSentAt.current !== null;
-    lastSentAt.current = null;
-    if (wasTyping && notify) api.setTyping(conversationId, "paused");
-  }, [api, conversationId]);
+  const stop = useCallback(
+    (notify: boolean) => {
+      if (idle.current) {
+        clearTimeout(idle.current);
+        idle.current = null;
+      }
+      const wasTyping = lastSentAt.current !== null;
+      lastSentAt.current = null;
+      if (wasTyping && notify) api.setTyping(conversationId, "paused");
+    },
+    [api, conversationId],
+  );
   /** Call with the draft after an edit the agent made (not a quick reply or a clear). */
-  const onUserInput = useCallback((draft: string) => {
-    if (!enabled) return;
-    if (!draft.trim()) { stop(true); return; }
-    const now = Date.now();
-    if (lastSentAt.current === null || now - lastSentAt.current >= TYPING_HEARTBEAT_MS) {
-      api.setTyping(conversationId, "typing");
-      lastSentAt.current = now;
-    }
-    if (idle.current) clearTimeout(idle.current);
-    idle.current = setTimeout(() => stop(true), TYPING_IDLE_MS);
-  }, [api, conversationId, enabled, stop]);
+  const onUserInput = useCallback(
+    (draft: string) => {
+      if (!enabled) return;
+      if (!draft.trim()) {
+        stop(true);
+        return;
+      }
+      const now = Date.now();
+      if (lastSentAt.current === null || now - lastSentAt.current >= TYPING_HEARTBEAT_MS) {
+        api.setTyping(conversationId, "typing");
+        lastSentAt.current = now;
+      }
+      if (idle.current) clearTimeout(idle.current);
+      idle.current = setTimeout(() => stop(true), TYPING_IDLE_MS);
+    },
+    [api, conversationId, enabled, stop],
+  );
   const onBlur = useCallback(() => stop(true), [stop]);
   /** The reply was sent: the API already ended the typing. */
   const markSent = useCallback(() => stop(false), [stop]);
   // Note mode, another chat, unmount.
   useEffect(() => () => stop(true), [enabled, stop]);
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", (state) => { if (state !== "active") stop(true); });
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state !== "active") stop(true);
+    });
     return () => subscription.remove();
   }, [stop]);
   return useMemo(() => ({ onUserInput, onBlur, markSent }), [onUserInput, onBlur, markSent]);

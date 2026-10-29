@@ -20,10 +20,7 @@ export function CustomSwitch({
       aria-checked={checked}
       disabled={disabled}
       onPress={() => onCheckedChange(!checked)}
-      className={cn(
-        "h-11 w-12 items-center justify-center",
-        disabled && "opacity-40",
-      )}
+      className={cn("h-11 w-12 items-center justify-center", disabled && "opacity-40")}
     >
       <View
         className={cn(

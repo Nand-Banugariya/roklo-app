@@ -1,0 +1,22 @@
+# Dependencies, builds and generated native projects
+node_modules
+.expo
+dist
+web-build
+ios
+android
+coverage
+
+# Lockfiles and generated files
+yarn.lock
+package-lock.json
+bun.lock
+expo-env.d.ts
+src/lib/theme-tokens.ts
+
+# Not code
+*.png
+*.jpg
+*.svg
+*.ttf
+*.otf

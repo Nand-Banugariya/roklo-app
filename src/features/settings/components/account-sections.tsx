@@ -17,17 +17,13 @@ import { SettingsInlineForm } from "./settings-inline-form";
 import { CustomSwitch } from "@/components/shadcn-custom/customswitch";
 import { CustomText } from "@/components/shadcn-custom/customtext";
 import { AppearanceControls } from "@/features/navigation/components/appearance-controls";
+import { PushNotificationSettings } from "@/features/notifications/components/push-notification-settings";
 import { useAppShell } from "@/features/navigation/providers/app-shell-context";
 import type { AuthUser } from "@/features/auth/types/auth.types";
 import type { Workspace } from "@/features/workspaces/types/workspace.types";
 import { useRokloTheme } from "@/hooks/use-roklo-theme";
 import { SettingsImagePicker } from "./settings-image-picker";
-import {
-  PreviewNote,
-  SettingsDescription,
-  SettingsRow,
-  SettingsSection,
-} from "./settings-section";
+import { PreviewNote, SettingsDescription, SettingsRow, SettingsSection } from "./settings-section";
 
 export function ProfileSection({
   user,
@@ -43,165 +39,152 @@ export function ProfileSection({
   const dirty = name !== (user?.name ?? "") || !!displayName;
   return (
     <>
-      {!dialog && <>
-      <SettingsSection
-        title="Profile"
-        description="Your teammates see this name and photo on chats you own."
-      >
-        <SettingsImagePicker
-          name={name || user?.mobileNumber}
-          src={user?.image}
-        />
-        <View className="gap-4 sm:flex-row">
-          <CustomFormField
-            id="settings-profile-name"
-            label="Full name"
-            required
-            className="min-w-0 sm:flex-1"
+      {!dialog && (
+        <>
+          <SettingsSection
+            title="Profile"
+            description="Your teammates see this name and photo on chats you own."
           >
-            {(control) => (
-              <CustomInput
-                {...control}
-                size="xl"
-                value={name}
-                onChangeText={setName}
-                maxLength={100}
-                placeholder="e.g. Priya Sharma"
-                autoComplete="name"
-                className="dark:text-white"
-              />
-            )}
-          </CustomFormField>
-          <CustomFormField
-            id="settings-display-name"
-            label="Display name in chats"
-            help="Customers see this on messages you send. Leave empty to use your full name."
-            className="min-w-0 sm:flex-1"
-          >
-            {(control) => (
-              <CustomInput
-                {...control}
-                size="xl"
-                value={displayName}
-                onChangeText={setDisplayName}
-                maxLength={100}
-                placeholder={name.trim().split(/\s+/)[0] || "e.g. Priya"}
-                className="dark:text-white"
-              />
-            )}
-          </CustomFormField>
-        </View>
-        <View className="gap-4 sm:flex-row">
-          <CustomFormField
-            id="settings-profile-email"
-            label="Email"
-            help="Used to log in and for alert emails."
-            className="min-w-0 sm:flex-1"
-          >
-            <View className="gap-2">
-              <CustomInput
-                accessibilityLabel="Email"
-                size="xl"
-                value={user?.email ?? ""}
-                editable={false}
-                placeholder="No email added"
-                className="dark:text-white"
-              />
-              <View className="flex-row flex-wrap items-center gap-2">
-                {!!user?.email && (
-                  <View className="flex-row items-center gap-1 rounded-full bg-success-bg px-2 py-1">
-                    <CustomIcon
-                      as={user.isEmailVerified ? CircleCheck : LockKeyhole}
-                      size={12}
-                      className="text-brand-700"
-                    />
-                    <CustomText className="text-xs text-brand-800">
-                      {user.isEmailVerified ? "Verified" : "Unverified"}
-                    </CustomText>
-                  </View>
+            <SettingsImagePicker name={name || user?.mobileNumber} src={user?.image} />
+            <View className="gap-4 sm:flex-row">
+              <CustomFormField
+                id="settings-profile-name"
+                label="Full name"
+                required
+                className="min-w-0 sm:flex-1"
+              >
+                {(control) => (
+                  <CustomInput
+                    {...control}
+                    size="xl"
+                    value={name}
+                    onChangeText={setName}
+                    maxLength={100}
+                    placeholder="e.g. Priya Sharma"
+                    autoComplete="name"
+                    className="dark:text-white"
+                  />
                 )}
+              </CustomFormField>
+              <CustomFormField
+                id="settings-display-name"
+                label="Display name in chats"
+                help="Customers see this on messages you send. Leave empty to use your full name."
+                className="min-w-0 sm:flex-1"
+              >
+                {(control) => (
+                  <CustomInput
+                    {...control}
+                    size="xl"
+                    value={displayName}
+                    onChangeText={setDisplayName}
+                    maxLength={100}
+                    placeholder={name.trim().split(/\s+/)[0] || "e.g. Priya"}
+                    className="dark:text-white"
+                  />
+                )}
+              </CustomFormField>
+            </View>
+            <View className="gap-4 sm:flex-row">
+              <CustomFormField
+                id="settings-profile-email"
+                label="Email"
+                help="Used to log in and for alert emails."
+                className="min-w-0 sm:flex-1"
+              >
+                <View className="gap-2">
+                  <CustomInput
+                    accessibilityLabel="Email"
+                    size="xl"
+                    value={user?.email ?? ""}
+                    editable={false}
+                    placeholder="No email added"
+                    className="dark:text-white"
+                  />
+                  <View className="flex-row flex-wrap items-center gap-2">
+                    {!!user?.email && (
+                      <View className="flex-row items-center gap-1 rounded-full bg-success-bg px-2 py-1">
+                        <CustomIcon
+                          as={user.isEmailVerified ? CircleCheck : LockKeyhole}
+                          size={12}
+                          className="text-brand-700"
+                        />
+                        <CustomText className="text-xs text-brand-800">
+                          {user.isEmailVerified ? "Verified" : "Unverified"}
+                        </CustomText>
+                      </View>
+                    )}
+                    <CustomButton variant="secondary" size="lg" onPress={() => setDialog("email")}>
+                      {!user?.email
+                        ? "Add email"
+                        : user.isEmailVerified
+                          ? "Change email"
+                          : "Verify email"}
+                    </CustomButton>
+                  </View>
+                </View>
+              </CustomFormField>
+              <CustomFormField
+                id="settings-profile-mobile"
+                label="Mobile"
+                help="You sign in with a code sent to this number."
+                className="min-w-0 sm:flex-1"
+              >
+                {(control) => (
+                  <CustomInput
+                    {...control}
+                    size="xl"
+                    editable={false}
+                    value={user?.mobileNumber ? `+${user.mobileNumber.replace(/^\+/, "")}` : ""}
+                    className="font-mono dark:text-white"
+                  />
+                )}
+              </CustomFormField>
+            </View>
+            <View className="gap-3 border-t border-ink-150 pt-4">
+              <View className="flex-row flex-wrap justify-end gap-2">
                 <CustomButton
-                  variant="secondary"
-                  size="lg"
-                  onPress={() => setDialog("email")}
+                  variant="ghost"
+                  size="xl"
+                  disabled={!dirty}
+                  onPress={() => {
+                    setName(user?.name ?? "");
+                    setDisplayName("");
+                  }}
                 >
-                  {!user?.email
-                    ? "Add email"
-                    : user.isEmailVerified
-                      ? "Change email"
-                      : "Verify email"}
+                  Discard
+                </CustomButton>
+                <CustomButton
+                  size="xl"
+                  disabled
+                  leadingIcon={
+                    <CustomIcon as={Check} size={16} className="text-primary-foreground" />
+                  }
+                >
+                  Save changes
                 </CustomButton>
               </View>
+              <PreviewNote />
             </View>
-          </CustomFormField>
-          <CustomFormField
-            id="settings-profile-mobile"
-            label="Mobile"
-            help="You sign in with a code sent to this number."
-            className="min-w-0 sm:flex-1"
-          >
-            {(control) => (
-              <CustomInput
-                {...control}
+          </SettingsSection>
+          {workspace?.role === "OWNER" && (
+            <SettingsSection
+              title="Transfer ownership"
+              description={`Make a teammate the owner of ${workspace.name}. You'll become an agent.`}
+              danger
+            >
+              <CustomButton
+                variant="destructive"
                 size="xl"
-                editable={false}
-                value={
-                  user?.mobileNumber
-                    ? `+${user.mobileNumber.replace(/^\+/, "")}`
-                    : ""
-                }
-                className="font-mono dark:text-white"
-              />
-            )}
-          </CustomFormField>
-        </View>
-        <View className="gap-3 border-t border-ink-150 pt-4">
-          <View className="flex-row flex-wrap justify-end gap-2">
-            <CustomButton
-              variant="ghost"
-              size="xl"
-              disabled={!dirty}
-              onPress={() => {
-                setName(user?.name ?? "");
-                setDisplayName("");
-              }}
-            >
-              Discard
-            </CustomButton>
-            <CustomButton
-              size="xl"
-              disabled
-              leadingIcon={
-                <CustomIcon
-                  as={Check}
-                  size={16}
-                  className="text-primary-foreground"
-                />
-              }
-            >
-              Save changes
-            </CustomButton>
-          </View>
-          <PreviewNote />
-        </View>
-      </SettingsSection>
-      {workspace?.role === "OWNER" && (
-        <SettingsSection
-          title="Transfer ownership"
-          description={`Make a teammate the owner of ${workspace.name}. You'll become an agent.`}
-          danger
-        >
-          <CustomButton
-            variant="destructive"
-            size="xl"
-            className="self-start"
-            onPress={() => setDialog("transfer")}
-          >
-            Transfer
-          </CustomButton>
-        </SettingsSection>
+                className="self-start"
+                onPress={() => setDialog("transfer")}
+              >
+                Transfer
+              </CustomButton>
+            </SettingsSection>
+          )}
+        </>
       )}
-      </>}
       {dialog && (
         <SettingsInlineForm
           open
@@ -242,15 +225,9 @@ export function ProfileSection({
             )}
             <PreviewNote />
             <CustomButton size="xl" disabled>
-              {dialog === "email"
-                ? "Send verification code"
-                : "Transfer ownership"}
+              {dialog === "email" ? "Send verification code" : "Transfer ownership"}
             </CustomButton>
-            <CustomButton
-              variant="secondary"
-              size="xl"
-              onPress={() => setDialog(null)}
-            >
+            <CustomButton variant="secondary" size="xl" onPress={() => setDialog(null)}>
               Cancel
             </CustomButton>
           </View>
@@ -267,11 +244,6 @@ const PREFERENCE_ROWS = [
     description: "Play a sound when a customer replies.",
   },
   {
-    key: "notifications",
-    title: "Notifications",
-    description: "Show notifications when Roklo is in the background.",
-  },
-  {
     key: "enter",
     title: "Press Enter to send",
     description: "Off: Enter adds a new line, Ctrl + Enter sends.",
@@ -282,18 +254,11 @@ export function PreferencesSection() {
   const { setColorScheme } = useRokloTheme();
   const [preferences, setPreferences] = useState({
     sound: false,
-    notifications: false,
     enter: false,
   });
   return (
-    <SettingsSection
-      title="Preferences"
-      description="Make Roklo feel right for you."
-    >
-      <SettingsRow
-        title="Theme"
-        description="Light, dark, or match your device's setting."
-      >
+    <SettingsSection title="Preferences" description="Make Roklo feel right for you.">
+      <SettingsRow title="Theme" description="Light, dark, or match your device's setting.">
         <View className="gap-1 sm:w-[240px]">
           <AppearanceControls />
           <CustomButton variant="link" onPress={() => setColorScheme("system")}>
@@ -301,11 +266,7 @@ export function PreferencesSection() {
           </CustomButton>
         </View>
       </SettingsRow>
-      <CustomFormField
-        id="settings-language"
-        label="Language"
-        className="sm:max-w-[300px]"
-      >
+      <CustomFormField id="settings-language" label="Language" className="sm:max-w-[300px]">
         <SettingsSelect
           value="en-IN"
           options={[{ value: "en-IN", label: "English (India)" }]}
@@ -316,14 +277,9 @@ export function PreferencesSection() {
           emptyMessage="No matching language"
         />
       </CustomFormField>
+      <PushNotificationSettings />
       {PREFERENCE_ROWS.map((row) => (
-        <SettingsRow
-          key={row.key}
-          title={row.title}
-          description={row.description}
-          divided
-          inline
-        >
+        <SettingsRow key={row.key} title={row.title} description={row.description} divided inline>
           <CustomSwitch
             accessibilityLabel={row.title}
             checked={preferences[row.key]}
@@ -336,7 +292,10 @@ export function PreferencesSection() {
           />
         </SettingsRow>
       ))}
-      <PreviewNote />
+      <SettingsDescription>
+        Sound for new messages and Press Enter to send are previews; changes to those controls are
+        not saved.
+      </SettingsDescription>
     </SettingsSection>
   );
 }
@@ -377,14 +336,10 @@ export function SecuritySection() {
           <CustomText className="font-sans-medium text-sm dark:text-white">
             Current sign-in
           </CustomText>
-          <SettingsDescription>
-            You are using Roklo on this device.
-          </SettingsDescription>
+          <SettingsDescription>You are using Roklo on this device.</SettingsDescription>
         </View>
         <View className="rounded-full bg-success-bg px-2 py-1">
-          <CustomText className="text-xs text-success-fg">
-            This device
-          </CustomText>
+          <CustomText className="text-xs text-success-fg">This device</CustomText>
         </View>
       </View>
       <CustomButton

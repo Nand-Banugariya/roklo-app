@@ -1,11 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { KeyboardAvoidingView, Keyboard, Platform, View, useWindowDimensions } from "react-native";
 import { PageLayout } from "@/features/navigation/components/page-layout";
 import { ScreenHeader } from "@/features/navigation/components/screen-header";
 import { selectActiveWorkspace } from "@/features/workspaces/store/workspace-selectors";
@@ -17,11 +11,7 @@ import {
 } from "../components/account-sections";
 import { SettingsNavigation } from "../components/settings-navigation";
 import { TeamSection } from "../components/team-section";
-import {
-  AlertsSection,
-  GeneralSection,
-  NumbersSection,
-} from "../components/workspace-sections";
+import { AlertsSection, GeneralSection, NumbersSection } from "../components/workspace-sections";
 import { settingsSection } from "../config/settings-navigation";
 
 const PAGE_COPY = {
@@ -88,13 +78,8 @@ export default function SettingsScreen() {
           accountPage
           hideHeader
         >
-          <View
-            key={`${user?.id}:${workspace?.id}:${active}`}
-            className="gap-4"
-          >
-            {active === "profile" && (
-              <ProfileSection user={user} workspace={workspace} />
-            )}
+          <View key={`${user?.id}:${workspace?.id}:${active}`} className="gap-4">
+            {active === "profile" && <ProfileSection user={user} workspace={workspace} />}
             {active === "preferences" && <PreferencesSection />}
             {active === "security" && <SecuritySection />}
             {active === "general" && <GeneralSection workspace={workspace} />}

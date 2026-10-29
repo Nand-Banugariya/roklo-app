@@ -113,7 +113,11 @@ export function ModuleScreen({ module }: { module: ModuleId }) {
   const { openPanel } = useAppShell();
   const action = APP_DESTINATIONS.find((item) => item.id === content.action)!;
   return (
-    <PageLayout title={content.title} description={content.description} tab={isPrimaryDestination(module) ? module : undefined}>
+    <PageLayout
+      title={content.title}
+      description={content.description}
+      tab={isPrimaryDestination(module) ? module : undefined}
+    >
       <View className="gap-6 rounded-2xl border border-ink-200 bg-card p-6 sm:p-8">
         <View className="h-14 w-14 items-center justify-center rounded-2xl border border-brand-200 bg-brand-50">
           <CustomIcon
@@ -137,11 +141,7 @@ export function ModuleScreen({ module }: { module: ModuleId }) {
           className="self-start"
           onPress={() => router.navigate(action.href)}
           trailingIcon={
-            <CustomIcon
-              as={ArrowUpRight}
-              size={17}
-              className="text-primary-foreground"
-            />
+            <CustomIcon as={ArrowUpRight} size={17} className="text-primary-foreground" />
           }
         >
           Open {action.label.toLowerCase()}

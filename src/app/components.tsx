@@ -1,1 +1,1 @@
-export { default } from '@/components/design-system/design-system-preview';
+export { default } from "@/components/design-system/design-system-preview";

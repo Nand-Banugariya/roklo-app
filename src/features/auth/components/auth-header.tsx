@@ -59,9 +59,7 @@ export function AuthHeader({
           {title}
         </CustomText>
       )}
-      <CustomText className="text-[15px] leading-[23px] text-ink-700">
-        {children}
-      </CustomText>
+      <CustomText className="text-[15px] leading-[23px] text-ink-700">{children}</CustomText>
     </View>
   );
 }

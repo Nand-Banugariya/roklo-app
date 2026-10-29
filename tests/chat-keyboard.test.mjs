@@ -6,7 +6,10 @@ import vm from "node:vm";
 
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
-const source = readFileSync(new URL("../src/features/navigation/components/keyboard-screen.tsx", import.meta.url), "utf8");
+const source = readFileSync(
+  new URL("../src/features/navigation/components/keyboard-screen.tsx", import.meta.url),
+  "utf8",
+);
 const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
 }).outputText;
@@ -14,7 +17,10 @@ const compiled = ts.transpileModule(source, {
 // Run the actual wrapper's focus callbacks and animated style against native
 // event doubles. The native observer deliberately retains a stale OPEN height
 // after navigation, as it can when it misses the end of an Android IME animation.
-function screenFixture(platform = "android", nativeWindow = { top: 0, bottom: 0, decorFits: false }) {
+function screenFixture(
+  platform = "android",
+  nativeWindow = { top: 0, bottom: 0, decorFits: false },
+) {
   const states = { UNKNOWN: 0, OPENING: 1, OPEN: 2, CLOSING: 3, CLOSED: 4 };
   const keyboard = { height: { value: 0 }, state: { value: states.CLOSED } };
   const listeners = new Map();
@@ -36,16 +42,27 @@ function screenFixture(platform = "android", nativeWindow = { top: 0, bottom: 0,
       useCallback: (fn) => fn,
       useState: (initial) => {
         const index = slot(() => initial);
-        return [slots[index], (value) => { slots[index] = typeof value === "function" ? value(slots[index]) : value; }];
+        return [
+          slots[index],
+          (value) => {
+            slots[index] = typeof value === "function" ? value(slots[index]) : value;
+          },
+        ];
       },
     },
     "react/jsx-runtime": { jsx, jsxs: jsx },
-    "expo-router": { useFocusEffect: (fn) => { effect = fn; } },
+    "expo-router": {
+      useFocusEffect: (fn) => {
+        effect = fn;
+      },
+    },
     "react-native": {
       View: "View",
       Platform: { OS: platform },
       Keyboard: {
-        dismiss: () => { dismissals++; },
+        dismiss: () => {
+          dismissals++;
+        },
         addListener: (event, fn) => {
           if (!listeners.has(event)) listeners.set(event, new Set());
           listeners.get(event).add(fn);
@@ -62,7 +79,15 @@ function screenFixture(platform = "android", nativeWindow = { top: 0, bottom: 0,
         if (platform === "android") nativeWindow.decorFits = false;
         return keyboard;
       },
-      useSharedValue: (value) => slots[slot(() => ({ value, set(next) { this.value = next; } }))],
+      useSharedValue: (value) =>
+        slots[
+          slot(() => ({
+            value,
+            set(next) {
+              this.value = next;
+            },
+          }))
+        ],
       useAnimatedStyle: (read) => ({ read }),
     },
     "react-native-safe-area-context": { useSafeAreaInsets: () => ({ bottom: 24 }) },
@@ -75,17 +100,39 @@ function screenFixture(platform = "android", nativeWindow = { top: 0, bottom: 0,
       return modules[name];
     },
   });
-  const render = () => { cursor = 0; tree = exports.KeyboardScreen({ children: "chat" }); };
+  const render = () => {
+    cursor = 0;
+    tree = exports.KeyboardScreen({ children: "chat" });
+  };
   render();
   return {
-    animate(state, height) { keyboard.state.value = states[state]; keyboard.height.value = height; },
-    emit(event) { listeners.get(event)?.forEach((fn) => fn()); },
-    focus() { cleanup = effect(); },
-    blur() { cleanup(); cleanup = undefined; },
-    layout(height) { tree.props.onLayout({ nativeEvent: { layout: { height } } }); render(); },
-    padding() { return tree.props.children.props.style[1].read().paddingBottom; },
-    listeners() { return [...listeners.values()].reduce((total, set) => total + set.size, 0); },
-    dismissals() { return dismissals; },
+    animate(state, height) {
+      keyboard.state.value = states[state];
+      keyboard.height.value = height;
+    },
+    emit(event) {
+      listeners.get(event)?.forEach((fn) => fn());
+    },
+    focus() {
+      cleanup = effect();
+    },
+    blur() {
+      cleanup();
+      cleanup = undefined;
+    },
+    layout(height) {
+      tree.props.onLayout({ nativeEvent: { layout: { height } } });
+      render();
+    },
+    padding() {
+      return tree.props.children.props.style[1].read().paddingBottom;
+    },
+    listeners() {
+      return [...listeners.values()].reduce((total, set) => total + set.size, 0);
+    },
+    dismissals() {
+      return dismissals;
+    },
     // Model the installed Reanimated WindowsInsetsManager's root-margin policy.
     // AppShell adds safe-area padding inside this root, so any additional margin
     // shifts every screen, including the inbox revealed during a back gesture.
@@ -97,13 +144,18 @@ function screenFixture(platform = "android", nativeWindow = { top: 0, bottom: 0,
       cleanup?.();
       nativeWindow.top = 0;
       nativeWindow.bottom = 0;
-      nativeWindow.decorFits = !nativeOptions.isStatusBarTranslucentAndroid && !nativeOptions.isNavigationBarTranslucentAndroid;
+      nativeWindow.decorFits =
+        !nativeOptions.isStatusBarTranslucentAndroid &&
+        !nativeOptions.isNavigationBarTranslucentAndroid;
     },
   };
 }
 
 test("opening a chat and returning keeps the inbox header and window bounds stationary", () => {
-  for (const insets of [{ top: 24, bottom: 24 }, { top: 48, bottom: 0 }]) {
+  for (const insets of [
+    { top: 24, bottom: 24 },
+    { top: 48, bottom: 0 },
+  ]) {
     const nativeWindow = { top: 0, bottom: 0, decorFits: false };
     const headerY = () => nativeWindow.top + insets.top + 12;
     const initialHeader = headerY();
@@ -111,13 +163,25 @@ test("opening a chat and returning keeps the inbox header and window bounds stat
       const screen = screenFixture("android", nativeWindow);
       screen.focus();
       screen.applyNativeInsets(insets.top, insets.bottom);
-      assert.equal(headerY(), initialHeader, "the chat observer must not add another status-bar inset");
+      assert.equal(
+        headerY(),
+        initialHeader,
+        "the chat observer must not add another status-bar inset",
+      );
       assert.equal(nativeWindow.bottom, 0, "AppShell already reserves the bottom safe area");
       screen.blur();
-      assert.equal(headerY(), initialHeader, "the revealed inbox stays in place during back navigation");
+      assert.equal(
+        headerY(),
+        initialHeader,
+        "the revealed inbox stays in place during back navigation",
+      );
       screen.unmount();
       assert.equal(headerY(), initialHeader, "unmount must not move the whole app root");
-      assert.equal(nativeWindow.decorFits, false, "back navigation must retain the same edge-to-edge window policy");
+      assert.equal(
+        nativeWindow.decorFits,
+        false,
+        "back navigation must retain the same edge-to-edge window policy",
+      );
     }
   }
 });

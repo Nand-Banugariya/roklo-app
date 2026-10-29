@@ -1,9 +1,5 @@
 import { countries } from "country-data-list";
-import {
-  getCountryCallingCode,
-  isSupportedCountry,
-  type CountryCode,
-} from "libphonenumber-js";
+import { getCountryCallingCode, isSupportedCountry, type CountryCode } from "libphonenumber-js";
 
 export interface Country {
   /** ISO 3166-1 alpha-2, lowercase (also the flag file name). */
@@ -34,17 +30,13 @@ export const COUNTRIES: Country[] = countries.all
     // Regional prefixes such as +1268 include national-number digits; use the
     // E.164 country prefix (+1) so a pasted national number is not duplicated.
     dial: `+${getCountryCallingCode(country.alpha2 as CountryCode)}`,
-    callingCodes: country.countryCallingCodes.map((dial) =>
-      dial.replace(/\s/g, ""),
-    ),
+    callingCodes: country.countryCallingCodes.map((dial) => dial.replace(/\s/g, "")),
   }))
   .sort((left, right) => left.name.localeCompare(right.name));
 
 export const getCountry = (code: string): Country =>
   COUNTRIES.find(
-    (country) =>
-      country.code === code.toLowerCase() ||
-      country.alpha3 === code.toUpperCase(),
+    (country) => country.code === code.toLowerCase() || country.alpha3 === code.toUpperCase(),
   ) ?? COUNTRIES.find((country) => country.code === DEFAULT_COUNTRY_CODE)!;
 
 /** Matches the query against the country name or its dial code ("91" or "+91"). */

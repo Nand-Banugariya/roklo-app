@@ -7,7 +7,7 @@ export function StepHeader({
   eyebrow,
 }: {
   title: string;
-  description: string;
+  description?: string;
   eyebrow?: string;
 }) {
   return (
@@ -23,9 +23,9 @@ export function StepHeader({
       >
         {title}
       </CustomText>
-      <CustomText className="text-[15px] leading-6 text-ink-700">
-        {description}
-      </CustomText>
+      {!!description && (
+        <CustomText className="text-[15px] leading-6 text-ink-700">{description}</CustomText>
+      )}
     </View>
   );
 }

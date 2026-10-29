@@ -6,7 +6,11 @@ export interface PressedStyle {
   transform?: { scale: number }[];
 }
 
-const NAMED: Record<string, string> = { white: "#ffffff", black: "#000000", transparent: "transparent" };
+const NAMED: Record<string, string> = {
+  white: "#ffffff",
+  black: "#000000",
+  transparent: "transparent",
+};
 
 /** "#rrggbb" plus a Tailwind alpha ("10" → 10%) as rgba; other colours pass through unchanged. */
 function withAlpha(color: string, alpha?: string) {
@@ -29,7 +33,10 @@ function color(value: string, colors: Readonly<Record<string, string>>) {
  * bg-*, border-*, opacity-* and scale-*. Inline, because swapping NativeWind classes on press makes it
  * re-create the component and crash in development.
  */
-export function pressedStyle(classes: readonly string[], colors: Readonly<Record<string, string>>): PressedStyle {
+export function pressedStyle(
+  classes: readonly string[],
+  colors: Readonly<Record<string, string>>,
+): PressedStyle {
   const style: PressedStyle = {};
   for (const name of classes) {
     let match: RegExpExecArray | null;
@@ -37,7 +44,8 @@ export function pressedStyle(classes: readonly string[], colors: Readonly<Record
       const value = color(match[2], colors);
       if (value) style[match[1] === "bg" ? "backgroundColor" : "borderColor"] = value;
     } else if ((match = /^opacity-(\d+)$/.exec(name))) style.opacity = Number(match[1]) / 100;
-    else if ((match = /^scale-(?:\[([\d.]+)\]|(\d+))$/.exec(name))) style.transform = [{ scale: match[1] ? Number(match[1]) : Number(match[2]) / 100 }];
+    else if ((match = /^scale-(?:\[([\d.]+)\]|(\d+))$/.exec(name)))
+      style.transform = [{ scale: match[1] ? Number(match[1]) : Number(match[2]) / 100 }];
   }
   return style;
 }
